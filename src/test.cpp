@@ -5,9 +5,9 @@
 
 // Function to search for the XML file
 std::string findXmlFile() {
-    std::string filename;
-    std::cout << "Enter the XML file name: ";
-    std::cin >> filename;
+    std::string filename = "/home/cunha/Documents/github/adrw/ms_simple.animl";
+    // std::cout << "Enter the XML file name: ";
+    // std::cin >> filename;
     return filename;
 }
 
