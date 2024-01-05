@@ -1,13 +1,26 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -Ithird-party/pugixml-1.14/src
+CXXFLAGS = -std=c++11
 
-SOURCES = $(wildcard src/*.cpp) third-party/pugixml-1.14/src/pugixml.cpp
+ZLIBDIR = external/mstoolkit/src/zlib-1.2.11
+CXXFLAGS += -Wall -I$(ZLIBDIR)
+LDFLAGS = -L$(ZLIBDIR)
+LDLIBS = -lz
+
+# CXXFLAGS += -DGCC
+# CXXFLAGS += -D_FILE_OFFSET_BITS=64
+
+# MSTOOLKITDIR = external/mstoolkit
+# MSTOOLKITDIRINCLUDE = external/mstoolkit/include
+
+SOURCES = $(wildcard src/*.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
 
-EXECUTABLE = testme
+EXECUTABLE = main
+
+# SHAREDZLIB = $(ZLIBDIR)/libz.a
 
 all: $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXECUTABLE)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $(EXECUTABLE) $(LDLIBS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@

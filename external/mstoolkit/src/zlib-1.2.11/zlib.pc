@@ -1,0 +1,13 @@
+prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+exec_prefix=${prefix}
+libdir=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+sharedlibdir=${libdir}
+includedir=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.11
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
