@@ -1,7 +1,4 @@
-#include <iostream>
-#include <string>
 #include "sclib.h"
-#include "zlib.h"
 
 // #include "MSToolkitTypes.h"
 // #include "MSReader.h"
@@ -18,32 +15,38 @@ int main() {
   std::string file4 = "./excluded/basic.xml";
   std::string file5 = "./excluded/mrm_pos.mzML";
   std::string file6 = "./excluded/mrm_neg.mzML";
+  std::string file7 = "./excluded/example_strict.animl";
 
   sc::hello();
   std::cout << std::endl;
 
-  tests::test_reading_generic_xml(file4);
+  // tests::test_reading_generic_xml(file4);
 
-  std::vector<float> inputFloat = {10, 13.4, 15.6, 1000.5};
-  std::vector<double> inputDouble(inputFloat.size());
-  for (size_t i = 0; i < inputFloat.size(); i++) {
-    inputDouble[i] = static_cast<double>(inputFloat[i]);
-  }
-  tests::test_encoding_decoding_little_endian(inputDouble, 4);
+  // Pre conversion of a float vector to double for returning the same as input
+  // std::vector<float> inputFloat = {10, 13.4, 15.6, 1000.5};
+  // std::vector<double> inputDouble(inputFloat.size());
+  // for (size_t i = 0; i < inputFloat.size(); i++) {
+  //   inputDouble[i] = static_cast<double>(inputFloat[i]);
+  // }
 
-
-  std::vector<double> input = {10, 13.4, 15.6, 1000.5};
-  tests::test_encoding_decoding_little_endian(input, 8);
-
-  tests::test_extract_spectra_mzml(file2);
-
-  tests::test_extract_chromatograms_mzml(file5);
+  // tests::test_encoding_decoding_little_endian(inputDouble, 4);
 
 
-  // std::cout << "Loading an AnIML file!" << std::endl;
-  // sc::ANIML animl(file3);
-  // std::cout << animl.get_name() << std::endl;
-  // std::cout << std::endl;
+  // std::vector<double> input = {10, 13.4, 15.6, 1000.5};
+  // tests::test_encoding_decoding_little_endian(input, 8);
+
+  // tests::test_extract_spectra_mzml(file2);
+
+  // tests::test_extract_chromatograms_mzml(file5);
+
+  sc::ANIML animl(file3);
+  std::cout << animl.get_name() << std::endl;
+  std::vector<sc::ANIML_SAMPLE> samples = animl.get_sample_set();
+  std::cout << "Number of samples: " << samples.size() << std::endl;
+  std::cout << "Samples: ";
+  for (const sc::ANIML_SAMPLE& sp : samples) std::cout << sp.name << "; ";
+  std::cout << std::endl;
+  std::cout << std::endl;
 
   return 0;
 }

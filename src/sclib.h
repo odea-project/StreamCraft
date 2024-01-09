@@ -1,98 +1,42 @@
-#if !defined(SCLIB_H)
+#ifndef SCLIB_H
 #define SCLIB_H
-#endif
 
 #include <iostream>
-#include <string>
 #include <vector>
+#include <string>
 #include <numeric>
-#include <tuple>
+#include <cstring>
+#include <algorithm>
+#include <sstream>
+#include <zlib.h>
 
 #define PUGIXML_HEADER_ONLY
 #include "pugixml-1.14/src/pugixml.hpp"
 
+/// @brief Assets to read and write XML based analytical files
 namespace sc {
 
   void hello();
 
-  // // Utility Functions // //
-
   std::string encode_little_endian(const std::vector<double>& input, const int& precision);
+
   std::vector<double> decode_little_endian(const std::string& str, const int& precision);
 
   // std::string encode_big_endian(const std::vector<double>& input);
+
   // std::vector<double> decode_big_endian(const std::string& str, const int& precision);
 
   std::string compress_zlib(const std::string& str);
+
   std::string decompress_zlib(const std::string& compressed_string);
 
   std::string encode_base64(const std::string& str);
+
   std::string decode_base64(const std::string& encoded_string);
 
 
 
-  // // Structs // //
-
-  struct MZML_SPECTRA_HEADERS {
-    std::vector<int> spec_index;
-    std::vector<std::string> spec_id;
-    std::vector<int> spec_scan;
-    std::vector<int> spec_array_length;
-    std::vector<int> spec_level;
-    std::vector<std::string> spec_mode;
-    std::vector<std::string> spec_polarity;
-    std::vector<double> spec_lowmz;
-    std::vector<double> spec_highmz;
-    std::vector<double> spec_bpmz;
-    std::vector<double> spec_bpint;
-    std::vector<double> spec_tic;
-    std::vector<std::string> spec_title;
-    std::vector<double> scan_rt;
-    std::vector<double> scan_drift;
-    std::vector<std::string> scan_filter_string;
-    std::vector<int> scan_config;
-    std::vector<double> scan_injection_ion_time;
-    std::vector<int> precursor_scan;
-    std::vector<double> window_mz;
-    std::vector<double> window_mzlow;
-    std::vector<double> window_mzhigh;
-    std::vector<double> ion_mz;
-    std::vector<double> ion_intensity;
-    std::vector<int> ion_charge;
-    std::vector<std::string> activation_type;
-    std::vector<double> activation_ce;
-  };
-
-
-
-  struct MZML_BINARY_METADATA {
-    int index;
-    int precision;
-    std::string compression;
-    std::string type;
-    std::string name;
-  };
-
-
-
-  struct MZML_CHROMATOGRAMS_HEADERS {
-    std::vector<int> chrom_index;
-    std::vector<std::string> chrom_id;
-    std::vector<int> chrom_array_length;
-    std::vector<std::string> chrom_polarity;
-    std::vector<double> precursor_mz;
-    std::vector<std::string> activation_type;
-    std::vector<double> activation_ce;
-    std::vector<double> product_mz;
-  };
-
-
-
-  // // Classes // //
-
-  /**
-  *  Class representing a generic XML file.
-  */
+  /// @brief Class representing a generic XML file.
   class XML {
 
     private:
@@ -136,9 +80,59 @@ namespace sc {
   };
 
 
-  /**
-  *  Class representing an mzML file.
-  */
+
+  struct MZML_SPECTRA_HEADERS {
+    std::vector<int> spec_index;
+    std::vector<std::string> spec_id;
+    std::vector<int> spec_scan;
+    std::vector<int> spec_array_length;
+    std::vector<int> spec_level;
+    std::vector<std::string> spec_mode;
+    std::vector<std::string> spec_polarity;
+    std::vector<double> spec_lowmz;
+    std::vector<double> spec_highmz;
+    std::vector<double> spec_bpmz;
+    std::vector<double> spec_bpint;
+    std::vector<double> spec_tic;
+    std::vector<std::string> spec_title;
+    std::vector<double> scan_rt;
+    std::vector<double> scan_drift;
+    std::vector<std::string> scan_filter_string;
+    std::vector<int> scan_config;
+    std::vector<double> scan_injection_ion_time;
+    std::vector<int> precursor_scan;
+    std::vector<double> window_mz;
+    std::vector<double> window_mzlow;
+    std::vector<double> window_mzhigh;
+    std::vector<double> ion_mz;
+    std::vector<double> ion_intensity;
+    std::vector<int> ion_charge;
+    std::vector<std::string> activation_type;
+    std::vector<double> activation_ce;
+  };
+
+  struct MZML_BINARY_METADATA {
+    int index;
+    int precision;
+    std::string compression;
+    std::string type;
+    std::string name;
+  };
+
+  struct MZML_CHROMATOGRAMS_HEADERS {
+    std::vector<int> chrom_index;
+    std::vector<std::string> chrom_id;
+    std::vector<int> chrom_array_length;
+    std::vector<std::string> chrom_polarity;
+    std::vector<double> precursor_mz;
+    std::vector<std::string> activation_type;
+    std::vector<double> activation_ce;
+    std::vector<double> product_mz;
+  };
+
+
+
+  /// @brief Class representing an mzML file.
   class MZML {
 
     private:
@@ -365,9 +359,85 @@ namespace sc {
       };
   };
 
-  /**
-  *  Class representing an AnIMl file.
-  */
+
+
+  struct ANIML_TAG {
+    std::string name;
+    std::string value;
+  };
+
+
+
+  struct ANIML_UNIT {
+    std::string label;
+    std::string quantity;
+    double factor;
+    double exponent;
+  };
+
+
+
+  struct ANIML_SAMPLE {
+    std::string name;
+    std::string sampleID;
+    std::vector<ANIML_TAG> TagSet;
+  };
+
+
+
+  struct ANIML_PARAMETER {
+    std::string name;
+    std::string id;
+    std::string type;
+    unsigned value;
+    ANIML_UNIT unit;
+  };
+
+
+
+  struct ANIML_SERIES {
+    std::string name;
+    std::string dependency;
+    std::string seriesID;
+    std::string type;
+    std::vector<unsigned> ValueSet;
+    ANIML_UNIT unit;
+  };
+
+
+
+  struct ANIML_CATEGORY {
+    std::vector<ANIML_PARAMETER> ParameterSet;
+    std::vector<ANIML_SERIES> SeriesSet;
+    std::vector<ANIML_CATEGORY> CategorySet;
+  };
+
+
+  // Forward declaration of ANIML_EXPSTEP
+  struct ANIML_EXPSTEP;
+
+
+
+  struct ANIML_RESULT {
+    std::string name;
+    std::vector<ANIML_SERIES> SeriesSet;
+    std::vector<ANIML_EXPSTEP> ExpStepSet;
+  };
+
+
+
+  struct ANIML_EXPSTEP {
+    std::string name;
+    std::string expID;
+    std::string technique_name;
+    std::string technique_uri;
+    std::vector<ANIML_TAG> TagSet;
+    std::vector<ANIML_RESULT> ResultSet;
+  };
+
+
+
+  /// @brief Class representing an AnIMl file.
   class ANIML {
 
     private:
@@ -423,10 +493,65 @@ namespace sc {
         return root;
       };
 
+      std::vector<ANIML_SAMPLE> get_sample_set(const std::vector<int>& indices = {}) {
+
+        std::vector<ANIML_SAMPLE> samples;
+
+        pugi::xml_node sample_set = root.child("SampleSet");
+
+        if (sample_set) {
+
+          std::vector<pugi::xml_node> sample_nodes;
+
+          for (pugi::xml_node child = sample_set.first_child(); child; child = child.next_sibling()) {
+            sample_nodes.push_back(child);
+          }
+
+          std::vector<int> idxs;
+
+          int number_samples = indices.size();
+
+          if (number_samples == 0) {
+            number_samples = sample_nodes.size();
+            idxs.resize(number_samples);
+            std::iota(idxs.begin(), idxs.end(), 0);
+
+          } else {
+            idxs = indices;
+          }
+
+          if (number_samples == 0) {
+            std::cerr << "Warning: No samples to return!" << std::endl;
+            return samples;
+          }
+
+          samples.resize(number_samples);
+
+          for (int i = 0; i < number_samples; i++) {
+
+            const int& index = idxs[i];
+
+            const pugi::xml_node& node = sample_nodes[index];
+
+            if (node) {
+              ANIML_SAMPLE sample;
+              sample.name = node.attribute("name").as_string();
+
+              samples[i] = sample;
+            }
+          }
+        }
+
+        // DUMMY FOR NOW
+
+        return samples;
+      };
+
   };
 
-}
+} // namespace sc
 
+/// @brief Test functions for the StreamCraft
 namespace tests {
 
   void test_reading_generic_xml(const std::string& file);
@@ -437,4 +562,6 @@ namespace tests {
 
   void test_extract_chromatograms_mzml(const std::string& file);
 
-}
+} // namespace tests
+
+#endif

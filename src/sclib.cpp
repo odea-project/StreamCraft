@@ -1,12 +1,12 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <numeric>
-#include <cstring>
+// #include <iostream>
+// #include <vector>
+// #include <string>
+// #include <numeric>
+// #include <cstring>
+// #include <sstream>
+// #include <algorithm>
+// #include <zlib.h>
 #include "sclib.h"
-#include <sstream>
-#include <zlib.h>
-#include <algorithm>
 
 
 /*!
