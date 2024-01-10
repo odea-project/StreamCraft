@@ -21,7 +21,7 @@ void sc::hello() {
 /*!
  * Encodes to little endian binary a vector of doubles based on a precision integer.
  */
-std::string sc::encode_little_endian(const std::vector<double>& input, const int& precision) {
+std::string sc::utils::encode_little_endian(const std::vector<double>& input, const int& precision) {
 
   if (precision == 8) {
     std::vector<uint8_t> bytes(sizeof(double) * input.size());
@@ -47,7 +47,7 @@ std::string sc::encode_little_endian(const std::vector<double>& input, const int
 /*!
  * Decodes from a little endian binary string to a vector of doubles according a precision integer.
  */
-std::vector<double> sc::decode_little_endian(const std::string& str, const int& precision) {
+std::vector<double> sc::utils::decode_little_endian(const std::string& str, const int& precision) {
 
   std::vector<unsigned char> bytes(str.begin(), str.end());
   int bytes_size = (bytes.size() / precision);
@@ -75,7 +75,7 @@ std::vector<double> sc::decode_little_endian(const std::string& str, const int& 
 /*!
  * Compresses a string using the zlib library (https://zlib.net/).
  */
-std::string sc::compress_zlib(const std::string& str) {
+std::string sc::utils::compress_zlib(const std::string& str) {
 
   std::vector<char> compressed_data;
 
@@ -114,7 +114,7 @@ std::string sc::compress_zlib(const std::string& str) {
 /*!
  * Decompresses a string using the zlib library (https://zlib.net/).
  */
-std::string sc::decompress_zlib(const std::string& compressed_string) {
+std::string sc::utils::decompress_zlib(const std::string& compressed_string) {
 
   z_stream zs;
 
@@ -155,7 +155,7 @@ std::string sc::decompress_zlib(const std::string& compressed_string) {
 /*!
  * Encodes a string with binary data to a Base64 string.
  */
-std::string sc::encode_base64(const std::string& str) {
+std::string sc::utils::encode_base64(const std::string& str) {
 
   static const char* base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -200,7 +200,7 @@ std::string sc::encode_base64(const std::string& str) {
 /*!
  * Decodes a Base64 string into a string with binary data.
  */
-std::string sc::decode_base64(const std::string& encoded_string) {
+std::string sc::utils::decode_base64(const std::string& encoded_string) {
 
   std::string decoded_string;
 
@@ -244,7 +244,7 @@ std::string sc::decode_base64(const std::string& encoded_string) {
    indicating the location of the spectra to retrieve metadata.
    This is a private function of the class MZML in sc namespace.
  */
-sc::MZML_SPECTRA_HEADERS sc::MZML::extract_mzml_spectra_headers(const std::vector<int>& idxs) {
+sc::mzml::SPECTRA_HEADERS sc::mzml::MZML::extract_spectra_headers(const std::vector<int>& idxs) {
 
   std::string search_run = "//run";
 
@@ -252,7 +252,7 @@ sc::MZML_SPECTRA_HEADERS sc::MZML::extract_mzml_spectra_headers(const std::vecto
 
   pugi::xml_node spec_list = xps_run.node().child("spectrumList");
 
-  sc::MZML_SPECTRA_HEADERS headers;
+  sc::mzml::SPECTRA_HEADERS headers;
 
   int number_spectra = idxs.size();
 
@@ -443,9 +443,9 @@ sc::MZML_SPECTRA_HEADERS sc::MZML::extract_mzml_spectra_headers(const std::vecto
  * Extracts metadata from a binary node of an mzML file.
    This is a private function of the class MZML in sc namespace.
  */
-sc::MZML_BINARY_METADATA sc::MZML::extract_mzml_binary_metadata(const pugi::xml_node& bin) {
+sc::mzml::BINARY_METADATA sc::mzml::MZML::extract_binary_metadata(const pugi::xml_node& bin) {
 
-  MZML_BINARY_METADATA mtd;
+  sc::mzml::BINARY_METADATA mtd;
 
   std::string precision_str;
   int precision_int;
@@ -529,7 +529,7 @@ sc::MZML_BINARY_METADATA sc::MZML::extract_mzml_binary_metadata(const pugi::xml_
  * Extracts metadata from each binary array in the first node of the spectra list of an mzML file.
    This is a private function of the class MZML in sc namespace. Updates the private fields named binary_*.
  */
-void sc::MZML::get_mzml_spectra_binary_metadata(const pugi::xml_node& first_node) {
+void sc::mzml::MZML::get_spectra_binary_metadata(const pugi::xml_node& first_node) {
 
   pugi::xml_node binary_list = first_node.child("binaryDataArrayList");
 
@@ -537,9 +537,9 @@ void sc::MZML::get_mzml_spectra_binary_metadata(const pugi::xml_node& first_node
 
   for (const pugi::xml_node& bin: binary_list.children("binaryDataArray")) {
 
-    MZML_BINARY_METADATA mtd;
+    sc::mzml::BINARY_METADATA mtd;
 
-    mtd = extract_mzml_binary_metadata(bin);
+    mtd = extract_binary_metadata(bin);
 
     if (mtd.name == "val_") {
       mtd.name = "val_" + std::to_string(counter);
@@ -560,7 +560,7 @@ void sc::MZML::get_mzml_spectra_binary_metadata(const pugi::xml_node& first_node
  * Extracts a spectrum from a binary array list node from an mzML file.
    This is a private function of the class MZML in sc namespace.
  */
-std::vector<std::vector<double>> sc::MZML::extract_mzml_spectrum(const pugi::xml_node& spectrum_node) {
+std::vector<std::vector<double>> sc::mzml::MZML::extract_spectrum(const pugi::xml_node& spectrum_node) {
 
   std::vector<std::vector<double>> spectrum;
 
@@ -586,13 +586,13 @@ std::vector<std::vector<double>> sc::MZML::extract_mzml_spectrum(const pugi::xml
 
     std::string encoded_string = node_binary.child_value();
 
-    std::string decoded_string = decode_base64(encoded_string);
+    std::string decoded_string = sc::utils::decode_base64(encoded_string);
 
     if (spectra_binary_metadata[counter].compression == "gzip") {
-      decoded_string = sc::decompress_zlib(decoded_string);
+      decoded_string = sc::utils::decompress_zlib(decoded_string);
     }
 
-    spectrum[counter] = sc::decode_little_endian(decoded_string, spectra_binary_metadata[counter].precision);
+    spectrum[counter] = sc::utils::decode_little_endian(decoded_string, spectra_binary_metadata[counter].precision);
 
     int bin_array_size = spectrum[counter].size();
 
@@ -624,7 +624,7 @@ std::vector<std::vector<double>> sc::MZML::extract_mzml_spectrum(const pugi::xml
    indicating the location of the spectra to retrieve.
    This is a private function of the class MZML in sc namespace.
  */
-std::vector<std::vector<std::vector<double>>> sc::MZML::extract_mzml_spectra(const std::vector<int>& idxs) {
+std::vector<std::vector<std::vector<double>>> sc::mzml::MZML::extract_spectra(const std::vector<int>& idxs) {
 
   std::string search_run = "//run";
 
@@ -657,7 +657,7 @@ std::vector<std::vector<std::vector<double>>> sc::MZML::extract_mzml_spectra(con
 
       const pugi::xml_node& spectrum_node = spectra[index];
 
-      sp[i] = extract_mzml_spectrum(spectrum_node);
+      sp[i] = extract_spectrum(spectrum_node);
     }
   }
 
@@ -671,7 +671,7 @@ std::vector<std::vector<std::vector<double>>> sc::MZML::extract_mzml_spectra(con
    indicating the location of the spectra to retrieve metadata.
    This is a private function of the class MZML in sc namespace.
  */
-sc::MZML_CHROMATOGRAMS_HEADERS sc::MZML::extract_mzml_chrom_headers(const std::vector<int>& idxs) {
+sc::CHROMATOGRAMS_HEADERS sc::mzml::MZML::extract_chrom_headers(const std::vector<int>& idxs) {
 
   std::string search_run = "//run";
 
@@ -679,7 +679,7 @@ sc::MZML_CHROMATOGRAMS_HEADERS sc::MZML::extract_mzml_chrom_headers(const std::v
 
   pugi::xml_node chrom_list = xps_run.node().child("chromatogramList");
 
-  sc::MZML_CHROMATOGRAMS_HEADERS headers;
+  sc::mzml::CHROMATOGRAMS_HEADERS headers;
 
   int number_chroms = idxs.size();
 
@@ -784,7 +784,7 @@ sc::MZML_CHROMATOGRAMS_HEADERS sc::MZML::extract_mzml_chrom_headers(const std::v
  * Extracts a chromatograms from a binary array list node from an mzML file.
    This is a private function of the class MZML in sc namespace.
  */
-std::vector<std::vector<double>> sc::MZML::extract_mzml_chromatogram(const pugi::xml_node& chrom_node) {
+std::vector<std::vector<double>> sc::mzml::MZML::extract_chromatogram(const pugi::xml_node& chrom_node) {
 
   std::vector<std::vector<double>> chrom;
 
@@ -802,7 +802,7 @@ std::vector<std::vector<double>> sc::MZML::extract_mzml_chromatogram(const pugi:
 
     const pugi::xml_node& bin = *i;
 
-    MZML_BINARY_METADATA mtd = extract_mzml_binary_metadata(bin);
+    sc::mzml::BINARY_METADATA mtd = extract_binary_metadata(bin);
 
     pugi::xml_node node_binary = bin.child("binary");
 
@@ -854,7 +854,7 @@ std::vector<std::vector<double>> sc::MZML::extract_mzml_chromatogram(const pugi:
    indicating the location of the chromatograms to retrieve.
    This is a private function of the class MZML in sc namespace.
  */
-std::vector<std::vector<std::vector<double>>> sc::MZML::extract_mzml_chromatograms(const std::vector<int>& idxs) {
+std::vector<std::vector<std::vector<double>>> sc::mzml::MZML::extract_chromatograms(const std::vector<int>& idxs) {
 
   std::string search_run = "//run";
 
@@ -887,7 +887,7 @@ std::vector<std::vector<std::vector<double>>> sc::MZML::extract_mzml_chromatogra
 
       const pugi::xml_node& chrom_node = chromatograms[index];
 
-      chr[i] = extract_mzml_chromatogram(chrom_node);
+      chr[i] = extract_chromatogram(chrom_node);
     }
   }
 
@@ -927,19 +927,19 @@ void tests::test_encoding_decoding_little_endian(const std::vector<double>& inpu
     std::cout << "Input vector: ";
     for (double i : input) std::cout << i << " ";
     std::cout << std::endl;
-    std::string result = sc::encode_little_endian(input, precision);
+    std::string result = sc::utils::encode_little_endian(input, precision);
     std::cout << "Encoded: " << result << std::endl;
-    result = sc::compress_zlib(result);
+    result = sc::utils::compress_zlib(result);
     std::cout << "Compressed: " << "Not printed!" << std::endl;
-    result = sc::encode_base64(result);
+    result = sc::utils::encode_base64(result);
     std::cout << "Encoded_base64: " << result << std::endl;
 
     std::cout << std::endl;
-    result = sc::decode_base64(result);
+    result = sc::utils::decode_base64(result);
     std::cout << "Decoded_base64: " << "Not printed!" << std::endl;
-    result = sc::decompress_zlib(result);
+    result = sc::utils::decompress_zlib(result);
     std::cout << "Decompressed: " << result << std::endl;
-    std::vector<double> result_back = sc::decode_little_endian(result, precision);
+    std::vector<double> result_back = sc::utils::decode_little_endian(result, precision);
     std::cout << "Decoded: ";
     for (double i : result_back) std::cout << i << " ";
     std::cout << std::endl;
@@ -966,7 +966,7 @@ void tests::test_extract_spectra_mzml(const std::string& file) {
 
   std::cout << "Number of spectra: " << mzml.get_number_spectra() << std::endl;
 
-  sc::MZML_SPECTRA_HEADERS hd;
+  sc::mzml::SPECTRA_HEADERS hd;
 
   hd = mzml.get_spectra_headers();
 
@@ -978,7 +978,7 @@ void tests::test_extract_spectra_mzml(const std::string& file) {
 
   std::cout << "Number of binary arrays: " << mzml.get_spectra_binary_arrays_number() << std::endl;
 
-  std::vector<sc::MZML_BINARY_METADATA> mtd = mzml.get_spectra_binary_metadata();
+  std::vector<sc::mzml::BINARY_METADATA> mtd = mzml.get_spectra_binary_metadata();
 
   std::cout << "Name of first binary array: " << mtd[1].name << std::endl;
 
@@ -1005,13 +1005,13 @@ void tests::test_extract_chromatograms_mzml(const std::string& file) {
   std::cout << "Test Chromatograms mzML file:" << std::endl;
   std::cout << std::endl;
 
-  sc::MZML mzml(file);
+  sc::mzml::MZML mzml(file);
 
   std::cout << "Root name: " << mzml.get_name() << std::endl;
 
   std::cout << "Number of chromatograms: " << mzml.get_number_chromatograms() << std::endl;
 
-  sc::MZML_CHROMATOGRAMS_HEADERS ch;
+  sc::mzml::CHROMATOGRAMS_HEADERS ch;
 
   ch = mzml.get_chromatograms_headers();
 
@@ -1037,4 +1037,282 @@ void tests::test_extract_chromatograms_mzml(const std::string& file) {
 
   std::cout << std::endl;
 
+};
+
+
+
+int sc::animl::extract_set_size(const pugi::xml_node& node, const std::string& name) {
+
+  int set_size = 0;
+
+  pugi::xml_node set = node.child(name.c_str());
+
+  if (set) {
+
+    std::vector<pugi::xml_node> set_nodes;
+
+    for (pugi::xml_node child = set.first_child(); child; child = child.next_sibling()) {
+      set_nodes.push_back(child);
+    }
+
+    set_size = set_nodes.size();
+  }
+
+  return set_size;
+};
+
+
+
+std::vector<sc::animl::SAMPLE> sc::animl::ANIML::extract_samples_by_indices(const std::vector<int>& idxs) {
+
+  std::vector<sc::animl::SAMPLE> samples;
+
+  pugi::xml_node sample_set = root.child("SampleSet");
+
+  if (sample_set) {
+
+    std::vector<pugi::xml_node> sample_nodes;
+
+    for (pugi::xml_node child = sample_set.first_child(); child; child = child.next_sibling()) {
+      sample_nodes.push_back(child);
+    }
+
+    int number_samples = idxs.size();
+
+    if (number_samples == 0) {
+      std::cerr << "Warning: No samples to return!" << std::endl;
+      return samples;
+    }
+
+    samples.resize(number_samples);
+
+    for (int i = 0; i < number_samples; i++) {
+
+      const int& index = idxs[i];
+      const pugi::xml_node& node = sample_nodes[index];
+
+      if (node) {
+        sc::animl::SAMPLE sample;
+        sample.name = node.attribute("name").as_string();
+        sample.sampleID = node.attribute("sampleID").as_string();
+        samples[i] = sample;
+      }
+    }
+  }
+
+  // DUMMY FOR NOW
+
+  return samples;
+};
+
+
+
+std::vector<sc::animl::SAMPLE> sc::animl::ANIML::extract_samples_by_attr(const std::string& attr, const std::vector<std::string>& names) {
+
+  std::vector<sc::animl::SAMPLE> samples;
+
+  pugi::xml_node sample_set = root.child("SampleSet");
+
+  if (sample_set) {
+
+    int number_samples = names.size();
+
+    if (number_samples == 0) {
+      std::cerr << "Warning: No samples to return!" << std::endl;
+      return samples;
+    }
+
+    samples.resize(number_samples);
+
+    for (int i = 0; i < number_samples; i++) {
+
+      const std::string& nm = names[i];
+      const pugi::xml_node node = sample_set.find_child_by_attribute(attr.c_str(), nm.c_str());
+
+      if (node) {
+        sc::animl::SAMPLE sample;
+        sample.name = node.attribute("name").as_string();
+        sample.sampleID = node.attribute("sampleID").as_string();
+        samples[i] = sample;
+      }
+    }
+  }
+
+  // DUMMY FOR NOW
+
+  return samples;
+};
+
+
+
+void sc::animl::SERIES::extract(const pugi::xml_node& node) {
+  name = node.attribute("name").as_string();
+};
+
+
+
+void sc::animl::RESULT::extract(const pugi::xml_node& node) {
+  name = node.attribute("name").as_string();
+
+  std::string search_series_nodes = "./SeriesSet/Series";
+  pugi::xpath_node_set ser_nodes = node.select_nodes(search_series_nodes.c_str());
+  int n_ser_nodes = ser_nodes.size();
+
+  if (n_ser_nodes > 0) {
+    SeriesSet.resize(n_ser_nodes);
+    for (int i = 0; i < n_ser_nodes; ++i) {
+      pugi::xpath_node n = ser_nodes[i];
+      SeriesSet[i].extract(n.node());
+    }
+  }
+
+  std::string search_exp_nodes = "./ExperimentStepSet/ExperimentStep";
+  pugi::xpath_node_set exp_nodes = node.select_nodes(search_exp_nodes.c_str());
+  int n_exp_nodes = exp_nodes.size();
+
+  if (n_exp_nodes > 0) {
+    ExpStepSet.resize(n_exp_nodes);
+    for (int i = 0; i < n_exp_nodes; ++i) {
+      ExpStepSet[i].extract(exp_nodes[i].node());
+    }
+  }
+};
+
+
+
+void sc::animl::EXPSTEP::extract(const pugi::xml_node& node) {
+  name = node.attribute("name").as_string();
+  expID = node.attribute("experimentStepID").as_string();
+
+  pugi::xml_node technique_node = node.child("Technique");
+  if (technique_node) {
+    technique_name = technique_node.attribute("name").as_string();
+    technique_uri = technique_node.attribute("uri").as_string();
+  }
+
+  std::string search_result_nodes = "./Result";
+  pugi::xpath_node_set res_nodes = node.select_nodes(search_result_nodes.c_str());
+  int n_res_nodes = res_nodes.size();
+
+  if (n_res_nodes > 0) {
+    ResultSet.resize(n_res_nodes);
+    for (int i = 0; i < n_res_nodes; ++i) {
+      ResultSet[i].extract(res_nodes[i].node());
+    }
+  }
+};
+
+
+
+std::vector<sc::animl::EXPSTEP> sc::animl::extract_experiment_step_by_indices(const pugi::xml_node& node, const std::vector<int>& idxs) {
+
+  std::vector<EXPSTEP> exps;
+
+  pugi::xml_node exp_set = node.child("ExperimentStepSet");
+
+  if (exp_set) {
+
+    std::vector<pugi::xml_node> exp_nodes;
+
+    for (pugi::xml_node child = exp_set.first_child(); child; child = child.next_sibling()) {
+      exp_nodes.push_back(child);
+    }
+
+    int number_exps = idxs.size();
+
+    if (number_exps == 0) {
+      std::cerr << "Warning: No experiment steps to return!" << std::endl;
+      return exps;
+    }
+
+    exps.resize(number_exps);
+
+    for (int i = 0; i < number_exps; i++) {
+
+      const int& index = idxs[i];
+      const pugi::xml_node& node = exp_nodes[index];
+
+      if (node) {
+        exps[i].extract(node);
+      }
+    }
+  }
+
+  // DUMMY FOR NOW
+
+  return exps;
+};
+
+
+
+std::vector<sc::animl::EXPSTEP> sc::animl::extract_experiment_step_by_attr(const pugi::xml_node& node, const std::string& attr, const std::vector<std::string>& names) {
+
+  std::vector<EXPSTEP> exps;
+
+  pugi::xml_node exp_set = node.child("ExperimentStepSet");
+
+
+  if (exp_set) {
+
+    int number_exps = names.size();
+
+    if (number_exps == 0) {
+      std::cerr << "Warning: No samples to return!" << std::endl;
+      return exps;
+    }
+
+    exps.resize(number_exps);
+
+    for (int i = 0; i < number_exps; i++) {
+
+      const std::string& nm = names[i];
+      const pugi::xml_node node = exp_set.find_child_by_attribute(attr.c_str(), nm.c_str());
+
+      if (node) {
+        exps[i].extract(node);
+      }
+    }
+  }
+
+  // DUMMY FOR NOW
+
+  return exps;
+};
+
+
+
+std::vector<sc::animl::EXPSTEP> sc::animl::extract_experiment_step_by_child_attr(const pugi::xml_node& node, const std::string& child_name, const std::string& attr, const std::vector<std::string>& names) {
+
+  std::vector<EXPSTEP> exps;
+
+  pugi::xml_node exp_set = node.child("ExperimentStepSet");
+
+  if (exp_set) {
+
+    int number_exps = names.size();
+
+    if (number_exps == 0) {
+      std::cerr << "Warning: No samples to return!" << std::endl;
+      return exps;
+    }
+
+    exps.resize(number_exps);
+
+    for (int i = 0; i < number_exps; i++) {
+
+      const std::string& nm = names[i];
+
+      std::string search_technique_node = "./ExperimentStep/"+ child_name + "[@name='" + nm +"']/..";
+
+      pugi::xml_node node = exp_set.select_node(search_technique_node.c_str()).node();
+
+      if (node) {
+        exps[i].extract(node);
+      }
+    }
+  }
+
+  // DUMMY FOR NOW
+
+  return exps;
 };
