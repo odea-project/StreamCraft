@@ -264,7 +264,10 @@ public:
   void setFilterLine(char* str);
   void setHighMZ(double d);
   void setIDString(const char* str);
+  void setInverseReducedIonMobility(double d);
   void setIonInjectionTime(double d);
+  void setIonMobilityDriftTime(double d);
+  void setIonMobilityScan(bool b);
   void setLowMZ(double d);
   void setMSLevel(int level);
   void setPeaksCount(int i);
@@ -292,7 +295,9 @@ public:
   double        getHighMZ();
   int           getIDString(char* str);
   double        getIonInjectionTime();
+  double        getIonMobilityDriftTime();
   specIonMobDP& getIonMobDP(const size_t& index);
+  bool          getIonMobilityScan();
   double        getLowMZ();
   int           getMSLevel();
   int           getPeaksCount();
@@ -321,10 +326,12 @@ protected:
   double          collisionEnergy;
   double          compensationVoltage;  //FAIMS compensation voltage
   double          inverseReducedIonMobility;
+  bool            ionMobilityScan;
   char            filterLine[128];
   double          highMZ;
   char            idString[128];
   double          ionInjectionTime;
+  double          ionMobilityDriftTime;
   double          lowMZ;
   int             msLevel;
   int             peaksCount;
@@ -1373,6 +1380,7 @@ struct ScanHeaderStruct {
   double inverseReducedIonMobility;   // only if MS level > 1
   double highMZ;
   double ionInjectionTime;
+  double ionMobilityDriftTime;
   double ionisationEnergy;
   double isolationWindowLower;  //similar to selection window, but instead just defines the relative width
   double isolationWindowUpper;  //of the isolation window in mz, rather than its absolute width.
@@ -1393,6 +1401,7 @@ struct ScanHeaderStruct {
   char   scanType[SCANTYPE_LENGTH];
         
   bool   centroid; //true if spectrum is centroided
+  bool   ionMobility; //true if spectrum contains ion mobility data
   bool   possibleChargesArray[CHARGEARRAY_LENGTH]; /* NOTE: does NOT include "precursorCharge" information; only from "possibleCharges" */
    
   ramp_fileoffset_t    filePosition; /* where in the file is this header? */
@@ -1424,6 +1433,8 @@ struct ScanCacheStruct {
   struct ScanHeaderStruct *headers;
   RAMPREAL **peaks;
 };
+
+static ramp_fileoffset_t lLastScanIndex=0;
 
 int                 checkFileType(const char* fname);
 ramp_fileoffset_t   getIndexOffset(RAMPFILE *pFI);

@@ -19,7 +19,10 @@ BasicSpectrum::BasicSpectrum() {
   centroid=false;
   filterLine[0]='\0';
   highMZ=0.0;
+  inverseReducedIonMobility=0;
   ionInjectionTime=0.0;
+  ionMobilityDriftTime=0;
+  ionMobilityScan=false;
   lowMZ=0.0;
   msLevel=1;
   peaksCount=0;
@@ -44,7 +47,10 @@ BasicSpectrum::BasicSpectrum(const BasicSpectrum& s){
   basePeakMZ=s.basePeakMZ;
   centroid=s.centroid;
   highMZ=s.highMZ;
+  inverseReducedIonMobility=s.inverseReducedIonMobility;
   ionInjectionTime=s.ionInjectionTime;
+  ionMobilityDriftTime=s.ionMobilityDriftTime;
+  ionMobilityScan=s.ionMobilityScan;
   lowMZ=s.lowMZ;
   msLevel=s.msLevel;
   peaksCount=s.peaksCount;
@@ -80,7 +86,10 @@ BasicSpectrum& BasicSpectrum::operator=(const BasicSpectrum& s){
     basePeakMZ=s.basePeakMZ;
     centroid=s.centroid;
     highMZ=s.highMZ;
+    inverseReducedIonMobility=s.inverseReducedIonMobility;
     ionInjectionTime=s.ionInjectionTime;
+    ionMobilityDriftTime=s.ionMobilityDriftTime;
+    ionMobilityScan=s.ionMobilityScan;
     lowMZ=s.lowMZ;
     msLevel=s.msLevel;
     peaksCount=s.peaksCount;
@@ -113,7 +122,10 @@ void BasicSpectrum::clear(){
   filterLine[0]='\0';
   highMZ=0.0;
   idString[0]='\0';
+  inverseReducedIonMobility=0;
   ionInjectionTime=0.0;
+  ionMobilityDriftTime=0;
+  ionMobilityScan=false;
   lowMZ=0.0;
   msLevel=1;
   peaksCount=0;
@@ -144,7 +156,10 @@ void BasicSpectrum::setIDString(const char* str) {
   strncpy(idString,str,127); 
   idString[127]='\0';
 }
+void BasicSpectrum::setInverseReducedIonMobility(double d){ inverseReducedIonMobility=d;}
 void BasicSpectrum::setIonInjectionTime(double d){ ionInjectionTime=d;}
+void BasicSpectrum::setIonMobilityScan(bool b){ ionMobilityScan=b;}
+void BasicSpectrum::setIonMobilityDriftTime(double d){ionMobilityDriftTime=d;}
 void BasicSpectrum::setLowMZ(double d){ lowMZ=d;}
 void BasicSpectrum::setMSLevel(int level){ msLevel=level;}
 void BasicSpectrum::setPeaksCount(int i){ peaksCount=i;}
@@ -183,6 +198,7 @@ double BasicSpectrum::getCollisionEnergy(){ return collisionEnergy;}
 double BasicSpectrum::getCompensationVoltage(){ return compensationVoltage;}
 double BasicSpectrum::getInverseReducedIonMobility() { return inverseReducedIonMobility; }
 specIonMobDP& BasicSpectrum::getIonMobDP(const size_t& index) { return vDataIonMob->at(index); }
+bool BasicSpectrum::getIonMobilityScan() { return ionMobilityScan;}
 int BasicSpectrum::getFilterLine(char* str) {
   strcpy(str,filterLine);
   return (int)strlen(str);
@@ -193,6 +209,7 @@ int BasicSpectrum::getIDString(char* str) {
   return (int)strlen(str);
 }
 double BasicSpectrum::getIonInjectionTime(){return ionInjectionTime;}
+double BasicSpectrum::getIonMobilityDriftTime(){return ionMobilityDriftTime;}
 double BasicSpectrum::getLowMZ(){ return lowMZ;}
 int BasicSpectrum::getMSLevel(){ return msLevel;}
 int BasicSpectrum::getPeaksCount(){ return peaksCount;}
@@ -220,5 +237,8 @@ float BasicSpectrum::getRTime(bool min){
 int BasicSpectrum::getScanIndex(){ return scanIndex;}
 int BasicSpectrum::getScanNum(){ return scanNum;}
 double BasicSpectrum::getTotalIonCurrent(){ return totalIonCurrent;}
-size_t BasicSpectrum::size(){ return vData->size();}
+size_t BasicSpectrum::size(){ 
+  if(vDataIonMob->size()>0) return vDataIonMob->size(); //ion mobility data and standard data should not exist together.
+  return vData->size();
+}
 

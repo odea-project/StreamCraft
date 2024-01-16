@@ -35,10 +35,13 @@ class Spectrum {
   //Operator Functions
   Spectrum& operator=(const Spectrum&);
 	Peak_T& operator[](const int&);
+  Peak_T& operator[](const unsigned int&);
+  Peak_T& operator[](const size_t&);
 
   //Functions
   void	    			add(Peak_T&);
   void			    	add(double,float);
+  void			    	add(double, float, double); //third value is ion mobility
   void            addEZState(int,double,float,float);
   void            addEZState(EZState&);
 	void						addMZ(double, double mono=0);
@@ -48,10 +51,16 @@ class Spectrum {
   void		    		addZState(ZState&);
   Peak_T&			    at(const int&);
   Peak_T&	    		at(const unsigned int&);
+  Peak_T&         at(const size_t&);
   EZState&        atEZ(const int&);
   EZState&        atEZ(const unsigned int&);
+  EZState&        atEZ(const size_t&);
+  double&         atIM(const int&);
+  double&         atIM(const unsigned int&);
+  double&         atIM(const size_t&);
   ZState&			    atZ(const int&);
   ZState&	    		atZ(const unsigned int&);
+  ZState&         atZ(const size_t&);
   void			    	clear();
 	void						clearMZ();
 	void						clearPeaks();
@@ -76,7 +85,9 @@ class Spectrum {
   double          getConversionI();
   std::string     getFileID();
   MSSpectrumType  getFileType();
+  double          getInverseReducedIonMobility();
   float           getIonInjectionTime();
+  double          getIonMobilityDriftTime();
   double    			getMonoMZ(int index=0);
   double    			getMZ(int index=0);
   bool            getNativeID(char*,int);
@@ -108,7 +119,9 @@ class Spectrum {
   void            setConversionI(double);
   void            setFileID(std::string);
   void    				setFileType(MSSpectrumType);
+  void            setInverseReducedIonMobility(double);
   void            setIonInjectionTime(float);
+  void            setIonMobilityDriftTime(double);
   void		    		setMZ(double, double mono=0);
   void            setNativeID(const char*);
   void            setRawFilter(char*);
@@ -149,6 +162,7 @@ class Spectrum {
   //Data Members
   std::vector<Peak_T>   *vPeaks;
   std::vector<EZState>  *vEZ;        //extended z-lines with charge state, M+H, and peak information.
+  std::vector<double>   *vIonMobility;
   std::vector<ZState>   *vZ;         //presumed charge states and M+H; M can be monoisotopic or selected.
   int		           charge;
   float		         rTime;
@@ -172,6 +186,8 @@ class Spectrum {
 	double           convD;
 	double           convE;
 	double           convI;
+  double           inverseReducedIonMobility;
+  double           ionMobilityDriftTime;
   double           selectionWinLower;
   double           selectionWinUpper;
   double           TIC;

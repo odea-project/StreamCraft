@@ -1,20 +1,49 @@
 {
-  "tasks": [
-      {
-          "label": "build",
-          "type": "shell",
-          "command": "make",
-          "group": {
-              "kind": "build",
-              "isDefault": true
-          }
-      },
-      {
-          "label": "clean",
-          "type": "shell",
-          "command": "make",
-          "args": ["clean"]
-      }
-  ],
-  "version": "2.0.0"
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "make",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "make",
+            "args": ["clean"]
+        },
+        {
+            "label": "run",
+            "type": "shell",
+            "command": "make",
+            "args": ["run"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "run-only",
+            "type": "shell",
+            "command": "make",
+            "args": ["runonly"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "clean & build",
+            "dependsOrder": "sequence",
+            "dependsOn": ["clean", "build"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
 }

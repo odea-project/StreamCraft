@@ -6,8 +6,9 @@
 .DEFAULT_GOAL := all
 
 # -- Uncomment these two variables, and set the correct path, to support HDF5 mass spec formats (.mz5 and .mzMLb)
-#HDF5 = -DMZP_HDF
+HDF5 = -DMZP_HDF
 #HDF5_DIR = ../hdf5-1.14.0/hdf5
+HDF5_DIR = /home/cunha/HDF_Group/HDF5/1.14.3
 
 C = gcc
 CC = g++
@@ -15,7 +16,7 @@ ifdef HDF5
 CFLAGS = -O3 -I. -I./include -I$(HDF5_DIR)/include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DGCC -DHAVE_EXPAT_CONFIG_H $(HDF5)
 SFLAGS = -O3 -shared -fPIC -g -I. -I./include -I$(HDF5_DIR)/include  -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DGCC -DHAVE_EXPAT_CONFIG_H $(HDF5)
 else
-CFLAGS = -O3 -static -I. -I./include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DGCC -DHAVE_EXPAT_CONFIG_H 
+CFLAGS = -O3 -static -I. -I./include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DGCC -DHAVE_EXPAT_CONFIG_H
 SFLAGS = -O3 -shared -fPIC -g -I. -I./include -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DGCC -DHAVE_EXPAT_CONFIG_H
 endif
 LITEFLAGS = -D_NOSQLITE
@@ -33,8 +34,8 @@ BUILD_LIC = $(SRC_DIR)/lic
 $(BUILD_DIR)/ :
 	mkdir -p $(BUILD_DIR)
 	mkdir -p $(BUILD_LIC)
-	
-	
+
+
 
 # -- Global build rules -------------------------------------------------------
 #
@@ -70,7 +71,7 @@ $(EXPAT_DST) : | $(BUILD_DIR)/ $(EXPAT_SRC)/
 	   --enable-shared=yes --enable-static=yes \
 	   --without-xmlwf --without-examples --without-tests \
 	   --with-aix-soname=both \
-	   --includedir $(SRC_DIR)/include --libdir $(BUILD_DIR) 
+	   --includedir $(SRC_DIR)/include --libdir $(BUILD_DIR)
 	make -C $(EXPAT_SRC) install
 
 $(EXPAT_LIC) : $(EXPAT_SRC)/$(notdir $(EXPAT_LIC))| $(MKDIR)
@@ -108,7 +109,7 @@ zlib : $(ZLIB_DST) $(ZLIB_LIC)
 
 $(ZLIB_DST) : | $(BUILD_DIR)/ $(ZLIB_SRC)/
 	cd $(BUILD_SRC); unzip -o zlib1211.zip
-	cd $(ZLIB_SRC); ./configure --prefix=$(BUILD_DIR) --includedir $(SRC_DIR)/include --libdir $(BUILD_DIR) 
+	cd $(ZLIB_SRC); ./configure --prefix=$(BUILD_DIR) --includedir $(SRC_DIR)/include --libdir $(BUILD_DIR)
 	make -C $(ZLIB_SRC) install
 
 $(ZLIB_LIC) : $(ZLIB_SRC)/$(notdir $(ZLIB_LIC))| $(MKDIR)
@@ -122,7 +123,7 @@ endif
 
 zlib-realclean : zlib-clean
 	rm -rf $(ZLIB_LIC) $(ZLIB_DST) $(BUILD_DIR)/libz.so*
-	
+
 
 # -- MSToolkit  ---------------------------------------------------------------
 #
@@ -149,19 +150,19 @@ $(MSTOOLKIT_DST) : $(MSTOOLKIT_DSTDIR)%.o : $(MSTOOLKIT_SRCDIR)%.cpp
 
 $(MSTOOLKIT_DSO) : $(MSTOOLKIT_DSTDIR)%.lo : $(MSTOOLKIT_SRCDIR)%.cpp
 	$(CC) $(SFLAGS) $< -c -o $@
-	
+
 $(MSTOOLKIT_DSTLITE) : $(MSTOOLKIT_DSTDIR)%_lite.o : $(MSTOOLKIT_SRCDIR)%.cpp
 	$(CC) $(CFLAGS) $(LITEFLAGS) $< -c -o $@
-	
+
 $(MSTOOLKIT_DSOLITE) : $(MSTOOLKIT_DSTDIR)%_lite.lo : $(MSTOOLKIT_SRCDIR)%.cpp
 	$(CC) $(SFLAGS) $(LITEFLAGS) $< -c -o $@
-	
+
 mstoolkit-clean :
 	rm -rf $(MSTOOLKIT_DST) $(MSTOOLKIT_DSTLITE) $(MSTOOLKIT_DSO) $(MSTOOLKIT_DSOLITE)
 
 mstoolkit-realclean : mstoolkit-clean
 	rm -rf $(MSTOOLKIT_DST) $(MSTOOLKIT_DSTLITE) $(MSTOOLKIT_DSO) $(MSTOOLKIT_DSOLITE) $(BUILD_DIR)/libmst.a $(BUILD_DIR)/libmstlite.a
-	
+
 
 # -- mzParser  ---------------------------------------------------------------
 #
@@ -181,20 +182,20 @@ mzparser : $(MZPARSER_DST) $(MZPARSER_DSO)
 	$(CC) $(SFLAGS) -o $(BUILD_DIR)/libmzparser.so.$(RELVER) -Wl,-z,relro -Wl,-soname,libmzparser.so.$(SOVER) $(MZPARSER_DSO)
 	ln -sf $(BUILD_DIR)/libmzparser.so.$(RELVER) $(BUILD_DIR)/libmzparser.so.$(SOVER)
 	ln -sf $(BUILD_DIR)/libmzparser.so.$(SOVER) $(BUILD_DIR)/libmzparser.so
-	
+
 $(MZPARSER_DST) : | $(BUILD_DIR)/
 $(MZPARSER_DST) : $(MZPARSER_DSTDIR)%.o : $(MZPARSER_SRCDIR)%.cpp
 	$(CC) $(CFLAGS) $< -c -o $@
-	
+
 $(MZPARSER_DSO) : $(MZPARSER_DSTDIR)%.lo : $(MZPARSER_SRCDIR)%.cpp
 	$(CC) $(SFLAGS) $< -c -o $@
-	
+
 mzparser-clean :
 	rm -rf $(MZPARSER_DST) $(MZPARSER_DSO)
 
 mzparser-realclean : mzparser-clean
 	rm -rf $(MZPARSER_DST) $(MZPARSER_DSO) $(BUILD_DIR)/libmzparser.a $(BUILD_DIR)/libmzparser.so*
-	
+
 
 # -- mzIMLTools  ---------------------------------------------------------------
 #
@@ -215,20 +216,20 @@ mzimltools : $(MZIMLTOOLS_DST) $(MZIMLTOOLS_DSO)
 $(MZIMLTOOLS_DST) : | $(BUILD_DIR)/
 $(MZIMLTOOLS_DST) : $(MZIMLTOOLS_DSTDIR)%.o : $(MZIMLTOOLS_SRCDIR)%.cpp
 	$(CC) $(CFLAGS) $< -c -o $@
-	
+
 $(MZIMLTOOLS_DSO) : $(MZIMLTOOLS_DSTDIR)%.lo : $(MZIMLTOOLS_SRCDIR)%.cpp
 	$(CC) $(SFLAGS) $< -c -o $@
-	
+
 mzimltools-clean :
-	rm -rf $(MZIMLTOOLS_DST) $(MZIMLTOOLS_DSO) 
+	rm -rf $(MZIMLTOOLS_DST) $(MZIMLTOOLS_DSO)
 
 mzimltools-realclean : mzimltools-clean
 	rm -rf $(MZIMLTOOLS_DST) $(MZIMLTOOLS_DSO) $(BUILD_DIR)/libmzimltools.a
-	
+
 
 # -- SQLite  ---------------------------------------------------------------
 #
-# SQLite is a C-language library that implements a small, fast, 
+# SQLite is a C-language library that implements a small, fast,
 # self-contained, high-reliability, full-featured, SQL database engine.
 # It is public domain (no license), and I don't know if its features are
 # still needed by the folks who asked for it in the MSToolkit.
@@ -246,20 +247,20 @@ SQLITE_DSO = $(patsubst ${SQLITE_SRCDIR}%.c, ${SQLITE_DSTDIR}%.lo, $(SQLITE_SRC)
 
 sqlite : $(SQLITE_DST) $(SQLITE_DSO)
 	ar rcs $(BUILD_DIR)/libsqlite.a $(SQLITE_DST)
-	
+
 $(SQLITE_DST) : | $(BUILD_DIR)/
 $(SQLITE_DST) : $(SQLITE_DSTDIR)%.o : $(SQLITE_SRCDIR)%.c
 	$(C) $(CFLAGS) $< -c -o $@
-	
+
 $(SQLITE_DSO) : $(SQLITE_DSTDIR)%.lo : $(SQLITE_SRCDIR)%.c
 	$(C) $(SFLAGS) $< -c -o $@
-	
+
 sqlite-clean :
 	rm -rf $(SQLITE_DST) $(SQLITE_DSO)
 
 sqlite-realclean : sqlite-clean
 	rm -rf $(SQLITE_DST) $(SQLITE_DSO) $(BUILD_DIR)/libsqlite.a
-	
+
 
 # -- Libraries  ----------------------------------------------------------
 #
@@ -297,7 +298,7 @@ endif
 	$(file >>mstoolkitlite.mri,end)
 	ar -M <mstoolkit.mri
 	ar -M <mstoolkitlite.mri
-	$(CC) $(SFLAGS) -o libmstoolkit.so.$(RELVER) -Wl,-z,relro -Wl,-soname,libmstoolkit.so.$(SOVER) $(MSTOOLKIT_DSO) $(MZPARSER_DSO) $(MZIMLTOOLS_DSO) $(EXPAT_DSO) $(ZLIB_DSO) $(SQLITE_DSO) 
+	$(CC) $(SFLAGS) -o libmstoolkit.so.$(RELVER) -Wl,-z,relro -Wl,-soname,libmstoolkit.so.$(SOVER) $(MSTOOLKIT_DSO) $(MZPARSER_DSO) $(MZIMLTOOLS_DSO) $(EXPAT_DSO) $(ZLIB_DSO) $(SQLITE_DSO)
 	ln -sf libmstoolkit.so.$(RELVER) libmstoolkit.so.$(SOVER)
 	ln -sf libmstoolkit.so.$(SOVER) libmstoolkit.so
 	$(CC) $(SFLAGS) -o libmstoolkitlite.so.$(RELVER) -Wl,-z,relro -Wl,-soname,libmstoolkitlite.so.$(SOVER) $(MSTOOLKIT_DSO) $(MZPARSER_DSO) $(MZIMLTOOLS_DSO) $(EXPAT_DSO) $(ZLIB_DSO)
@@ -309,8 +310,8 @@ lib-clean :
 
 lib-realclean : lib-clean
 	rm -rf libmstoolkit.a libmstoolkitlite.a libmstoolkit.so* libmstoolkitlite.so*
-	
-	
+
+
 # -- MSSingleScan  ----------------------------------------------------------
 #
 # Simple example program that utilizes the MSToolkit
@@ -331,7 +332,7 @@ MSSingleScan-clean :
 MSSingleScan-realclean : lib-clean
 	rm -rf MSSingleScan
 
-	
+
 # -- cleanup  ----------------------------------------------------------
 #
 #

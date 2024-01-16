@@ -1,0 +1,12 @@
+{
+  "configurations": [
+    {
+      "name": "StreamCraft",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/external/mstoolkit/include/**"
+      ]
+    }
+  ],
+  "version": 4
+}

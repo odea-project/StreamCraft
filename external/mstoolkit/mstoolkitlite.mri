@@ -4,5 +4,7 @@ addlib obj/libz.a
 addlib obj/libmstlite.a
 addlib obj/libmzparser.a
 addlib obj/libmzimltools.a
+addlib /home/cunha/HDF_Group/HDF5/1.14.3/lib/libhdf5.a
+addlib /home/cunha/HDF_Group/HDF5/1.14.3/lib/libhdf5_cpp.a
 save
 end

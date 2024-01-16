@@ -13,8 +13,10 @@
 
 # Compiled Dynamic libraries
 *.so
+*.so.84.0.1
 *.dylib
 *.dll
+*.mri
 
 # Fortran module files
 *.mod

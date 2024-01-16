@@ -1,69 +1,69 @@
 --------------------
 ./configure --prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj --includedir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include --libdir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
-Do 4. Jan 13:31:37 CET 2024
+Fr 12. Jan 09:57:48 CET 2024
 Checking for gcc...
-=== ztest22085.c ===
+=== ztest13452.c ===
 extern int getchar();
 int hello() {return getchar();}
 ===
-gcc -c ztest22085.c
+gcc -c ztest13452.c
 ... using gcc
 
 Checking for obsessive-compulsive compiler options...
-=== ztest22085.c ===
+=== ztest13452.c ===
 int foo() { return 0; }
 ===
-gcc -c -O3 ztest22085.c
+gcc -c -O3 ztest13452.c
 
 Checking for shared library support...
-=== ztest22085.c ===
+=== ztest13452.c ===
 extern int getchar();
 int hello() {return getchar();}
 ===
-gcc -w -c -O3 -fPIC ztest22085.c
-gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest22085.so ztest22085.o
+gcc -w -c -O3 -fPIC ztest13452.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest13452.so ztest13452.o
 Building shared library libz.so.1.2.11 with gcc.
 
-=== ztest22085.c ===
+=== ztest13452.c ===
 #include <stdio.h>
 #include <stdlib.h>
 size_t dummy = 0;
 ===
-gcc -c -O3 ztest22085.c
+gcc -c -O3 ztest13452.c
 Checking for size_t... Yes.
 
 
-=== ztest22085.c ===
+=== ztest13452.c ===
 #include <sys/types.h>
 off64_t dummy = 0;
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest22085.c
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest13452.c
 Checking for off64_t... Yes.
 Checking for fseeko... Yes.
 
-=== ztest22085.c ===
+=== ztest13452.c ===
 #include <string.h>
 #include <errno.h>
 int main() { return strlen(strerror(errno)); }
 ===
-gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest22085 ztest22085.c
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest13452 ztest13452.c
 Checking for strerror... Yes.
 
-=== ztest22085.c ===
+=== ztest13452.c ===
 #include <unistd.h>
 int main() { return 0; }
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest22085.c
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest13452.c
 Checking for unistd.h... Yes.
 
-=== ztest22085.c ===
+=== ztest13452.c ===
 #include <stdarg.h>
 int main() { return 0; }
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest22085.c
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest13452.c
 Checking for stdarg.h... Yes.
 
-=== ztest22085.c ===
+=== ztest13452.c ===
 #include <stdio.h>
 #include <stdarg.h>
 #include "zconf.h"
@@ -75,10 +75,10 @@ int main()
   return 0;
 }
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest22085.c
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest13452.c
 Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
 
-=== ztest22085.c ===
+=== ztest13452.c ===
 #include <stdio.h>
 #include <stdarg.h>
 int mytest(const char *fmt, ...)
@@ -95,10 +95,10 @@ int main()
   return (mytest("Hello%d\n", 1));
 }
 ===
-gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest22085 ztest22085.c
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest13452 ztest13452.c
 Checking for vsnprintf() in stdio.h... Yes.
 
-=== ztest22085.c ===
+=== ztest13452.c ===
 #include <stdio.h>
 #include <stdarg.h>
 int mytest(const char *fmt, ...)
@@ -116,10 +116,10 @@ int main()
   return (mytest("Hello%d\n", 1));
 }
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest22085.c
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest13452.c
 Checking for return value of vsnprintf()... Yes.
 
-=== ztest22085.c ===
+=== ztest13452.c ===
 #define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
 int ZLIB_INTERNAL foo;
 int main()
@@ -127,7 +127,1492 @@ int main()
   return 0;
 }
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest22085.c
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest13452.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.11
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include
+libdir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+mandir = ${prefix}/share/man
+prefix = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj --includedir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include --libdir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+Fr 12. Jan 13:07:30 CET 2024
+Checking for gcc...
+=== ztest31109.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest31109.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest31109.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest31109.c
+
+Checking for shared library support...
+=== ztest31109.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest31109.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest31109.so ztest31109.o
+Building shared library libz.so.1.2.11 with gcc.
+
+=== ztest31109.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+gcc -c -O3 ztest31109.c
+Checking for size_t... Yes.
+
+
+=== ztest31109.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest31109.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest31109.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest31109 ztest31109.c
+Checking for strerror... Yes.
+
+=== ztest31109.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest31109.c
+Checking for unistd.h... Yes.
+
+=== ztest31109.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest31109.c
+Checking for stdarg.h... Yes.
+
+=== ztest31109.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest31109.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest31109.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest31109 ztest31109.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest31109.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest31109.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest31109.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest31109.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.11
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include
+libdir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+mandir = ${prefix}/share/man
+prefix = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj --includedir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include --libdir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+Fr 12. Jan 13:24:49 CET 2024
+Checking for gcc...
+=== ztest36456.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest36456.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest36456.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest36456.c
+
+Checking for shared library support...
+=== ztest36456.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest36456.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest36456.so ztest36456.o
+Building shared library libz.so.1.2.11 with gcc.
+
+=== ztest36456.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+gcc -c -O3 ztest36456.c
+Checking for size_t... Yes.
+
+
+=== ztest36456.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest36456.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest36456.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest36456 ztest36456.c
+Checking for strerror... Yes.
+
+=== ztest36456.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest36456.c
+Checking for unistd.h... Yes.
+
+=== ztest36456.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest36456.c
+Checking for stdarg.h... Yes.
+
+=== ztest36456.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest36456.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest36456.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest36456 ztest36456.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest36456.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest36456.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest36456.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest36456.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.11
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include
+libdir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+mandir = ${prefix}/share/man
+prefix = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj --includedir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include --libdir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+Fr 12. Jan 14:39:56 CET 2024
+Checking for gcc...
+=== ztest45613.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest45613.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest45613.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest45613.c
+
+Checking for shared library support...
+=== ztest45613.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest45613.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest45613.so ztest45613.o
+Building shared library libz.so.1.2.11 with gcc.
+
+=== ztest45613.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+gcc -c -O3 ztest45613.c
+Checking for size_t... Yes.
+
+
+=== ztest45613.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest45613.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest45613.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest45613 ztest45613.c
+Checking for strerror... Yes.
+
+=== ztest45613.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest45613.c
+Checking for unistd.h... Yes.
+
+=== ztest45613.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest45613.c
+Checking for stdarg.h... Yes.
+
+=== ztest45613.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest45613.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest45613.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest45613 ztest45613.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest45613.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest45613.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest45613.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest45613.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.11
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include
+libdir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+mandir = ${prefix}/share/man
+prefix = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj --includedir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include --libdir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+Fr 12. Jan 20:09:54 CET 2024
+Checking for gcc...
+=== ztest9405.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest9405.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest9405.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest9405.c
+
+Checking for shared library support...
+=== ztest9405.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest9405.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest9405.so ztest9405.o
+Building shared library libz.so.1.2.11 with gcc.
+
+=== ztest9405.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+gcc -c -O3 ztest9405.c
+Checking for size_t... Yes.
+
+
+=== ztest9405.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest9405.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest9405.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest9405 ztest9405.c
+Checking for strerror... Yes.
+
+=== ztest9405.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest9405.c
+Checking for unistd.h... Yes.
+
+=== ztest9405.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest9405.c
+Checking for stdarg.h... Yes.
+
+=== ztest9405.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest9405.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest9405.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest9405 ztest9405.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest9405.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest9405.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest9405.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest9405.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.11
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include
+libdir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+mandir = ${prefix}/share/man
+prefix = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj --includedir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include --libdir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+Fr 12. Jan 20:55:48 CET 2024
+Checking for gcc...
+=== ztest52830.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest52830.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest52830.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest52830.c
+
+Checking for shared library support...
+=== ztest52830.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest52830.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest52830.so ztest52830.o
+Building shared library libz.so.1.2.11 with gcc.
+
+=== ztest52830.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+gcc -c -O3 ztest52830.c
+Checking for size_t... Yes.
+
+
+=== ztest52830.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest52830.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest52830.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest52830 ztest52830.c
+Checking for strerror... Yes.
+
+=== ztest52830.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest52830.c
+Checking for unistd.h... Yes.
+
+=== ztest52830.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest52830.c
+Checking for stdarg.h... Yes.
+
+=== ztest52830.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest52830.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest52830.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest52830 ztest52830.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest52830.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest52830.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest52830.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest52830.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.11
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include
+libdir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+mandir = ${prefix}/share/man
+prefix = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj --includedir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include --libdir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+Fr 12. Jan 21:06:29 CET 2024
+Checking for gcc...
+=== ztest58056.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest58056.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest58056.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest58056.c
+
+Checking for shared library support...
+=== ztest58056.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest58056.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest58056.so ztest58056.o
+Building shared library libz.so.1.2.11 with gcc.
+
+=== ztest58056.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+gcc -c -O3 ztest58056.c
+Checking for size_t... Yes.
+
+
+=== ztest58056.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest58056.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest58056.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest58056 ztest58056.c
+Checking for strerror... Yes.
+
+=== ztest58056.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest58056.c
+Checking for unistd.h... Yes.
+
+=== ztest58056.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest58056.c
+Checking for stdarg.h... Yes.
+
+=== ztest58056.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest58056.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest58056.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest58056 ztest58056.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest58056.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest58056.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest58056.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest58056.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.11
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include
+libdir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+mandir = ${prefix}/share/man
+prefix = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj --includedir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include --libdir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+Fr 12. Jan 21:09:55 CET 2024
+Checking for gcc...
+=== ztest62884.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest62884.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest62884.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest62884.c
+
+Checking for shared library support...
+=== ztest62884.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest62884.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest62884.so ztest62884.o
+Building shared library libz.so.1.2.11 with gcc.
+
+=== ztest62884.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+gcc -c -O3 ztest62884.c
+Checking for size_t... Yes.
+
+
+=== ztest62884.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest62884.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest62884.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest62884 ztest62884.c
+Checking for strerror... Yes.
+
+=== ztest62884.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest62884.c
+Checking for unistd.h... Yes.
+
+=== ztest62884.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest62884.c
+Checking for stdarg.h... Yes.
+
+=== ztest62884.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest62884.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest62884.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest62884 ztest62884.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest62884.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest62884.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest62884.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest62884.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.11
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include
+libdir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+mandir = ${prefix}/share/man
+prefix = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj --includedir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include --libdir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+Sa 13. Jan 12:56:01 CET 2024
+Checking for gcc...
+=== ztest10311.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest10311.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest10311.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest10311.c
+
+Checking for shared library support...
+=== ztest10311.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest10311.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest10311.so ztest10311.o
+Building shared library libz.so.1.2.11 with gcc.
+
+=== ztest10311.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+gcc -c -O3 ztest10311.c
+Checking for size_t... Yes.
+
+
+=== ztest10311.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest10311.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest10311.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest10311 ztest10311.c
+Checking for strerror... Yes.
+
+=== ztest10311.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest10311.c
+Checking for unistd.h... Yes.
+
+=== ztest10311.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest10311.c
+Checking for stdarg.h... Yes.
+
+=== ztest10311.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest10311.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest10311.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest10311 ztest10311.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest10311.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest10311.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest10311.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest10311.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.11
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.11
+Z_U4 =
+SRCDIR =
+exec_prefix = ${prefix}
+includedir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include
+libdir = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+mandir = ${prefix}/share/man
+prefix = /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj --includedir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/include --libdir /home/cunha/Documents/github/StreamCraft/external/mstoolkit/obj
+Sa 13. Jan 13:03:21 CET 2024
+Checking for gcc...
+=== ztest15171.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest15171.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest15171.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest15171.c
+
+Checking for shared library support...
+=== ztest15171.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest15171.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest15171.so ztest15171.o
+Building shared library libz.so.1.2.11 with gcc.
+
+=== ztest15171.c ===
+#include <stdio.h>
+#include <stdlib.h>
+size_t dummy = 0;
+===
+gcc -c -O3 ztest15171.c
+Checking for size_t... Yes.
+
+
+=== ztest15171.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15171.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest15171.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest15171 ztest15171.c
+Checking for strerror... Yes.
+
+=== ztest15171.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15171.c
+Checking for unistd.h... Yes.
+
+=== ztest15171.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15171.c
+Checking for stdarg.h... Yes.
+
+=== ztest15171.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15171.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest15171.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest15171 ztest15171.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest15171.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15171.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest15171.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15171.c
 Checking for attribute(visibility) support... Yes.
 
 ALL = static shared all64

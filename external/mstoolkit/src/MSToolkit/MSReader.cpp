@@ -1511,30 +1511,42 @@ void MSReader::setPrecisionMZ(int i){
 
 bool MSReader::readFile(const char* c, Spectrum& s, int scNum){
 
+  bool bNewRead=false;
   if(c!=NULL) {
-    lastFileFormat = checkFileFormat(c);
-    sCurrentFile = c;
-    sInstrument.clear();
-    sManufacturer.clear();
-    sInstrument="unknown";
-    sManufacturer="unknown";
+    if(sCurrentFile.compare(c)!=0){
+      lastFileFormat = checkFileFormat(c);
+      sCurrentFile = c;
+      sInstrument.clear();
+      sManufacturer.clear();
+      sInstrument="unknown";
+      sManufacturer="unknown";
+      bNewRead=true;
+    } 
+  } else {
+    if(sCurrentFile.empty()){
+      cout << "MSReader::readFile must specify file for first read." << endl;
+      return false;
+    }
   }
   switch(lastFileFormat){
 	case ms1:
 	case ms2:
 	case  zs:
 	case uzs:
-		return readMSTFile(c,true,s,scNum);
+    if(bNewRead) return readMSTFile(c,true,s,scNum);
+    else return readMSTFile(NULL, true, s, scNum);
 		break;
 	case bms1:
 	case bms2:
 		setCompression(false);
-		return readMSTFile(c,false,s,scNum);
+		if(bNewRead) return readMSTFile(c,false,s,scNum);
+    else return readMSTFile(NULL, false, s, scNum);
 		break;
 	case cms1:
 	case cms2:
 		setCompression(true);
-    return readMSTFile(c,false,s,scNum);
+    if(bNewRead) return readMSTFile(c,false,s,scNum);
+    else readMSTFile(NULL, false, s, scNum);
 		break;
 	case mz5:
   case mzXML:
@@ -1542,11 +1554,13 @@ bool MSReader::readFile(const char* c, Spectrum& s, int scNum){
   case mzMLb:
 	case mzXMLgz:
 	case mzMLgz:
-		return readMZPFile(c,s,scNum);
+		if(bNewRead) return readMZPFile(c,s,scNum);
+    else return readMZPFile(NULL, s, scNum);
 		break;
   case mgf:
     if(scNum!=0) cout << "Warning: random-access or previous spectrum reads not allowed with MGF format." << endl;
-    return readMGFFile2(c,s);
+    if(bNewRead) return readMGFFile2(c,s);
+    else return readMGFFile2(NULL, s);
     break;
 	case raw:
 		#ifdef _MSC_VER
@@ -1554,8 +1568,10 @@ bool MSReader::readFile(const char* c, Spectrum& s, int scNum){
 		//only read the raw file if the dll was present and loaded.
 		if(cRAW.getStatus()) {
 			cRAW.setMSLevelFilter(&filter);
-      bool b=cRAW.readRawFile(c,s,scNum);
-      if(b && c!=NULL) {
+      bool b;
+      if(bNewRead) b=cRAW.readRawFile(c,s,scNum);
+      else b=cRAW.readRawFile(NULL, s, scNum);
+      if(b && bNewRead) {
         cRAW.getInstrument(&sInstrument[0]);
         cRAW.getManufacturer(&sManufacturer[0]);
       }
@@ -1950,7 +1966,9 @@ bool MSReader::readMZPFile(const char* c, Spectrum& s, int scNum){
 	s.setScanNumber(scanHeader.acquisitionNum,true);
 	s.setRTime((float)scanHeader.retentionTime/60.0f);
   s.setCompensationVoltage(scanHeader.compensationVoltage);
+  s.setInverseReducedIonMobility(scanHeader.inverseReducedIonMobility);
   s.setIonInjectionTime((float)scanHeader.ionInjectionTime);
+  s.setIonMobilityDriftTime(scanHeader.ionMobilityDriftTime);
   s.setTIC(scanHeader.totIonCurrent);
   s.setScanWindow(scanHeader.lowMZ,scanHeader.highMZ);
   s.setBPI((float)scanHeader.basePeakIntensity);
@@ -2011,8 +2029,13 @@ bool MSReader::readMZPFile(const char* c, Spectrum& s, int scNum){
 	pPeaks = readPeaks(rampFileIn, pScanIndex[rampIndex],rampIndex);
 	j=0;
 	for(i=0;i<scanHeader.peaksCount;i++){
-		s.add((double)pPeaks[j],(float)pPeaks[j+1]);
-		j+=2;
+    if(scanHeader.ionMobility){
+      s.add((double)pPeaks[j], (float)pPeaks[j + 1],(double)pPeaks[j+2]);
+      j+=3;
+    } else {
+      s.add((double)pPeaks[j],(float)pPeaks[j+1]);
+      j+=2;
+    }
 	}
   lastReadScanNum = scanHeader.acquisitionNum;
 

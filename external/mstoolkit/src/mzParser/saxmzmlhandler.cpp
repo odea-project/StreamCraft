@@ -132,7 +132,7 @@ void mzpSAXMzmlHandler::startElement(const XML_Char *el, const XML_Char **attr){
 
   } else if (isElement("binaryDataArrayList",el)) {
 #ifdef MZP_HDF
-    if(m_bHeaderOnly && m_hdfFile<0) stopParser();
+    if(m_bHeaderOnly) stopParser();
 #else
     if (m_bHeaderOnly) stopParser();
 #endif
@@ -271,18 +271,6 @@ void mzpSAXMzmlHandler::startElement(const XML_Char *el, const XML_Char **attr){
       m_precursorIon.monoMZ = atof(value);
     } else if (strcmp(name, "ms level") == 0) {
       m_precursorIon.msLevel = atoi(value);
-#ifdef MZP_HDF
-    } else if (strcmp(name,"external dataset")==0){
-      m_strHDFDatasetID=value;
-    } else if (strcmp(name, "external array length") == 0) {
-      m_hdfArraySz = (hsize_t)atoll(value);
-      if(m_hdfFile>-1) {
-        spec->setPeaksCount((int)m_hdfArraySz);
-        if(m_bHeaderOnly) stopParser();
-      }
-    } else if (strcmp(name, "external offset") == 0) {
-      m_hdfOffset = (hsize_t)atoll(value);
-#endif
     }
 
   }
@@ -434,6 +422,21 @@ void mzpSAXMzmlHandler::processCVParam(const char* name, const char* accession, 
       spec->setActivation(ETD);
     }
 
+#ifdef MZP_HDF
+  } else if (!strcmp(name, "external HDF5 dataset") || !strcmp(accession, "MS:1002841")) {
+    m_strHDFDatasetID = value;
+
+  } else if (!strcmp(name, "external array length") || !strcmp(accession, "MS:1002843")) {
+    m_hdfArraySz = (hsize_t)atoll(value);
+    if (m_hdfFile > -1) {
+      spec->setPeaksCount((int)m_hdfArraySz);
+      if (m_bHeaderOnly) stopParser();
+    }
+
+  } else if (!strcmp(name, "external offset") || !strcmp(accession, "MS:1002842")) {
+    m_hdfOffset = (hsize_t)atoll(value);
+#endif
+
   } else if(!strcmp(name, "FAIMS compensation voltage") || !strcmp(accession,"MS:1001581"))  {
     spec->setCompensationVoltage(atof(value));
     
@@ -456,6 +459,9 @@ void mzpSAXMzmlHandler::processCVParam(const char* name, const char* accession, 
 
   } else if (!strcmp(name, "ion injection time") || !strcmp(accession, "MS:1000927"))  {
     spec->setIonInjectionTime(atof(value));
+
+  } else if (!strcmp(name, "ion mobility drift time") || !strcmp(accession, "MS:1002476")) {
+    spec->setIonMobilityDriftTime(atof(value));
 
   } else if(!strcmp(name,"isolation window target m/z") || !strcmp(accession,"MS:1000827")) {
     m_precursorIon.isoMZ=atof(value);
@@ -514,6 +520,7 @@ void mzpSAXMzmlHandler::processCVParam(const char* name, const char* accession, 
     m_bInintenArrayBinary = false;
     m_bInionMobilityArrayBinary = true;
     m_bionMobility = true;
+    spec->setIonMobilityScan(true);
 
   } else if(!strcmp(name,"orbitrap") || !strcmp(accession,"MS:1000484")) {
     m_instrument.analyzer=name;
@@ -532,6 +539,11 @@ void mzpSAXMzmlHandler::processCVParam(const char* name, const char* accession, 
 
   } else if(!strcmp(name,"radial ejection linear ion trap") || !strcmp(accession,"MS:1000083")) {
     m_instrument.analyzer=name;
+
+  } else if (!strcmp(name, "inverse reduced ion mobility") || !strcmp(accession, "MS:1002815")) {
+    spec->setInverseReducedIonMobility(atof(value));
+    spec->setIonMobilityScan(true);
+    m_bionMobility = true;
 
   } else if(!strcmp(name, "scan start time") || !strcmp(accession,"MS:1000016"))  {
     if(!strcmp(unitName, "minute") || !strcmp(unitAccession,"UO:0000031"))  {
@@ -569,7 +581,6 @@ void mzpSAXMzmlHandler::processCVParam(const char* name, const char* accession, 
 }
 
 void mzpSAXMzmlHandler::processData(){
-
 #ifdef MZP_HDF
   if(m_hdfFile>-1){
 
@@ -716,14 +727,14 @@ bool mzpSAXMzmlHandler::readHeaderFromOffset(f_off offset, int scNm){
   //note that scan number will not be set if file doesn't use them.
   //also, no knowlege of current position in index is known or retained. Reading from
   //scan index will revert back to next scan from its current position.
-  m_bHeaderOnly = true;
+  //m_bHeaderOnly = true;  //MH: Changed behavior to always process entire scan whether just the header information was needed or not.
 #ifdef MZP_HDF
   if(m_hdfFile>-1) parseHDFOffset((int)offset);
   else parseOffset(offset);
 #else
   parseOffset(offset);
 #endif
-  m_bHeaderOnly = false;
+  //m_bHeaderOnly = false;
   return true;
 
 }
@@ -810,6 +821,7 @@ void mzpSAXMzmlHandler::pushChromatogram(){
 void mzpSAXMzmlHandler::pushSpectrum(){
   specDP dp;
   specIonMobDP dp_im;
+  if(vdIM.size()>0) spec->setIonMobilityScan(true);
   for(size_t i=0;i<vdM.size();i++)  {
     dp.mz = vdM[i];
     dp.intensity = vdI[i];
@@ -819,7 +831,6 @@ void mzpSAXMzmlHandler::pushSpectrum(){
       dp_im.intensity = vdI[i];
       dp_im.ionMobility = vdIM[i];
       spec->addDP(dp_im);
-
     } else {
       spec->addDP(dp);
     }
@@ -1097,7 +1108,6 @@ bool mzpSAXMzmlHandler::openHDF(const char* fileName) {
 }
 
 bool mzpSAXMzmlHandler::parseHDFOffset(int index) {
-
   if (m_hdfFile<0) {
     cerr << "Error parseHDFOffset(): No open file." << endl;
     return false;
