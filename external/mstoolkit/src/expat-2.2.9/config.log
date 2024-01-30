@@ -28,7 +28,6 @@ uname -v = #14~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Mon Nov 20 18:15:30 UTC 2
 /bin/universe          = unknown
 
 PATH: /home/cunha/.local/bin
-PATH: /home/cunha/.local/bin
 PATH: /usr/local/sbin
 PATH: /usr/local/bin
 PATH: /usr/sbin
@@ -892,7 +891,7 @@ conftest.c: In function 'main':
 conftest.c:31:7: warning: implicit declaration of function 'arc4random_buf' [-Wimplicit-function-declaration]
    31 |       arc4random_buf(NULL, 0U);
       |       ^~~~~~~~~~~~~~
-/usr/bin/ld: /tmp/cchPfF3r.o: in function `main':
+/usr/bin/ld: /tmp/ccCIqcLG.o: in function `main':
 /home/cunha/Documents/github/StreamCraft/external/mstoolkit/src/expat-2.2.9/conftest.c:31: undefined reference to `arc4random_buf'
 collect2: error: ld returned 1 exit status
 configure:18100: $? = 1
@@ -942,7 +941,7 @@ conftest.c:32:11: warning: implicit declaration of function 'arc4random'; did yo
    32 |           arc4random();
       |           ^~~~~~~~~~
       |           srandom
-/usr/bin/ld: /tmp/cc9CDZVL.o: in function `main':
+/usr/bin/ld: /tmp/cc7zizPB.o: in function `main':
 /home/cunha/Documents/github/StreamCraft/external/mstoolkit/src/expat-2.2.9/conftest.c:32: undefined reference to `arc4random'
 collect2: error: ld returned 1 exit status
 configure:18126: $? = 1

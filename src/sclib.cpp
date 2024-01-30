@@ -291,6 +291,7 @@ sc::mzml::SPECTRA_HEADERS sc::mzml::MZML::extract_spectra_headers(const std::vec
     headers.activation_type.resize(number_spectra);
     headers.activation_ce.resize(number_spectra);
 
+    // #pragma omp parallel for
     for (int i = 0; i < number_spectra; i++) {
 
       const int& index = idxs[i];
@@ -651,6 +652,7 @@ std::vector<std::vector<std::vector<double>>> sc::mzml::MZML::extract_spectra(co
       spectra.push_back(child);
     }
 
+    // #pragma omp parallel for
     for (int i = 0; i < number_spectra_to_extract; i++) {
 
       const int& index = idxs[i];

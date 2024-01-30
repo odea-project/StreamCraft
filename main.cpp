@@ -1,5 +1,6 @@
 #include "sclib.hpp"
 #include "tests.hpp"
+#include <omp.h>
 
 int main() {
 
@@ -17,7 +18,30 @@ int main() {
   std::cout << std::endl;
 
 
-  tests::test_writing_mzml(file9);
+
+
+
+  // omp_set_num_threads(4);
+
+  // int *arr = new int[ARRAY_SIZE];
+  // std::fill_n(arr, ARRAY_SIZE, ARRAY_VALUE);
+
+  // #pragma omp parallel for
+  // for(int i = 0; i < ARRAY_SIZE; i++)
+  // {
+  //     arr[i] = arr[i] / arr[i] + arr[i] / 5 - 14;
+  // }
+
+  sc::MZML mzml(file1);
+  sc::mzml::SPECTRA_HEADERS hd;
+  hd = mzml.get_spectra_headers();
+  int number = hd.spec_index.size();
+  std::cout << "Size of vector in headers struct: " << number << std::endl;
+  std::vector<std::vector<std::vector<double>>> spectra;
+  spectra = mzml.get_spectra();
+  std::cout << "Number of extracted spectra: " << spectra.size() << std::endl;
+
+  // tests::test_writing_mzml(file9);
 
   // tests::test_integration_mstoolkit(file2);
 

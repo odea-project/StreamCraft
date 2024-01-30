@@ -13,6 +13,7 @@
 
 # Compiled Dynamic libraries
 *.so
+**.so*
 *.so.84.0.1
 *.dylib
 *.dll
@@ -32,3 +33,13 @@
 *.exe
 *.out
 *.app
+
+# Others
+*.pc
+main
+MSSingleScan
+COPYING
+AUTHORS
+changelog
+*.log
+zlib.3

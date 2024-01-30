@@ -53,6 +53,16 @@
 		"cinttypes": "cpp",
 		"typeinfo": "cpp",
 		"bitset": "cpp",
-		"regex": "cpp"
+		"regex": "cpp",
+		"chrono": "cpp",
+		"condition_variable": "cpp",
+		"unordered_set": "cpp",
+		"ratio": "cpp",
+		"fstream": "cpp",
+		"mutex": "cpp",
+		"semaphore": "cpp",
+		"stop_token": "cpp",
+		"thread": "cpp",
+		"variant": "cpp"
 	}
 }

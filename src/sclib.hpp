@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <sstream>
 #include <zlib.h>
+#include <omp.h>
 
 #define PUGIXML_HEADER_ONLY
 #include "../external/pugixml-1.14/src/pugixml.hpp"

@@ -19,6 +19,8 @@ LDLIBS += $(MSTOOLKITLIB)
 SOURCES = $(wildcard src/*.cpp) main.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 
+CXXFLAGS += -fopenmp
+
 EXECUTABLE = main
 
 # $(LDFLAGS)
