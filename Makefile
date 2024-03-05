@@ -1,38 +1,54 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -g -Wall -Isrc
+CXXFLAGS = -std=c++17 -g -Wall -Isrc
 
-ZLIBDIR = external/mstoolkit/src/zlib-1.2.11
+ZLIBDIR = C:/Users/apoli/Documents/github/StreamCraft/external/zlib-1.3.1
 CXXFLAGS += -I$(ZLIBDIR)
-# LDFLAGS = -L$(ZLIBDIR)
-# LDLIBS = -lz
+LDFLAGS = -L$(ZLIBDIR)
+LDLIBS = -lz
 
-CXXFLAGS += -DGCC
-CXXFLAGS += -D_FILE_OFFSET_BITS=64
+#ZLIBDIR = C:/Users/apoli/Documents/github/StreamCraft/external/zlib-1.3.1
+#ZLIBBUILDDIR = $(ZLIBDIR)/build
+#CXXFLAGS += -I$(ZLIBDIR)
+#LDFLAGS = -L$(ZLIBBUILDDIR)
+#LDLIBS = -lzlibstatic
 
-MSTOOLKITDIR = external/mstoolkit
-MSTOOLKITDIRINCLUDE = $(MSTOOLKITDIR)/include
-CXXFLAGS += -I$(MSTOOLKITDIRINCLUDE)
+#CXXFLAGS += -DGCC
+#CXXFLAGS += -D_FILE_OFFSET_BITS=64
 
-MSTOOLKITLIB = $(MSTOOLKITDIR)/libmstoolkit.a
-LDLIBS += $(MSTOOLKITLIB)
+#MSTOOLKITDIR = external/mstoolkit
+#MSTOOLKITDIRINCLUDE = $(MSTOOLKITDIR)/include
+#CXXFLAGS += -I$(MSTOOLKITDIRINCLUDE)
 
-SOURCES = $(wildcard src/*.cpp) main.cpp
+#MSTOOLKITLIB = $(MSTOOLKITDIR)/libmstoolkit.a
+#LDLIBS += $(MSTOOLKITLIB)
+
+#SOURCES = external/qAlgorithms/src/qalgorithms_matrix.cpp
+#SOURCES += external/qAlgorithms/src/qalgorithms_utils.cpp
+#SOURCES += external/qAlgorithms/src/qalgorithms.cpp
+#CXXFLAGS += -Iexternal/qAlgorithms/src
+#CXXFLAGS += -Iexternal/qAlgorithms/include
+
+#SOURCES = $(wildcard src/*.cpp) main.cpp
+SOURCES = main.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 
 CXXFLAGS += -fopenmp
 
-EXECUTABLE = main
-
-# $(LDFLAGS)
+EXECUTABLE = main.exe
 
 all: $(OBJECTS)
-	$(CXX) $(CXXFLAGS)  $(OBJECTS) -o $(EXECUTABLE) $(LDLIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $(EXECUTABLE) $(LDLIBS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+#clean:
+#	rm -f $(OBJECTS) $(EXECUTABLE)
+
 clean:
-	rm -f $(OBJECTS) $(EXECUTABLE)
+	del /Q src\*.o
+	del /Q *.o
+	del /Q main.exe
 
 run: clean all
 	./$(EXECUTABLE)

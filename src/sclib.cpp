@@ -587,13 +587,13 @@ std::vector<std::vector<double>> sc::mzml::MZML::extract_spectrum(const pugi::xm
 
     std::string encoded_string = node_binary.child_value();
 
-    std::string decoded_string = sc::utils::decode_base64(encoded_string);
+    std::string decoded_string = utils::decode_base64(encoded_string);
 
     if (spectra_binary_metadata[counter].compressed) {
-      decoded_string = sc::utils::decompress_zlib(decoded_string);
+      decoded_string = utils::decompress_zlib(decoded_string);
     }
 
-    spectrum[counter] = sc::utils::decode_little_endian(decoded_string, spectra_binary_metadata[counter].precision_int / 8);
+    spectrum[counter] = utils::decode_little_endian(decoded_string, spectra_binary_metadata[counter].precision_int / 8);
 
     int bin_array_size = spectrum[counter].size();
 
@@ -810,13 +810,13 @@ std::vector<std::vector<double>> sc::mzml::MZML::extract_chromatogram(const pugi
 
     std::string encoded_string = node_binary.child_value();
 
-    std::string decoded_string = decode_base64(encoded_string);
+    std::string decoded_string = utils::decode_base64(encoded_string);
 
     if (mtd.compressed) {
-      decoded_string = sc::decompress_zlib(decoded_string);
+      decoded_string = utils::decompress_zlib(decoded_string);
     }
 
-    chrom[counter] = sc::decode_little_endian(decoded_string, mtd.precision_int / 8);
+    chrom[counter] = utils::decode_little_endian(decoded_string, mtd.precision_int / 8);
 
     int bin_array_size = chrom[counter].size();
 
@@ -1037,7 +1037,7 @@ void sc::animl::SERIES::extract(const pugi::xml_node& node) {
     std::string decoded_string = utils::decode_base64(encoded_string);
     std::tuple<std::string, int> param = extract_encoding_parameters(seriesType);
     // always outputs double vector
-    EncodedValueSet = decode_little_endian(decoded_string, std::get<1>(param) / 8);
+    EncodedValueSet = utils::decode_little_endian(decoded_string, std::get<1>(param) / 8);
   }
 };
 

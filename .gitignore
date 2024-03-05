@@ -43,3 +43,4 @@ AUTHORS
 changelog
 *.log
 zlib.3
+external/zlib-1.3.1

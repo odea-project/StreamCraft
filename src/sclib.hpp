@@ -21,7 +21,7 @@ namespace sc {
 
   void hello();
 
-  inline namespace utils {
+  namespace utils {
 
     std::string encode_little_endian(const std::vector<double>& input, const int& precision);
 
@@ -36,8 +36,6 @@ namespace sc {
     std::string decode_base64(const std::string& encoded_string);
 
   }; // namespace utils
-
-
 
   /// @brief Class representing a generic XML file.
   class XML {
