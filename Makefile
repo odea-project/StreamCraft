@@ -3,8 +3,9 @@ CXXFLAGS = -std=c++17 -g -Wall -Isrc
 
 ZLIBDIR = C:/Users/apoli/Documents/github/StreamCraft/external/zlib-1.3.1
 CXXFLAGS += -I$(ZLIBDIR)
-LDFLAGS = -L$(ZLIBDIR)
-LDLIBS = -lz
+CXXFLAGS += -I$(ZLIBDIR)/build
+LDFLAGS = -L$(ZLIBDIR)/build
+LDLIBS = -lzlibstatic
 
 #ZLIBDIR = C:/Users/apoli/Documents/github/StreamCraft/external/zlib-1.3.1
 #ZLIBBUILDDIR = $(ZLIBDIR)/build

@@ -1,223 +1,9 @@
 #include "mzml.hpp"
+#include <omp.h>
+#include <filesystem>
+#include <cstring>
+#include <algorithm>
 
-/*!
- * Encodes to little endian binary a vector of doubles based on a precision integer.
- */
-std::string mzml::utils::encode_little_endian(const std::vector<double>& input, const int& precision) {
-
-  if (precision == 8) {
-    std::vector<uint8_t> bytes(sizeof(double) * input.size());
-    std::memcpy(bytes.data(), input.data(), bytes.size());
-    std::string result(bytes.begin(), bytes.end());
-    return result;
-
-  } else if (precision == 4) {
-    std::vector<uint8_t> bytes(sizeof(float) * input.size());
-    for (size_t i = 0; i < input.size(); ++i) {
-        float floatValue = static_cast<float>(input[i]);
-        std::memcpy(bytes.data() + i * sizeof(float), &floatValue, sizeof(float));
-    }
-    std::string result(bytes.begin(), bytes.end());
-    return result;
-
-  } else {
-    throw("Precision must be 4 (32-bit) or 8 (64-bit)!");
-  }
-};
-
-/*!
- * Decodes from a little endian binary string to a vector of doubles according a precision integer.
- */
-std::vector<double> mzml::utils::decode_little_endian(const std::string& str, const int& precision) {
-
-  std::vector<unsigned char> bytes(str.begin(), str.end());
-  int bytes_size = (bytes.size() / precision);
-  std::vector<double> result(bytes_size);
-
-  for (int i = 0; i < bytes_size; ++i) {
-
-    if (precision == 8) {
-      result[i] = reinterpret_cast<double&>(bytes[i * precision]);
-
-    } else if (precision == 4) {
-      float floatValue;
-      std::memcpy(&floatValue, &bytes[i * precision], sizeof(float));
-      result[i] = static_cast<double>(floatValue);
-
-    } else {
-      throw("Precision must be 4 (32-bit) or 8 (64-bit)!");
-    }
-  }
-
-  return result;
-};
-
-/*!
- * Compresses a string using the zlib library (https://zlib.net/).
- */
-std::string mzml::utils::compress_zlib(const std::string& str) {
-
-  std::vector<char> compressed_data;
-
-  z_stream zs;
-
-  memset(&zs, 0, sizeof(zs));
-
-  if (deflateInit(&zs, Z_DEFAULT_COMPRESSION) != Z_OK) {
-    throw std::runtime_error("deflateInit failed while initializing zlib for compression");
-  }
-
-  zs.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(str.data()));
-  zs.avail_in = str.size();
-
-  int ret;
-  char outbuffer[32768];
-
-  do {
-    zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
-    zs.avail_out = sizeof(outbuffer);
-
-    ret = deflate(&zs, Z_FINISH);
-
-    if (compressed_data.size() < zs.total_out) {
-      compressed_data.insert(compressed_data.end(), outbuffer, outbuffer + (zs.total_out - compressed_data.size()));
-    }
-
-  } while (ret == Z_OK);
-
-  deflateEnd(&zs);
-
-  return std::string(compressed_data.begin(), compressed_data.end());
-};
-
-/*!
- * Decompresses a string using the zlib library (https://zlib.net/).
- */
-std::string mzml::utils::decompress_zlib(const std::string& compressed_string) {
-
-  z_stream zs;
-
-  memset(&zs, 0, sizeof(zs));
-
-  inflateInit(&zs);
-
-  zs.next_in = (Bytef*)compressed_string.data();
-
-  zs.avail_in = compressed_string.size();
-
-  int ret;
-
-  char outbuffer[32768];
-
-  std::string outstring;
-
-  do {
-    zs.next_out = reinterpret_cast<Bytef*>(outbuffer);
-
-    zs.avail_out = sizeof(outbuffer);
-
-    ret = inflate(&zs, 0);
-
-    if (outstring.size() < zs.total_out) {
-      outstring.append(outbuffer, zs.total_out - outstring.size());
-    }
-  }
-
-  while (ret == Z_OK);
-
-  inflateEnd(&zs);
-
-  return outstring;
-};
-
-/*!
- * Encodes a string with binary data to a Base64 string.
- */
-std::string mzml::utils::encode_base64(const std::string& str) {
-
-  static const char* base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-  std::string encoded_data;
-
-  encoded_data.reserve(((str.size() + 2) / 3) * 4);
-
-  for (size_t i = 0; i < str.size(); i += 3) {
-
-    int b = (str[i] & 0xFC) >> 2;
-    encoded_data.push_back(base64_chars[b]);
-
-    if (i + 1 < str.size()) {
-      b = ((str[i] & 0x03) << 4) | ((str[i + 1] & 0xF0) >> 4);
-      encoded_data.push_back(base64_chars[b]);
-
-      if (i + 2 < str.size()) {
-        b = ((str[i + 1] & 0x0F) << 2) | ((str[i + 2] & 0xC0) >> 6);
-        encoded_data.push_back(base64_chars[b]);
-        b = str[i + 2] & 0x3F;
-        encoded_data.push_back(base64_chars[b]);
-
-      } else {
-        b = (str[i + 1] & 0x0F) << 2;
-        encoded_data.push_back(base64_chars[b]);
-        encoded_data.push_back('=');
-      }
-
-    } else {
-      b = (str[i] & 0x03) << 4;
-      encoded_data.push_back(base64_chars[b]);
-      encoded_data.push_back('=');
-      encoded_data.push_back('=');
-    }
-  }
-
-  return encoded_data;
-};
-
-/*!
- * Decodes a Base64 string into a string with binary data.
- */
-std::string mzml::utils::decode_base64(const std::string& encoded_string) {
-
-  std::string decoded_string;
-
-  decoded_string.reserve((encoded_string.size() * 3) / 4);
-
-  int val = 0;
-  int valb = -8;
-  for (char c : encoded_string) {
-    if (c == '=') {
-      valb -= 6;
-      continue;
-    }
-    if (c >= 'A' && c <= 'Z') {
-      c -= 'A';
-    } else if (c >= 'a' && c <= 'z') {
-      c -= 'a' - 26;
-    } else if (c >= '0' && c <= '9') {
-      c -= '0' - 52;
-    } else if (c == '+') {
-      c = 62;
-    } else if (c == '/') {
-      c = 63;
-    } else {
-      continue;
-    }
-    val = (val << 6) + c;
-    valb += 6;
-    if (valb >= 0) {
-      decoded_string.push_back(char((val >> valb) & 0xFF));
-      valb -= 8;
-    }
-  }
-
-  return decoded_string;
-};
-
-/*!
- * Extracts headers from spectrum elements of an mzML file according to a vector of indices,
-   indicating the location of the spectra to retrieve metadata.
-   This is a private function of the class MZML in sc namespace.
- */
 mzml::SPECTRA_HEADERS mzml::MZML::extract_spectra_headers(const std::vector<int>& idxs) {
 
   std::string search_run = "//run";
@@ -412,12 +198,6 @@ mzml::SPECTRA_HEADERS mzml::MZML::extract_spectra_headers(const std::vector<int>
   return headers;
 }
 
-
-
-/*!
- * Extracts metadata from a binary node of an mzML file.
-   This is a private function of the class MZML in sc namespace.
- */
 mzml::BINARY_METADATA mzml::MZML::extract_binary_metadata(const pugi::xml_node& bin) {
 
   BINARY_METADATA mtd;
@@ -505,12 +285,6 @@ mzml::BINARY_METADATA mzml::MZML::extract_binary_metadata(const pugi::xml_node& 
   return mtd;
 }
 
-
-
-/*!
- * Extracts metadata from each binary array in the first node of the spectra list of an mzML file.
-   This is a private function of the class MZML in sc namespace. Updates the private fields named binary_*.
- */
 void mzml::MZML::extract_spectra_binary_metadata(const pugi::xml_node& first_node) {
 
   pugi::xml_node binary_list = first_node.child("binaryDataArrayList");
@@ -535,12 +309,6 @@ void mzml::MZML::extract_spectra_binary_metadata(const pugi::xml_node& first_nod
   number_spectra_binary_arrays = counter;
 }
 
-
-
-/*!
- * Extracts a spectrum from a binary array list node from an mzML file.
-   This is a private function of the class MZML in sc namespace.
- */
 std::vector<std::vector<double>> mzml::MZML::extract_spectrum(const pugi::xml_node& spectrum_node) {
 
   std::vector<std::vector<double>> spectrum;
@@ -598,13 +366,6 @@ std::vector<std::vector<double>> mzml::MZML::extract_spectrum(const pugi::xml_no
   return spectrum;
 }
 
-
-
-/*!
- * Extracts spectra from an mzML file according to a vector of indices,
-   indicating the location of the spectra to retrieve.
-   This is a private function of the class MZML in sc namespace.
- */
 std::vector<std::vector<std::vector<double>>> mzml::MZML::extract_spectra(const std::vector<int>& idxs) {
 
   std::string search_run = "//run";
@@ -646,13 +407,6 @@ std::vector<std::vector<std::vector<double>>> mzml::MZML::extract_spectra(const 
   return sp;
 }
 
-
-
-/*!
- * Extracts headers from chromatograms elements of an mzML file according to a vector of indices,
-   indicating the location of the spectra to retrieve metadata.
-   This is a private function of the class MZML in sc namespace.
- */
 mzml::CHROMATOGRAMS_HEADERS mzml::MZML::extract_chrom_headers(const std::vector<int>& idxs) {
 
   std::string search_run = "//run";
@@ -760,12 +514,6 @@ mzml::CHROMATOGRAMS_HEADERS mzml::MZML::extract_chrom_headers(const std::vector<
   return headers;
 }
 
-
-
-/*!
- * Extracts a chromatograms from a binary array list node from an mzML file.
-   This is a private function of the class MZML in sc namespace.
- */
 std::vector<std::vector<double>> mzml::MZML::extract_chromatogram(const pugi::xml_node& chrom_node) {
 
   std::vector<std::vector<double>> chrom;
@@ -829,13 +577,6 @@ std::vector<std::vector<double>> mzml::MZML::extract_chromatogram(const pugi::xm
   return chrom;
 }
 
-
-
-/*!
- * Extracts chromatograms from an mzML file according to a vector of indices,
-   indicating the location of the chromatograms to retrieve.
-   This is a private function of the class MZML in sc namespace.
- */
 std::vector<std::vector<std::vector<double>>> mzml::MZML::extract_chromatograms(const std::vector<int>& idxs) {
 
   std::string search_run = "//run";
@@ -875,3 +616,183 @@ std::vector<std::vector<std::vector<double>>> mzml::MZML::extract_chromatograms(
 
   return chr;
 }
+
+void mzml::MZML::write_spectra(std::vector<std::vector<std::vector<double>>> spectra, std::vector<std::string> names, std::string mode, bool compress, bool save, std::string save_suf) {
+
+  if (spectra.size() == 0) {
+    std::cerr << "No spectra to write!" << std::endl;
+    return;
+  }
+
+  if (spectra[0].size() != names.size()) {
+    std::cerr << "Number of spectra and names do not match!" << std::endl;
+    return;
+  }
+
+  std::string search_run = "//run";
+  
+  pugi::xml_node run_node = root.select_node(search_run.c_str()).node();
+  
+  pugi::xml_node spec_list_node = run_node.child("spectrumList");
+
+  std::vector<pugi::xml_node> spectra_nodes;
+
+  if (spec_list_node) {
+
+    for (pugi::xml_node child = spec_list_node.first_child(); child; child = child.next_sibling()) {
+      spectra_nodes.push_back(child);
+    }
+
+    if (spectra_nodes.size() != spectra.size()) {
+      std::cerr << "Number of spectra in the file and the number of spectra to write do not match!" << std::endl;
+      return;
+    }
+
+  } else {
+    std::cerr << "Warning: Spectrum list not found in the mzML file!" << std::endl;
+    return;
+    // spec_list_node = run_node.append_child("spectrumList");
+    // spec_list_node.append_attribute("count") = "0";
+  }
+
+  int number_spectra = spectra.size();
+
+  std::string number_spectra_str = std::to_string(number_spectra);
+
+  spec_list_node.attribute("count").set_value(number_spectra_str.c_str());
+
+  for (size_t i = 0; i < spectra.size(); i++) {
+
+    pugi::xml_node spec = spectra_nodes[i];
+
+    const std::vector<double>& mz = spectra[i][0];
+
+    const std::vector<double>& intensity = spectra[i][1];
+
+    // if (!spec) spec = spec_list_node.append_child("spectrum");
+
+    spec.attribute("defaultArrayLength").set_value(spectra[i][0].size());
+
+    if (mode == "centroid") {
+      pugi::xml_node node_mode = spec.find_child_by_attribute("cvParam", "accession", "MS:1000128");
+
+      if (node_mode) {
+        node_mode.attribute("accession").set_value("MS:1000127");
+        node_mode.attribute("name").set_value("centroid spectrum");
+      }
+    }
+
+    pugi::xml_node low_mz_node = spec.find_child_by_attribute("cvParam", "name", "lowest observed m/z");
+
+    double low_mz = *std::min_element(mz.begin(), mz.end());  
+
+    low_mz_node.attribute("value").set_value(low_mz);
+
+    pugi::xml_node high_mz_node = spec.find_child_by_attribute("cvParam", "name", "highest observed m/z");
+
+    double high_mz = *std::max_element(mz.begin(), mz.end());
+
+    high_mz_node.attribute("value").set_value(high_mz);
+    
+    pugi::xml_node bp_mz_node = spec.find_child_by_attribute("cvParam", "name", "base peak m/z");
+
+    double bp_mz = mz[std::distance(intensity.begin(), std::max_element(intensity.begin(), intensity.end()))];
+
+    bp_mz_node.attribute("value").set_value(bp_mz);
+
+    pugi::xml_node bp_int_node = spec.find_child_by_attribute("cvParam", "name", "base peak intensity");
+
+    double bp_int = *std::max_element(intensity.begin(), intensity.end());
+
+    bp_int_node.attribute("value").set_value(bp_int);
+
+    pugi::xml_node tic_node = spec.find_child_by_attribute("cvParam", "name", "total ion current");
+
+    double tic = std::accumulate(intensity.begin(), intensity.end(), 0.0);
+
+    tic_node.attribute("value").set_value(tic);
+
+    pugi::xml_node bin_array_list = spec.child("binaryDataArrayList");
+
+    bin_array_list.remove_children();
+
+    bin_array_list.attribute("count").set_value(spectra[i].size());
+
+    for (size_t j = 0; j < spectra[i].size(); j++) {
+
+      const std::vector<double>& x = spectra[i][j];
+
+      std::string x_enc = utils::encode_little_endian(x, 8);
+      
+      if (compress) x_enc = utils::compress_zlib(x_enc);
+      
+      x_enc = utils::encode_base64(x_enc);
+
+      pugi::xml_node bin_array = bin_array_list.append_child("binaryDataArray");
+
+      bin_array.append_attribute("encodedLength") = x_enc.size();
+
+      pugi::xml_node bin = bin_array.append_child("cvParam");
+
+      bin.append_attribute("cvRef") = "MS";
+
+      bin.append_attribute("accession") = "MS:1000523";
+
+      bin.append_attribute("name") = "64-bit float";
+
+      bin.append_attribute("value") = "";
+
+      bin = bin_array.append_child("cvParam");
+
+      if (compress) {
+        bin.append_attribute("cvRef") = "MS";
+        bin.append_attribute("accession") = "MS:1000574";
+        bin.append_attribute("name") = "zlib compression";
+        bin.append_attribute("value") = "";
+
+      } else {
+        bin.append_attribute("cvRef") = "MS";
+        bin.append_attribute("accession") = "MS:1000576";
+        bin.append_attribute("name") = "no compression";
+        bin.append_attribute("value") = "";
+      }
+
+      bin = bin_array.append_child("cvParam");
+
+      bin.append_attribute("cvRef") = "MS";
+
+      if (j == 0) {
+        bin.append_attribute("accession") = "MS:1000514";
+        bin.append_attribute("name") = "m/z array";
+        bin.append_attribute("value") = "";
+        bin.append_attribute("unitCvRef") = "MS";
+        bin.append_attribute("unitAccession") = "MS:1000040";
+        bin.append_attribute("unitName") = "m/z";
+
+      } else if (j == 1) {
+        bin.append_attribute("accession") = "MS:1000515";
+        bin.append_attribute("name") = "intensity array";
+        bin.append_attribute("value") = "";
+        bin.append_attribute("unitCvRef") = "MS";
+        bin.append_attribute("unitAccession") = "MS:1000131";
+        bin.append_attribute("unitName") = "number of detector counts";
+
+      } else {
+        bin.append_attribute("accession") = "MS:1000786";
+        bin.append_attribute("name") = "non-standard data array";
+        bin.append_attribute("value") = names[j].c_str();
+      }
+
+      pugi::xml_node bin_data = bin_array.append_child("binary");
+
+      bin_data.append_child(pugi::node_pcdata).set_value(x_enc.c_str());
+
+    }
+
+  }
+
+  if (std::filesystem::exists("example_modified_test.xml")) std::filesystem::remove("example_modified_test.xml");
+
+  std::cout << "Saving result: " << doc.save_file("example_modified_test.xml") << std::endl;
+
+};

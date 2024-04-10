@@ -4,35 +4,15 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <regex>
-#include <tuple>
 #include <numeric>
-#include <cstring>
-#include <algorithm>
-#include <sstream>
-#include <zlib.h>
-#include <omp.h>
 
 #define PUGIXML_HEADER_ONLY
 #include "../external/pugixml-1.14/src/pugixml.hpp"
 
+#define UTILS_HEADER_ONLY
+#include "utils.hpp"
+
 namespace mzml {
-
-  namespace utils {
-
-    std::string encode_little_endian(const std::vector<double>& input, const int& precision);
-
-    std::vector<double> decode_little_endian(const std::string& str, const int& precision);
-
-    std::string compress_zlib(const std::string& str);
-
-    std::string decompress_zlib(const std::string& compressed_string);
-
-    std::string encode_base64(const std::string& str);
-
-    std::string decode_base64(const std::string& encoded_string);
-
-  }; // namespace utils
 
   struct SPECTRA_HEADERS {
     std::vector<int> spec_index;
@@ -108,14 +88,17 @@ namespace mzml {
     std::vector<double> product_mz;
   };
 
-
-
-  /// @brief Class representing an mzML file.
   class MZML {
 
     private:
 
       std::string file_path;
+
+      std::string file_dir;
+
+      std::string file_name;
+
+      std::string file_extension;
 
       pugi::xml_document doc;
 
@@ -176,6 +159,14 @@ namespace mzml {
       MZML(const std::string& file) {
 
         file_path = file;
+
+        file_dir = file.substr(0, file.find_last_of("/\\") + 1);
+
+        file_name = file.substr(file.find_last_of("/\\") + 1);
+        
+        file_extension = file_name.substr(file_name.find_last_of(".") + 1);
+        
+        file_name = file_name.substr(0, file_name.find_last_of("."));
 
         const char* path = file.c_str();
 
@@ -321,7 +312,6 @@ namespace mzml {
         }
 
         return hd;
-
       };
 
       std::vector<std::vector<std::vector<double>>> get_spectra(const std::vector<int>& indices = {}) {
@@ -345,6 +335,15 @@ namespace mzml {
 
         return sp;
       };
+
+      void write_spectra(
+        std::vector<std::vector<std::vector<double>>> spectra = {},
+        std::vector<std::string> names = {},
+        std::string mode = "centroid",
+        bool compress = true,
+        bool save = false,
+        std::string save_suf = "_cent"
+      );
 
       CHROMATOGRAMS_HEADERS get_chromatograms_headers(const std::vector<int>& indices = {}) {
 
@@ -392,6 +391,87 @@ namespace mzml {
 
       };
     };
+
+    void test_extract_spectra_mzml(const std::string& file) {
+      std::cout << std::endl;
+      std::cout << std::endl;
+      std::cout << "Test Extract Spectra mzML file:" << std::endl;
+      std::cout << std::endl;
+
+      mzml::MZML mzml(file);
+
+      std::cout << "Root name: " << mzml.get_root_name() << std::endl;
+
+      std::cout << "Number of spectra: " << mzml.get_number_spectra() << std::endl;
+
+      mzml::SPECTRA_HEADERS hd;
+
+      hd = mzml.get_spectra_headers();
+
+      int number = hd.spec_index.size();
+
+      std::cout << "Size of vector in headers struct: " << number << std::endl;
+
+      std::cout << "Retention time of 10th spectrum: " << hd.scan_rt[10] << std::endl;
+
+      std::cout << "Number of binary arrays: " << mzml.get_number_spectra_binary_arrays() << std::endl;
+
+      std::vector<mzml::BINARY_METADATA> mtd = mzml.get_spectra_binary_metadata();
+
+      std::cout << "Name of first binary array: " << mtd[1].data_name << std::endl;
+
+      std::vector<std::vector<std::vector<double>>> spectra;
+
+      std::vector<int> indices = {10, 15};
+
+      spectra = mzml.get_spectra(indices);
+
+      std::cout << "Number of extracted spectra: " << spectra.size() << std::endl;
+
+      std::cout << "Number of traces in the first extracted spectrum: " << spectra[0][0].size() << std::endl;
+
+      std::cout << std::endl;
+    };
+
+    void test_extract_chromatograms_mzml(const std::string& file) {
+      std::cout << std::endl;
+      std::cout << std::endl;
+      std::cout << "Test Chromatograms mzML file:" << std::endl;
+      std::cout << std::endl;
+
+      mzml::MZML mzml(file);
+
+      std::cout << "Root name: " << mzml.get_root_name() << std::endl;
+
+      std::cout << "Number of chromatograms: " << mzml.get_number_chromatograms() << std::endl;
+
+      mzml::CHROMATOGRAMS_HEADERS ch;
+
+      ch = mzml.get_chromatograms_headers();
+
+      int number_chroms = ch.chrom_index.size();
+
+      std::cout << "Size of vector in headers chroms struct: " << number_chroms << std::endl;
+
+      std::cout << "Polarity of 5th chrom: " << ch.chrom_polarity[5] << std::endl;
+
+      std::vector<std::vector<std::vector<double>>> chroms;
+
+      std::vector<int> indices = {1, 5, 6};
+
+      chroms = mzml.get_chromatograms(indices);
+
+      std::cout << "Number of extracted chroms: " << chroms.size() << std::endl;
+
+      std::cout << "Number of variables in 1st chromatogram: " << chroms[0].size() << std::endl;
+
+      std::cout << "Number of variables in 6th chromatogram: " << chroms[2].size() << std::endl;
+
+      std::cout << "Number of traces in the first extracted chrom: " << chroms[0][0].size() << std::endl;
+
+      std::cout << std::endl;
+    };
+
   }; // namespace mzml
 
 #endif // MZML_HPP
