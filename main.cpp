@@ -5,6 +5,9 @@
 #define MZML_HEADER_ONLY
 #include "mzml.hpp"
 
+#define MZXML_HEADER_ONLY
+#include "mzxml.hpp"
+
 #define SC_HEADER_ONLY
 #include "sclib.hpp"
 
@@ -42,43 +45,72 @@ int main() {
   // std::cout << "path: " << ana.file_dir << std::endl;
   // std::cout << "ext: " << ana.file_extension << std::endl;
   // std::cout << "full: " << ana.file_path << std::endl;
+  // std::cout << "n spectra: " << ana.number_spectra << std::endl;
 
-  mzml::MZML z(file9);
+  mzxml::MZXML z(file8);
 
   std::vector<int> idx(10);
   std::iota(idx.begin(), idx.end(), 0);
 
-  mzml::SPECTRA_HEADERS hd;
-  
-  std::vector<std::vector<std::vector<double>>> spectra;
-  // spectra list
-      // spectrum
-        // m/z, intensity, ....
+  // z.print();
+  // z.print_binary_metadata();
+  mzxml::SPECTRA_HEADERS hd = z.get_spectra_headers(idx);
 
-  mzml::SPECTRA_HEADERS headers;
-  
-  spectra = z.get_spectra();
-  headers = z.get_spectra_headers();
-
-  std::cout << "Number of extracted spectra: " << spectra.size() << std::endl;
-
-  int number_traces = 0;
-  for (size_t i = 0; i < spectra.size(); i++) {
-    for (size_t j = 0; j < spectra[i].size(); j++) {
-      spectra[i][j].resize(10);
-    }
-    number_traces = number_traces + spectra[i][0].size();
-    spectra[i].push_back(spectra[i][0]);
-    spectra[i].push_back(spectra[i][0]);
+  // show all rt values in console
+  for (size_t i = 0; i < hd.spec_index.size(); i++) {
+    std::cout << hd.spec_id[i] << std::endl;
   }
 
-  std::cout << "Number of traces: " << number_traces << std::endl;
-  std::cout << "Number of traces in 1st spectrum: " << spectra[0][0].size() << std::endl;
-  std::cout << "Number of binary entries: " << spectra[0].size() << std::endl;
 
-  std::vector<std::string> bin_names = {"mz", "intensity", "x1", "x2"};
+  // mzml::MZML z(file2);
 
-  z.write_spectra(spectra, bin_names);
+  // std::vector<int> idx(10);
+  // std::iota(idx.begin(), idx.end(), 0);
+
+  // std::vector<double> rt = z.get_spectra_collision_energy(idx);
+
+  // // show all rt values in console
+  // for (size_t i = 0; i < rt.size(); i++) {
+  //   std::cout << rt[i] << std::endl;
+  // }
+
+
+  // mzml::MZML z(file9);
+
+  // std::vector<int> idx(10);
+  // std::iota(idx.begin(), idx.end(), 0);
+
+  // mzml::SPECTRA_HEADERS hd;
+  
+  // std::vector<std::vector<std::vector<double>>> spectra;
+  // // spectra list
+  //     // spectrum
+  //       // m/z, intensity, ....
+
+  // mzml::SPECTRA_HEADERS headers;
+  
+  // spectra = z.get_spectra();
+  // headers = z.get_spectra_headers();
+
+  // std::cout << "Number of extracted spectra: " << spectra.size() << std::endl;
+
+  // int number_traces = 0;
+  // for (size_t i = 0; i < spectra.size(); i++) {
+  //   for (size_t j = 0; j < spectra[i].size(); j++) {
+  //     spectra[i][j].resize(10);
+  //   }
+  //   number_traces = number_traces + spectra[i][0].size();
+  //   spectra[i].push_back(spectra[i][0]);
+  //   spectra[i].push_back(spectra[i][0]);
+  // }
+
+  // std::cout << "Number of traces: " << number_traces << std::endl;
+  // std::cout << "Number of traces in 1st spectrum: " << spectra[0][0].size() << std::endl;
+  // std::cout << "Number of binary entries: " << spectra[0].size() << std::endl;
+
+  // std::vector<std::string> bin_names = {"mz", "intensity", "x1", "x2"};
+
+  // z.write_spectra(spectra, bin_names);
 
 
 

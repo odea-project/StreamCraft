@@ -17,6 +17,7 @@ namespace sc {
 
   void welcome();
 
+  
   class MassSpecAnalysis {
 
     private:
@@ -26,7 +27,7 @@ namespace sc {
       };
 
     public:
-      
+
       std::string file_path;
 
       std::string file_dir;
@@ -35,12 +36,41 @@ namespace sc {
 
       std::string file_extension;
 
+      int format_case;
+
+      int number_spectra;
+
+      int number_chromatograms;
+
+      int number_spectrum_arrays;
+
       MassSpecAnalysis(const std::string& file) {
         file_path = file;
         file_dir = file.substr(0, file.find_last_of("/\\") + 1);
+        if (file_dir.back() == '/') file_dir.pop_back();
         file_name = file.substr(file.find_last_of("/\\") + 1);
         file_extension = file_name.substr(file_name.find_last_of(".") + 1);
         file_name = file_name.substr(0, file_name.find_last_of("."));
+
+        if (std::find(possible_formats.begin(), possible_formats.end(), file_extension) == possible_formats.end()) {
+          std::cerr << "Invalid file extension for MassSpecAnalysis!" << std::endl;
+        }
+
+        format_case = std::distance(possible_formats.begin(), std::find(possible_formats.begin(), possible_formats.end(), file_extension));
+
+        switch (format_case) {
+
+          case 0: {
+            mzml::MZML ms(file);
+            number_spectra = ms.get_number_spectra();
+            number_chromatograms = ms.get_number_chromatograms();
+            number_spectrum_arrays = ms.get_number_spectra_binary_arrays();
+            break;
+          }
+          
+          default:
+            break;
+        }
       }
   };
 

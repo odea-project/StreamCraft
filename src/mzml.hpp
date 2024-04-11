@@ -44,6 +44,17 @@ namespace mzml {
     std::vector<double> activation_ce;
   };
 
+  struct CHROMATOGRAMS_HEADERS {
+    std::vector<int> chrom_index;
+    std::vector<std::string> chrom_id;
+    std::vector<int> chrom_array_length;
+    std::vector<std::string> chrom_polarity;
+    std::vector<double> precursor_mz;
+    std::vector<std::string> activation_type;
+    std::vector<double> activation_ce;
+    std::vector<double> product_mz;
+  };
+
   class BINARY_METADATA {
 
     public:
@@ -77,17 +88,6 @@ namespace mzml {
       };
   };
 
-  struct CHROMATOGRAMS_HEADERS {
-    std::vector<int> chrom_index;
-    std::vector<std::string> chrom_id;
-    std::vector<int> chrom_array_length;
-    std::vector<std::string> chrom_polarity;
-    std::vector<double> precursor_mz;
-    std::vector<std::string> activation_type;
-    std::vector<double> activation_ce;
-    std::vector<double> product_mz;
-  };
-
   class MZML {
 
     private:
@@ -110,6 +110,16 @@ namespace mzml {
 
       std::string name;
 
+      int number_spectra;
+
+      int number_chromatograms;
+
+      int number_spectra_binary_arrays;
+
+      SPECTRA_HEADERS first_spectra_headers;
+
+      std::vector<BINARY_METADATA> spectra_binary_metadata;
+
       std::vector<std::string> possible_accessions_binary_data = {
         "MS:1000514", "MS:1000515", "MS:1000516", "MS:1000517",
         "MS:1000595", "MS:1000617", "MS:1000786", "MS:1000820",
@@ -128,27 +138,49 @@ namespace mzml {
         "quadrupole_position_upper_bound_mz"
       };
 
-      int number_spectra;
+      std::vector<pugi::xml_node> link_vector_spectra_nodes();
 
-      int number_chromatograms;
+      std::vector<pugi::xml_node> link_vector_chrom_nodes();
 
-      int number_spectra_binary_arrays;
-
-      SPECTRA_HEADERS first_spectra_headers;
-
-      SPECTRA_HEADERS extract_spectra_headers(const std::vector<int>& idxs);
-
-      std::vector<BINARY_METADATA> spectra_binary_metadata;
+      void extract_spectra_binary_metadata(const pugi::xml_node& first_node);
 
       BINARY_METADATA extract_binary_metadata(const pugi::xml_node& bin);
 
-      void extract_spectra_binary_metadata(const pugi::xml_node& first_node);
+      SPECTRA_HEADERS extract_spectra_headers(const std::vector<int>& idxs);
+
+      CHROMATOGRAMS_HEADERS extract_chrom_headers(const std::vector<int>& idxs);
+
+      int extract_spec_index(const pugi::xml_node& spec);
+      std::string extract_spec_id(const pugi::xml_node& spec);
+      int extract_spec_scan(const pugi::xml_node& spec);
+      int extract_spec_array_length(const pugi::xml_node& spec);
+      int extract_spec_level(const pugi::xml_node& spec);
+      std::string extract_spec_mode(const pugi::xml_node& spec);
+      std::string extract_spec_polarity(const pugi::xml_node& spec);
+      double extract_spec_lowmz(const pugi::xml_node& spec);
+      double extract_spec_highmz(const pugi::xml_node& spec);
+      double extract_spec_bpmz(const pugi::xml_node& spec);
+      double extract_spec_bpint(const pugi::xml_node& spec);
+      double extract_spec_tic(const pugi::xml_node& spec);
+      std::string extract_spec_title(const pugi::xml_node& spec);
+      double extract_scan_rt(const pugi::xml_node& spec);
+      double extract_scan_drift(const pugi::xml_node& spec);
+      std::string extract_scan_filter_string(const pugi::xml_node& spec);
+      int extract_scan_config(const pugi::xml_node& spec);
+      double extract_scan_injection_ion_time(const pugi::xml_node& spec);
+      int extract_precursor_scan(const pugi::xml_node& spec);
+      double extract_window_mz(const pugi::xml_node& spec);
+      double extract_window_mzlow(const pugi::xml_node& spec);
+      double extract_window_mzhigh(const pugi::xml_node& spec);
+      double extract_ion_mz(const pugi::xml_node& spec);
+      double extract_ion_intensity(const pugi::xml_node& spec);
+      int extract_ion_charge(const pugi::xml_node& spec);
+      std::string extract_activation_type(const pugi::xml_node& spec);
+      double extract_activation_ce(const pugi::xml_node& spec);
 
       std::vector<std::vector<double>> extract_spectrum(const pugi::xml_node& spectrum_node);
 
       std::vector<std::vector<std::vector<double>>> extract_spectra(const std::vector<int>& idxs);
-
-      CHROMATOGRAMS_HEADERS extract_chrom_headers(const std::vector<int>& idxs);
 
       std::vector<std::vector<double>> extract_chromatogram(const pugi::xml_node& chrom_node);
 
@@ -156,321 +188,58 @@ namespace mzml {
 
     public:
 
-      MZML(const std::string& file) {
+      MZML(const std::string& file);
+
+      const pugi::xml_document& get_document() {return doc;};
+      const pugi::xml_node& get_root() {return root;};
+      const std::string& get_root_name() {return name;};
+      const std::string& get_file_path() {return file_path;};
+      const std::string& get_file_dir() {return file_dir;};
+      const std::string& get_file_name() {return file_name;};
+      const std::string& get_file_extension() {return file_extension;};
+      const int& get_number_spectra() {return number_spectra;};
+      const int& get_number_chromatograms() {return number_chromatograms;};
+      const int& get_number_spectra_binary_arrays() {return number_spectra_binary_arrays;};
+      std::vector<BINARY_METADATA> get_spectra_binary_metadata() {return spectra_binary_metadata;};
+
+      std::vector<std::string> get_spectra_binary_short_names();
+
+      SPECTRA_HEADERS get_spectra_headers(std::vector<int> indices = {});
+      CHROMATOGRAMS_HEADERS get_chromatograms_headers(std::vector<int> indices = {});
+
+      std::vector<std::vector<std::vector<double>>> get_spectra(std::vector<int> indices = {});
+      std::vector<std::vector<std::vector<double>>> get_chromatograms(std::vector<int> indices = {});
+
+      std::vector<int> get_spectra_index(std::vector<int> indices = {});
+      std::vector<int> get_spectra_scan_number(std::vector<int> indices = {});
+      std::vector<int> get_spectra_array_length(std::vector<int> indices = {});
+      std::vector<int> get_spectra_level(std::vector<int> indices = {});
+      std::vector<std::string> get_spectra_mode(std::vector<int> indices = {});
+      std::vector<std::string> get_spectra_polarity(std::vector<int> indices = {});
+      std::vector<double> get_spectra_lowmz(std::vector<int> indices = {});
+      std::vector<double> get_spectra_highmz(std::vector<int> indices = {});
+      std::vector<double> get_spectra_bpmz(std::vector<int> indices = {});
+      std::vector<double> get_spectra_bpint(std::vector<int> indices = {});
+      std::vector<double> get_spectra_tic(std::vector<int> indices = {});
+      std::vector<double> get_spectra_rt(std::vector<int> indices = {});
+      std::vector<double> get_spectra_drift(std::vector<int> indices = {});
+      std::vector<int> get_spectra_precursor_scan(std::vector<int> indices = {});
+      std::vector<double> get_spectra_precursor_mz(std::vector<int> indices = {});
+      std::vector<double> get_spectra_precursor_window_mz(std::vector<int> indices = {});
+      std::vector<double> get_spectra_precursor_window_mzlow(std::vector<int> indices = {});
+      std::vector<double> get_spectra_precursor_window_mzhigh(std::vector<int> indices = {});
+      std::vector<double> get_spectra_collision_energy(std::vector<int> indices = {});
+
+      void print();
+      void print_spectra_binary_metadata();
+
+      void write_spectra(std::vector<std::vector<std::vector<double>>> spectra = {}, std::vector<std::string> names = {}, std::string mode = "centroid", bool compress = true, bool save = true, std::string save_suf = "_cent");
 
-        file_path = file;
-
-        file_dir = file.substr(0, file.find_last_of("/\\") + 1);
-
-        file_name = file.substr(file.find_last_of("/\\") + 1);
-        
-        file_extension = file_name.substr(file_name.find_last_of(".") + 1);
-        
-        file_name = file_name.substr(0, file_name.find_last_of("."));
-
-        const char* path = file.c_str();
-
-        loading_result = doc.load_file(path, pugi::parse_default | pugi::parse_declaration | pugi::parse_pi);
-
-        if (loading_result) {
-          root = doc.document_element();
-
-          if (!root) {
-            std::cerr << "Warning: Root element is empty!" << std::endl;
-
-          } else {
-            format = root.name();
-
-            if ("indexedmzML" == format) {
-              format = "mzML";
-
-            } else {
-              std::cerr << "Warning: Root element must be indexedmzML!" << std::endl;
-            }
-          }
-
-        } else {
-          std::cerr << "Warning: mzML file could not be opened!" << std::endl << loading_result.description() << std::endl;
-        }
-
-        if (format == "mzML") {
-          root = root.first_child();
-        }
-
-        name = root.name();
-
-        std::string search_run = "//run";
-
-        pugi::xpath_node xps_run = root.select_node(search_run.c_str());
-
-        pugi::xml_node spec_list = xps_run.node().child("spectrumList");
-
-        std::vector<int> sp0 = {0};
-
-        first_spectra_headers = extract_spectra_headers(sp0);
-
-        number_spectra = spec_list.attribute("count").as_int();
-
-        if (number_spectra > 0) {
-          extract_spectra_binary_metadata(spec_list.first_child());
-        }
-
-        pugi::xml_node chrom_list = xps_run.node().child("chromatogramList");
-
-        number_chromatograms = chrom_list.attribute("count").as_int();
-      }
-
-      const pugi::xml_document& get_document() {
-        return doc;
-      };
-
-      const pugi::xml_node& get_root() {
-        return root;
-      };
-
-      const std::string& get_root_name() {
-        return name;
-      };
-
-      const int& get_number_spectra() {
-        return number_spectra;
-      };
-
-      const int& get_number_chromatograms() {
-        return number_chromatograms;
-      };
-
-      const int& get_number_spectra_binary_arrays() {
-        return number_spectra_binary_arrays;
-      };
-
-      std::vector<BINARY_METADATA> get_spectra_binary_metadata() {
-        return spectra_binary_metadata;
-      };
-
-      std::vector<std::string> get_spectra_binary_short_names() {
-        std::vector<std::string> names(number_spectra_binary_arrays);
-        if (number_spectra_binary_arrays > 0) {
-          for (int i = 0; i < number_spectra_binary_arrays; ++i) {
-            names[i] = spectra_binary_metadata[i].data_name_short;
-          }
-        }
-
-        return names;
-      };
-
-      void print() {
-        std::cout << name << std::endl;
-        std::cout << std::endl;
-        std::cout << " File:                      " << file_path << std::endl;
-        std::cout << std::endl;
-        std::cout << " Number of spectra:         " << number_spectra << std::endl;
-        std::cout << " Spectra mode (first):      " << first_spectra_headers.spec_mode[0] << std::endl;
-        std::cout << " Number of binnary arrays:  " << number_spectra_binary_arrays << std::endl;
-        std::cout << " Name of binary arrays:     ";
-        if (number_spectra_binary_arrays > 0) {
-          for (int i = 0; i < number_spectra_binary_arrays; ++i) {
-            std::cout << spectra_binary_metadata[i].data_name_short;
-            if (i < (number_spectra_binary_arrays -1)) {
-              std::cout << ", ";
-            }
-          }
-        }
-        std::cout << std::endl;
-        std::cout << std::endl;
-        std::cout << " Number of chromatograms:   " << number_chromatograms << std::endl;
-        std::cout << std::endl;
-      };
-
-      void print_spectra_binary_metadata() {
-
-        if (number_spectra_binary_arrays > 0) {
-          for (int i = 0; i < number_spectra_binary_arrays; ++i) {
-            spectra_binary_metadata[i].print();
-          }
-        }
-
-      };
-
-      SPECTRA_HEADERS get_spectra_headers(const std::vector<int>& indices = {}) {
-
-        SPECTRA_HEADERS hd;
-
-        if (number_spectra == 0) {
-          std::cerr << "Warning: There are no spectra in the mzML file!" << std::endl;
-
-        } else {
-
-          if (indices.size() == 0) {
-            std::vector<int> all_indices(number_spectra);
-            std::iota(all_indices.begin(), all_indices.end(), 0);
-            hd = extract_spectra_headers(all_indices);
-
-          } else {
-            hd = extract_spectra_headers(indices);
-          }
-        }
-
-        return hd;
-      };
-
-      std::vector<std::vector<std::vector<double>>> get_spectra(const std::vector<int>& indices = {}) {
-
-        std::vector<std::vector<std::vector<double>>> sp;
-
-        if (number_spectra == 0) {
-          std::cerr << "Warning: There are no spectra in the mzML file!" << std::endl;
-
-        } else {
-
-          if (indices.size() == 0) {
-            std::vector<int> all_indices(number_spectra);
-            std::iota(all_indices.begin(), all_indices.end(), 0);
-            sp = extract_spectra(all_indices);
-
-          } else {
-            sp = extract_spectra(indices);
-          }
-        }
-
-        return sp;
-      };
-
-      void write_spectra(
-        std::vector<std::vector<std::vector<double>>> spectra = {},
-        std::vector<std::string> names = {},
-        std::string mode = "centroid",
-        bool compress = true,
-        bool save = false,
-        std::string save_suf = "_cent"
-      );
-
-      CHROMATOGRAMS_HEADERS get_chromatograms_headers(const std::vector<int>& indices = {}) {
-
-        CHROMATOGRAMS_HEADERS ch;
-
-        if (number_chromatograms == 0) {
-          std::cerr << "Warning: There are no chromatograms in the mzML file!" << std::endl;
-
-        } else {
-
-          if (indices.size() == 0) {
-            std::vector<int> all_indices(number_chromatograms);
-            std::iota(all_indices.begin(), all_indices.end(), 0);
-            ch = extract_chrom_headers(all_indices);
-
-          } else {
-            ch = extract_chrom_headers(indices);
-          }
-        }
-
-        return ch;
-
-      };
-
-      std::vector<std::vector<std::vector<double>>> get_chromatograms(const std::vector<int>& indices = {}) {
-
-        std::vector<std::vector<std::vector<double>>> chr;
-
-        if (number_chromatograms == 0) {
-          std::cerr << "Warning: There are no chromatograms in the mzML file!" << std::endl;
-
-        } else {
-
-          if (indices.size() == 0) {
-            std::vector<int> all_indices(number_chromatograms);
-            std::iota(all_indices.begin(), all_indices.end(), 0);
-            chr = extract_chromatograms(all_indices);
-
-          } else {
-            chr = extract_chromatograms(indices);
-          }
-        }
-
-        return chr;
-
-      };
     };
 
-    void test_extract_spectra_mzml(const std::string& file) {
-      std::cout << std::endl;
-      std::cout << std::endl;
-      std::cout << "Test Extract Spectra mzML file:" << std::endl;
-      std::cout << std::endl;
+    void test_extract_spectra_mzml(const std::string& file);
 
-      mzml::MZML mzml(file);
-
-      std::cout << "Root name: " << mzml.get_root_name() << std::endl;
-
-      std::cout << "Number of spectra: " << mzml.get_number_spectra() << std::endl;
-
-      mzml::SPECTRA_HEADERS hd;
-
-      hd = mzml.get_spectra_headers();
-
-      int number = hd.spec_index.size();
-
-      std::cout << "Size of vector in headers struct: " << number << std::endl;
-
-      std::cout << "Retention time of 10th spectrum: " << hd.scan_rt[10] << std::endl;
-
-      std::cout << "Number of binary arrays: " << mzml.get_number_spectra_binary_arrays() << std::endl;
-
-      std::vector<mzml::BINARY_METADATA> mtd = mzml.get_spectra_binary_metadata();
-
-      std::cout << "Name of first binary array: " << mtd[1].data_name << std::endl;
-
-      std::vector<std::vector<std::vector<double>>> spectra;
-
-      std::vector<int> indices = {10, 15};
-
-      spectra = mzml.get_spectra(indices);
-
-      std::cout << "Number of extracted spectra: " << spectra.size() << std::endl;
-
-      std::cout << "Number of traces in the first extracted spectrum: " << spectra[0][0].size() << std::endl;
-
-      std::cout << std::endl;
-    };
-
-    void test_extract_chromatograms_mzml(const std::string& file) {
-      std::cout << std::endl;
-      std::cout << std::endl;
-      std::cout << "Test Chromatograms mzML file:" << std::endl;
-      std::cout << std::endl;
-
-      mzml::MZML mzml(file);
-
-      std::cout << "Root name: " << mzml.get_root_name() << std::endl;
-
-      std::cout << "Number of chromatograms: " << mzml.get_number_chromatograms() << std::endl;
-
-      mzml::CHROMATOGRAMS_HEADERS ch;
-
-      ch = mzml.get_chromatograms_headers();
-
-      int number_chroms = ch.chrom_index.size();
-
-      std::cout << "Size of vector in headers chroms struct: " << number_chroms << std::endl;
-
-      std::cout << "Polarity of 5th chrom: " << ch.chrom_polarity[5] << std::endl;
-
-      std::vector<std::vector<std::vector<double>>> chroms;
-
-      std::vector<int> indices = {1, 5, 6};
-
-      chroms = mzml.get_chromatograms(indices);
-
-      std::cout << "Number of extracted chroms: " << chroms.size() << std::endl;
-
-      std::cout << "Number of variables in 1st chromatogram: " << chroms[0].size() << std::endl;
-
-      std::cout << "Number of variables in 6th chromatogram: " << chroms[2].size() << std::endl;
-
-      std::cout << "Number of traces in the first extracted chrom: " << chroms[0][0].size() << std::endl;
-
-      std::cout << std::endl;
-    };
+    void test_extract_chromatograms_mzml(const std::string& file);
 
   }; // namespace mzml
 
