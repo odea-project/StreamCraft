@@ -40,26 +40,41 @@ int main() {
   std::string file10 = "./excluded/example_modified.mzML";
 
   sc::welcome();
-  // sc::MassSpecAnalysis ana = file2;
+  sc::MassSpecAnalysis ana = file1;
+  ana.print();
+  
   // std::cout << "name: " << ana.file_name << std::endl;
   // std::cout << "path: " << ana.file_dir << std::endl;
   // std::cout << "ext: " << ana.file_extension << std::endl;
   // std::cout << "full: " << ana.file_path << std::endl;
   // std::cout << "n spectra: " << ana.number_spectra << std::endl;
+  // std::cout << "n chromatograms: " << ana.number_chromatograms << std::endl;
+  // utils::MS_SPECTRA_HEADERS hd = ana.ms->get_spectra_headers();
+  // std::cout << "n spectra: " << hd.id.size() << std::endl;
 
-  mzxml::MZXML z(file8);
+  
 
-  std::vector<int> idx(10);
-  std::iota(idx.begin(), idx.end(), 0);
+  // mzxml::MZXML z(file8);
 
-  // z.print();
-  // z.print_binary_metadata();
-  mzxml::SPECTRA_HEADERS hd = z.get_spectra_headers(idx);
+  // std::vector<int> idx(10);
+  // std::iota(idx.begin(), idx.end(), 0);
 
-  // show all rt values in console
-  for (size_t i = 0; i < hd.spec_index.size(); i++) {
-    std::cout << hd.spec_id[i] << std::endl;
-  }
+  // // z.print();
+  // // z.print_binary_metadata();
+  // utils::MS_SPECTRA_HEADERS hd = z.get_spectra_headers(idx);
+
+  // // show all rt values in console
+  // for (size_t i = 0; i < hd.index.size(); i++) {
+  //   std::cout << hd.rt[i] << std::endl;
+  // }
+
+  // std::vector<std::vector<std::vector<double>>> spectra = z.get_spectra(idx);
+
+  // // show all rt values in console
+  // for (size_t i = 0; i < spectra[0][0].size(); i++) {
+  //   std::cout << spectra[0][1][i] << " ";
+  // }
+  // std::cout << std::endl;
 
 
   // mzml::MZML z(file2);
@@ -80,14 +95,14 @@ int main() {
   // std::vector<int> idx(10);
   // std::iota(idx.begin(), idx.end(), 0);
 
-  // mzml::SPECTRA_HEADERS hd;
+  // utils::MS_SPECTRA_HEADERS hd;
   
   // std::vector<std::vector<std::vector<double>>> spectra;
   // // spectra list
   //     // spectrum
   //       // m/z, intensity, ....
 
-  // mzml::SPECTRA_HEADERS headers;
+  // utils::MS_SPECTRA_HEADERS headers;
   
   // spectra = z.get_spectra();
   // headers = z.get_spectra_headers();
@@ -224,6 +239,14 @@ int main() {
   // utils::test_encoding_decoding_little_endian(inputDouble, 4);
   // std::vector<double> input = {10, 13.4, 15.6, 1000.5};
   // utils::test_encoding_decoding_little_endian(input, 8);
+
+  // // Pre conversion of a float vector to double for returning the same as input
+  // std::vector<float> inputFloat = {10, 13.4, 15.6, 1000.5};
+  // std::vector<double> inputDouble(inputFloat.size());
+  // for (size_t i = 0; i < inputFloat.size(); i++) inputDouble[i] = static_cast<double>(inputFloat[i]);
+  // utils::test_encoding_decoding_big_endian(inputDouble, 4);
+  // std::vector<double> input = {10, 13.4, 15.6, 1000.5};
+  // utils::test_encoding_decoding_big_endian(input, 8);
 
   // mzml::test_extract_spectra_mzml(file2);
 

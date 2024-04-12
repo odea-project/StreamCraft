@@ -17,14 +17,65 @@ namespace sc {
 
   void welcome();
 
-  
+  class VirtualMassSpecFile {
+    public:
+      virtual ~VirtualMassSpecFile() = default;
+
+      virtual int get_number_spectra() = 0;
+      virtual int get_number_chromatograms() = 0;
+      virtual int get_number_spectra_binary_arrays() = 0;
+      virtual utils::MS_SPECTRA_HEADERS get_first_spectra_headers() = 0;
+      virtual utils::MS_SPECTRA_HEADERS get_spectra_headers() = 0;
+      // virtual utils::MS_CHROMATOGRAMS_HEADERS get_chromatograms_headers() = 0;
+      // virtual std::vector<std::vector<std::vector<double>>> get_spectra() = 0;
+      // virtual std::vector<std::vector<std::vector<double>>> get_chromatograms() = 0;
+      // virtual std::vector<int> get_spectra_index() = 0;
+      // virtual std::vector<int> get_spectra_scan_number() = 0;
+      // virtual std::vector<int> get_spectra_array_length() = 0;
+      // virtual std::vector<int> get_spectra_level() = 0;
+      // virtual std::vector<std::string> get_spectra_mode() = 0;
+      // virtual std::vector<std::string> get_spectra_polarity() = 0;
+      // virtual std::vector<double> get_spectra_lowmz() = 0;
+      // virtual std::vector<double> get_spectra_highmz() = 0;
+      // virtual std::vector<double> get_spectra_bpmz() = 0;
+      // virtual std::vector<double> get_spectra_bpint() = 0;
+      // virtual std::vector<double> get_spectra_tic() = 0;
+      // virtual std::vector<double> get_spectra_rt() = 0;
+      // virtual std::vector<double> get_spectra_drift() = 0;
+      // virtual std::vector<int> get_spectra_precursor_scan() = 0;
+      // virtual std::vector<double> get_spectra_precursor_mz() = 0;
+      // virtual std::vector<double> get_spectra_precursor_window_mz() = 0;
+      // virtual std::vector<double> get_spectra_precursor_window_mzlow() = 0;
+      // virtual std::vector<double> get_spectra_precursor_window_mzhigh() = 0;
+      // virtual std::vector<double> get_spectra_collision_energy() = 0;  
+  };
+
+  template <typename T>
+  class MassSpecFile  : public VirtualMassSpecFile {
+    public:
+      MassSpecFile(const std::string& file) : ms(file) {}
+
+      int get_number_spectra() override { return ms.number_spectra; }
+
+      int get_number_chromatograms() override { return ms.number_chromatograms; }
+
+      int get_number_spectra_binary_arrays() { return ms.number_spectra_binary_arrays; }
+
+      utils::MS_SPECTRA_HEADERS get_first_spectra_headers() override { return ms.first_spectra_headers; }
+
+      utils::MS_SPECTRA_HEADERS get_spectra_headers() override { return ms.get_spectra_headers(); }
+
+      T& open() { return ms; };
+
+    private:
+      T ms;
+  };
+
   class MassSpecAnalysis {
 
     private:
-
-      std::vector<std::string> possible_formats = {
-        "mzML", "mzXML", "animl"
-      };
+    
+      std::vector<std::string> possible_formats = { "mzML", "mzXML", "animl" };
 
     public:
 
@@ -38,85 +89,20 @@ namespace sc {
 
       int format_case;
 
+      std::unique_ptr<VirtualMassSpecFile> ms;
+
       int number_spectra;
 
       int number_chromatograms;
 
-      int number_spectrum_arrays;
+      int number_spectra_binary_arrays;
 
-      MassSpecAnalysis(const std::string& file) {
-        file_path = file;
-        file_dir = file.substr(0, file.find_last_of("/\\") + 1);
-        if (file_dir.back() == '/') file_dir.pop_back();
-        file_name = file.substr(file.find_last_of("/\\") + 1);
-        file_extension = file_name.substr(file_name.find_last_of(".") + 1);
-        file_name = file_name.substr(0, file_name.find_last_of("."));
+      utils::MS_SPECTRA_HEADERS first_spectra_headers;
 
-        if (std::find(possible_formats.begin(), possible_formats.end(), file_extension) == possible_formats.end()) {
-          std::cerr << "Invalid file extension for MassSpecAnalysis!" << std::endl;
-        }
+      MassSpecAnalysis(const std::string& file);
 
-        format_case = std::distance(possible_formats.begin(), std::find(possible_formats.begin(), possible_formats.end(), file_extension));
-
-        switch (format_case) {
-
-          case 0: {
-            mzml::MZML ms(file);
-            number_spectra = ms.get_number_spectra();
-            number_chromatograms = ms.get_number_chromatograms();
-            number_spectrum_arrays = ms.get_number_spectra_binary_arrays();
-            break;
-          }
-          
-          default:
-            break;
-        }
-      }
+      void print();
   };
-
-  
-
-  // class XML {
-
-  //   private:
-
-  //   public:
-
-  //     std::string file_path;
-
-  //     pugi::xml_document doc;
-
-  //     pugi::xml_node root;
-
-  //     pugi::xml_parse_result loading_result;
-
-  //     std::string name;
-
-  //     XML(const std::string& file) {
-
-  //       file_path = file;
-
-  //       const char* path = file.c_str();
-
-  //       loading_result = doc.load_file(path, pugi::parse_default | pugi::parse_declaration | pugi::parse_pi);
-
-  //       if (loading_result) {
-  //         root = doc.document_element();
-
-  //         if (!root) {
-  //           std::cout << std::endl;
-  //           std::cout << "Root node is empty!" << std::endl;
-
-  //         } else {
-  //           name = root.name();
-  //         }
-
-  //       } else {
-  //         std::cout << std::endl;
-  //         std::cout << "XML file could not be opened! " << std::endl << loading_result.description() << std::endl;
-  //       }
-  //     };
-  // };
 
 }; // namespace sc
 

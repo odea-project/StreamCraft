@@ -47,14 +47,16 @@ mzxml::MZXML::MZXML(const std::string& file) {
 
   pugi::xml_node msrun = root.child("msRun");
 
-  std::vector<int> sp0 = {0};
-
   number_spectra = msrun.attribute("scanCount").as_int();
 
   pugi::xml_node first_node = msrun.child("scan");
 
   if (number_spectra > 0) {
+
     if (first_node) extract_binary_metadata(first_node);
+
+    std::vector<int> sp0 = {0};
+    first_spectra_headers = extract_spectra_headers(sp0);
   }
 };
 
@@ -123,9 +125,78 @@ int mzxml::MZXML::extract_spec_scan(const pugi::xml_node& spec) {
   return spec.attribute("num").as_int();
 };
 
-mzxml::SPECTRA_HEADERS mzxml::MZXML::extract_spectra_headers(const std::vector<int>& idxs) {
+int mzxml::MZXML::extract_spec_array_length(const pugi::xml_node& spec) {
+  return spec.attribute("peaksCount").as_int();
+};
 
-  SPECTRA_HEADERS headers;
+int mzxml::MZXML::extract_spec_level(const pugi::xml_node& spec) {
+  return spec.attribute("msLevel").as_int();
+};
+
+std::string mzxml::MZXML::extract_spec_mode(const pugi::xml_node& spec) {
+  int centroided = spec.attribute("centroided").as_int();
+  if (centroided == 1) {
+    return "centroid";
+  } else if (centroided == 0) {
+     return "profile";
+  } else {
+    return "";
+  }
+};
+
+std::string mzxml::MZXML::extract_spec_polarity(const pugi::xml_node& spec) {
+  std::string pol_sign = spec.attribute("polarity").as_string();
+  if (pol_sign == "+") {
+     return "positive";
+  } else if (pol_sign == "-") {
+    return "negative";
+  } else {
+    return "";
+  }
+};
+
+double mzxml::MZXML::extract_spec_lowmz(const pugi::xml_node& spec) {
+  return spec.attribute("lowMz").as_double();
+};
+
+double mzxml::MZXML::extract_spec_highmz(const pugi::xml_node& spec) {
+  return spec.attribute("highMz").as_double();
+};
+
+double mzxml::MZXML::extract_spec_bpmz(const pugi::xml_node& spec) {
+  return spec.attribute("basePeakMz").as_double();
+};
+
+double mzxml::MZXML::extract_spec_bpint(const pugi::xml_node& spec) {
+  return spec.attribute("basePeakIntensity").as_double();
+};
+
+double mzxml::MZXML::extract_spec_tic(const pugi::xml_node& spec) {
+  return spec.attribute("totIonCurrent").as_double();
+};
+
+double mzxml::MZXML::extract_scan_rt(const pugi::xml_node& spec) {
+  std::string rt = spec.attribute("retentionTime").as_string();
+  double rt_n;
+  std::sscanf(rt.c_str(), "%*[^0123456789]%lf", &rt_n);
+  char last_char = '\0';
+  std::sscanf(rt.c_str() + rt.size() - 1, "%c", &last_char);
+  if (last_char != 'S') rt_n = rt_n * 60;
+  return rt_n;
+};
+
+double mzxml::MZXML::extract_ion_mz(const pugi::xml_node& spec) {
+  pugi::xml_node precursor = spec.child("precursorMz");
+  return precursor.text().as_double();
+};
+
+double mzxml::MZXML::extract_activation_ce(const pugi::xml_node& spec) {
+  return spec.attribute("collisionEnergy").as_double();
+};
+
+utils::MS_SPECTRA_HEADERS mzxml::MZXML::extract_spectra_headers(const std::vector<int>& idxs) {
+
+  utils::MS_SPECTRA_HEADERS headers;
 
   std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
 
@@ -141,33 +212,7 @@ mzxml::SPECTRA_HEADERS mzxml::MZXML::extract_spectra_headers(const std::vector<i
     return headers;
   }
 
-  headers.spec_index.resize(n);
-  headers.spec_id.resize(n);
-  headers.spec_scan.resize(n);
-  headers.spec_array_length.resize(n);
-  headers.spec_level.resize(n);
-  headers.spec_mode.resize(n);
-  headers.spec_polarity.resize(n);
-  headers.spec_lowmz.resize(n);
-  headers.spec_highmz.resize(n);
-  headers.spec_bpmz.resize(n);
-  headers.spec_bpint.resize(n);
-  headers.spec_tic.resize(n);
-  headers.spec_title.resize(n);
-  headers.scan_rt.resize(n);
-  headers.scan_drift.resize(n);
-  headers.scan_filter_string.resize(n);
-  headers.scan_config.resize(n);
-  headers.scan_injection_ion_time.resize(n);
-  headers.precursor_scan.resize(n);
-  headers.window_mz.resize(n);
-  headers.window_mzlow.resize(n);
-  headers.window_mzhigh.resize(n);
-  headers.ion_mz.resize(n);
-  headers.ion_intensity.resize(n);
-  headers.ion_charge.resize(n);
-  headers.activation_type.resize(n);
-  headers.activation_ce.resize(n);
+  headers.resize_all(n);
 
   // #pragma omp parallel for
   for (int i = 0; i < n; i++) {
@@ -176,84 +221,106 @@ mzxml::SPECTRA_HEADERS mzxml::MZXML::extract_spectra_headers(const std::vector<i
 
     const pugi::xml_node& spec = spectra_nodes[index];
 
-    headers.spec_index[i] = extract_spec_index(spec);
+    headers.index[i] = extract_spec_index(spec);
+    headers.id[i] = extract_spec_id(spec);
+    headers.scan[i] = extract_spec_scan(spec);
+    headers.array_length[i] = extract_spec_array_length(spec);
+    headers.level[i] = extract_spec_level(spec);
+    headers.mode[i] = extract_spec_mode(spec);
+    headers.polarity[i] = extract_spec_polarity(spec);
+    headers.lowmz[i] = extract_spec_lowmz(spec);
+    headers.highmz[i] = extract_spec_highmz(spec);
+    headers.bpmz[i] = extract_spec_bpmz(spec);
+    headers.bpint[i] = extract_spec_bpint(spec);
+    headers.tic[i] = extract_spec_tic(spec);
+    headers.rt[i] = extract_scan_rt(spec);
 
-    headers.spec_id[i] = extract_spec_id(spec);
+    pugi::xml_node precursor = spec.child("precursorMz");
 
-    headers.spec_scan[i] = extract_spec_scan(spec);
-
-    // headers.spec_array_length[i] = extract_spec_array_length(spec);
-
-    // headers.spec_level[i] = extract_spec_level(spec);
-
-    // headers.spec_mode[i] = extract_spec_mode(spec);
-
-    // headers.spec_polarity[i] = extract_spec_polarity(spec);
-
-    // headers.spec_lowmz[i] = extract_spec_lowmz(spec);
-
-    // headers.spec_highmz[i] = extract_spec_highmz(spec);
-
-    // headers.spec_bpmz[i] = extract_spec_bpmz(spec);
-
-    // headers.spec_bpint[i] = extract_spec_bpint(spec);
-
-    // headers.spec_tic[i] = extract_spec_tic(spec);
-
-    // headers.spec_title[i] = extract_spec_title(spec);
-
-    // headers.scan_rt[i] = extract_scan_rt(spec);
-
-    // headers.scan_drift[i] = extract_scan_drift(spec);
-
-    // headers.scan_filter_string[i] = extract_scan_filter_string(spec);
-
-    // headers.scan_config[i] = extract_scan_config(spec);
-
-    // headers.scan_injection_ion_time[i] = extract_scan_injection_ion_time(spec);
-
-    // pugi::xml_node precursor = spec.child("precursorList").child("precursor");
-
-    // if (precursor) {
-
-    //   headers.precursor_scan[i] = extract_precursor_scan(spec);
-
-    //   headers.window_mz[i] = extract_window_mz(spec);
-
-    //   headers.window_mzlow[i] = extract_window_mzlow(spec);
-
-    //   headers.window_mzhigh[i] = extract_window_mzhigh(spec);
-
-    //   pugi::xml_node slected_ion = precursor.child("selectedIonList").first_child();
-
-    //   if (slected_ion) {
-
-    //     headers.ion_mz[i] = extract_ion_mz(spec);
-
-    //     headers.ion_intensity[i] = extract_ion_intensity(spec);
-
-    //     headers.ion_charge[i] = extract_ion_charge(spec);
-
-    //   }
-
-    //   pugi::xml_node activation = precursor.child("activation");
-
-    //   if (activation) {
-
-    //     headers.activation_type[i] = extract_activation_type(spec);
-
-    //     headers.activation_ce[i] = extract_activation_ce(spec);
-
-    //   }
-    // }
+    if (precursor) {
+      headers.precursor_mz[i] = extract_ion_mz(spec);
+      headers.activation_ce[i] = extract_activation_ce(spec);
+    }
   } // end of i loop
 
   return headers;
 }
 
-mzxml::SPECTRA_HEADERS mzxml::MZXML::get_spectra_headers(std::vector<int> indices) {
+std::vector<std::vector<double>> mzxml::MZXML::extract_spectrum(const pugi::xml_node& spectrum_node) {
 
-  SPECTRA_HEADERS hd;
+  std::vector<std::vector<double>> spectrum(2);
+
+  int number_traces = spectrum_node.attribute("peaksCount").as_int();
+
+  if (number_traces == 0) return  spectrum;
+
+  for (int i = 0; i < 2; i++) spectrum[i].resize(number_traces);
+
+  const char* encoded_string = spectrum_node.child("peaks").child_value();
+
+  std::string decoded_string = utils::decode_base64(encoded_string);
+
+  if (binary_metadata.compressed) {
+    decoded_string = utils::decompress_zlib(decoded_string);
+  }
+
+  std::vector<double> res(number_traces * 2);
+
+  if (binary_metadata.byte_order == "big_endian") {
+    res = utils::decode_big_endian(decoded_string, binary_metadata.precision / 8);
+
+  } else if (binary_metadata.byte_order == "little_endian") {
+    res = utils::decode_little_endian(decoded_string, binary_metadata.precision / 8);
+
+  } else {
+    std::cerr << "Byte order must be big_endian or little_endian!" << std::endl;
+    return(spectrum);
+  }
+
+  for (int i = 0; i < number_traces; i++) {
+    spectrum[0][i] = res[i * 2];
+    spectrum[1][i] = res[i * 2 + 1];
+  }
+
+  return spectrum;
+};
+
+std::vector<std::vector<std::vector<double>>> mzxml::MZXML::extract_spectra(const std::vector<int>& idxs) {
+
+  std::vector<std::vector<std::vector<double>>> sp;
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  int n = idxs.size();
+
+  if (n == 0) {
+    std::cerr << "No indices given!" << std::endl;
+    return sp;
+  }
+
+  if (spectra_nodes.size() == 0) {
+    std::cerr << "No spectra found!" << std::endl;
+    return sp;
+  }
+
+  sp.resize(n);
+
+  // #pragma omp parallel for
+  for (int i = 0; i < n; i++) {
+
+    const int& index = idxs[i];
+
+    const pugi::xml_node& spectrum_node = spectra_nodes[index];
+
+    sp[i] = extract_spectrum(spectrum_node);
+  }
+
+  return sp;
+}
+
+utils::MS_SPECTRA_HEADERS mzxml::MZXML::get_spectra_headers(std::vector<int> indices) {
+
+  utils::MS_SPECTRA_HEADERS hd;
 
   if (number_spectra == 0) {
     std::cerr << "There are no spectra in the mzXML file!" << std::endl;
@@ -268,4 +335,23 @@ mzxml::SPECTRA_HEADERS mzxml::MZXML::get_spectra_headers(std::vector<int> indice
   hd = extract_spectra_headers(indices);
   
   return hd;
+};
+
+std::vector<std::vector<std::vector<double>>> mzxml::MZXML::get_spectra(std::vector<int> indices) {
+
+  std::vector<std::vector<std::vector<double>>> sp;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return sp;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  sp = extract_spectra(indices);
+  
+  return sp;
 };

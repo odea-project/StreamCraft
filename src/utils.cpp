@@ -31,13 +31,52 @@ std::string utils::encode_little_endian(const std::vector<double>& input, const 
   }
 };
 
+
+std::string utils::encode_big_endian(const std::vector<double>& input, const int& precision) {
+
+  if (precision == 8) {
+    std::vector<uint8_t> bytes(sizeof(double) * input.size());
+    
+    for (size_t i = 0; i < input.size(); ++i) {
+        uint64_t value = reinterpret_cast<uint64_t&>(const_cast<double&>(input[i]));
+        for (size_t j = 0; j < sizeof(double); ++j) {
+          bytes[i * sizeof(double) + j] = (value >> (8 * (sizeof(double) - 1 - j))) & 0xFF;
+        }
+    }
+
+    std::string result(bytes.begin(), bytes.end());
+
+    return result;
+
+  } else if (precision == 4) {
+    std::vector<uint8_t> bytes(sizeof(float) * input.size());
+    
+    for (size_t i = 0; i < input.size(); ++i) {
+        float floatValue = static_cast<float>(input[i]);
+        uint32_t value = reinterpret_cast<uint32_t&>(const_cast<float&>(floatValue));
+        for (size_t j = 0; j < sizeof(float); ++j) {
+          bytes[i * sizeof(float) + j] = (value >> (8 * (sizeof(float) - 1 - j))) & 0xFF;
+        }
+    }
+
+    std::string result(bytes.begin(), bytes.end());
+
+    return result;
+
+  } else {
+    throw("Precision must be 4 (32-bit) or 8 (64-bit)!");
+  }
+}
+
 /*!
  * Decodes from a little endian binary string to a vector of doubles according a precision integer.
  */
 std::vector<double> utils::decode_little_endian(const std::string& str, const int& precision) {
 
   std::vector<unsigned char> bytes(str.begin(), str.end());
+
   int bytes_size = (bytes.size() / precision);
+  
   std::vector<double> result(bytes_size);
 
   for (int i = 0; i < bytes_size; ++i) {
@@ -48,6 +87,47 @@ std::vector<double> utils::decode_little_endian(const std::string& str, const in
     } else if (precision == 4) {
       float floatValue;
       std::memcpy(&floatValue, &bytes[i * precision], sizeof(float));
+      result[i] = static_cast<double>(floatValue);
+
+    } else {
+      throw("Precision must be 4 (32-bit) or 8 (64-bit)!");
+    }
+  }
+
+  return result;
+};
+
+/*!
+ * Decodes from a big endian binary string to a vector of doubles according a precision integer.
+ */
+std::vector<double> utils::decode_big_endian(const std::string& str, const int& precision) {
+
+  std::vector<unsigned char> bytes(str.begin(), str.end());
+
+  int bytes_size = (bytes.size() / precision);
+  
+  std::vector<double> result(bytes_size);
+
+  for (int i = 0; i < bytes_size; ++i) {
+
+    if (precision == 8) {
+      uint64_t value = 0;
+
+      for (int j = 0; j < precision; ++j) {
+        value = (value << 8) | bytes[i * precision + j];
+      }
+
+      result[i] = reinterpret_cast<double&>(value);
+
+    } else if (precision == 4) {
+      uint32_t value = 0;
+      
+      for (int j = 0; j < precision; ++j) {
+        value = (value << 8) | bytes[i * precision + j];
+      }
+      
+      float floatValue = reinterpret_cast<float&>(value);
+      
       result[i] = static_cast<double>(floatValue);
 
     } else {
@@ -217,4 +297,76 @@ std::string utils::decode_base64(const std::string& encoded_string) {
   }
 
   return decoded_string;
+};
+
+/*!
+ * Test function for encoding and decoding little endian binary data.
+ */
+void utils::test_encoding_decoding_little_endian(const std::vector<double>& input, const int& precision) {
+
+  std::cout << std::endl;
+  std::cout << std::endl;
+  std::cout << "Encoding and Decoding Little Endian (" << precision * 8 << "-bit) Test" << std::endl;
+  std::cout << std::endl;
+
+  std::cout << "Input vector: ";
+  for (double i : input) std::cout << i << " ";
+  std::cout << std::endl;
+  std::string result = encode_little_endian(input, precision);
+  std::cout << "Encoded: " << result << std::endl;
+  result = compress_zlib(result);
+  std::cout << "Compressed: " << "Not printed!" << std::endl;
+  result = encode_base64(result);
+  std::cout << "Encoded_base64: " << result << std::endl;
+
+  std::cout << std::endl;
+  result = decode_base64(result);
+  std::cout << "Decoded_base64: " << "Not printed!" << std::endl;
+  result = decompress_zlib(result);
+  std::cout << "Decompressed: " << result << std::endl;
+  std::vector<double> result_back = decode_little_endian(result, precision);
+  std::cout << "Decoded: ";
+  for (double i : result_back) std::cout << i << " ";
+  std::cout << std::endl;
+  bool check = input == result_back;
+
+  std::cout << std::endl;
+  std::cout << "When 1 the result is equal to input: " << check << std::endl;
+  std::cout << std::endl;
+};
+
+/*!
+ * Test function for encoding and decoding big endian binary data.
+ */
+void utils::test_encoding_decoding_big_endian(const std::vector<double>& input, const int& precision) {
+
+  std::cout << std::endl;
+  std::cout << std::endl;
+  std::cout << "Encoding and Decoding Big Endian (" << precision * 8 << "-bit) Test" << std::endl;
+  std::cout << std::endl;
+
+  std::cout << "Input vector: ";
+  for (double i : input) std::cout << i << " ";
+  std::cout << std::endl;
+  std::string result = encode_big_endian(input, precision);
+  std::cout << "Encoded: " << result << std::endl;
+  result = compress_zlib(result);
+  std::cout << "Compressed: " << "Not printed!" << std::endl;
+  result = encode_base64(result);
+  std::cout << "Encoded_base64: " << result << std::endl;
+
+  std::cout << std::endl;
+  result = decode_base64(result);
+  std::cout << "Decoded_base64: " << "Not printed!" << std::endl;
+  result = decompress_zlib(result);
+  std::cout << "Decompressed: " << result << std::endl;
+  std::vector<double> result_back = decode_big_endian(result, precision);
+  std::cout << "Decoded: ";
+  for (double i : result_back) std::cout << i << " ";
+  std::cout << std::endl;
+  bool check = input == result_back;
+
+  std::cout << std::endl;
+  std::cout << "When 1 the result is equal to input: " << check << std::endl;
+  std::cout << std::endl;
 };
