@@ -1,15 +1,6 @@
 
-#define UTILS_HEADER_ONLY
-#include "utils.hpp"
-
-#define MZML_HEADER_ONLY
-#include "mzml.hpp"
-
-#define MZXML_HEADER_ONLY
-#include "mzxml.hpp"
-
-#define SC_HEADER_ONLY
-#include "sclib.hpp"
+#define STREAMCRAFT_HEADER_ONLY
+#include "StreamCraft_lib.hpp"
 
 // #include <omp.h>
 
@@ -85,7 +76,7 @@ int main() {
   // }
 
 
-  mzml::MZML z(file9);
+  sc::MZML z(file9);
 
   std::vector<int> idx(10);
   std::iota(idx.begin(), idx.end(), 0);
@@ -115,7 +106,7 @@ int main() {
 
   std::vector<std::string> bin_names = {"mz", "intensity", "x1", "x2"};
 
-  z.write_spectra(spectra, bin_names, mzml::SpectraMode::CENTROID, true, true, "_cent");
+  z.write_spectra(spectra, bin_names, sc::MS_SPECTRA_MODE::CENTROID, true, true, "_cent");
 
   std::cout << std::endl;
 

@@ -1,10 +1,10 @@
-#include "mzml.hpp"
+#include "StreamCraft_mzml.hpp"
 #include <omp.h>
 #include <filesystem>
 #include <cstring>
 #include <algorithm>
 
-mzml::MZML::MZML(const std::string& file) {
+sc::mzml::MZML::MZML(const std::string& file) {
 
   file_path = file;
 
@@ -70,7 +70,7 @@ mzml::MZML::MZML(const std::string& file) {
   number_chromatograms = chrom_list.attribute("count").as_int();
 };
 
-void mzml::MZML::print() {
+void sc::mzml::MZML::print() {
   std::cout << name << std::endl;
   std::cout << std::endl;
   std::cout << " File:                      " << file_path << std::endl;
@@ -93,7 +93,7 @@ void mzml::MZML::print() {
   std::cout << std::endl;
 };
 
-void mzml::MZML::print_spectra_binary_metadata() {
+void sc::mzml::MZML::print_spectra_binary_metadata() {
   if (number_spectra_binary_arrays > 0) {
     for (int i = 0; i < number_spectra_binary_arrays; ++i) {
       spectra_binary_metadata[i].print();
@@ -101,7 +101,7 @@ void mzml::MZML::print_spectra_binary_metadata() {
   }
 };
 
-std::vector<pugi::xml_node> mzml::MZML::link_vector_spectra_nodes() {
+std::vector<pugi::xml_node> sc::mzml::MZML::link_vector_spectra_nodes() {
 
   std::vector<pugi::xml_node> spectra;
 
@@ -123,30 +123,30 @@ std::vector<pugi::xml_node> mzml::MZML::link_vector_spectra_nodes() {
   return spectra;
 };
 
-int mzml::MZML::extract_spec_index(const pugi::xml_node& spec) {
+int sc::mzml::MZML::extract_spec_index(const pugi::xml_node& spec) {
   return spec.attribute("index").as_int();
 };
 
-std::string mzml::MZML::extract_spec_id(const pugi::xml_node& spec) {
+std::string sc::mzml::MZML::extract_spec_id(const pugi::xml_node& spec) {
   return spec.attribute("id").as_string();
 };
 
-int mzml::MZML::extract_spec_scan(const pugi::xml_node& spec) {
+int sc::mzml::MZML::extract_spec_scan(const pugi::xml_node& spec) {
   std::string spec_id = spec.attribute("id").as_string();
   std::size_t poslastEqual = spec_id.rfind('=');
   return std::stoi(spec_id.substr(poslastEqual + 1));
 };
 
-int mzml::MZML::extract_spec_array_length(const pugi::xml_node& spec) {
+int sc::mzml::MZML::extract_spec_array_length(const pugi::xml_node& spec) {
   return spec.attribute("defaultArrayLength").as_int();
 };
 
-int mzml::MZML::extract_spec_level(const pugi::xml_node& spec) {
+int sc::mzml::MZML::extract_spec_level(const pugi::xml_node& spec) {
   pugi::xml_node level_node = spec.find_child_by_attribute("cvParam", "name", "ms level");
   return level_node.attribute("value").as_int();
 };
 
-std::string mzml::MZML::extract_spec_mode(const pugi::xml_node& spec) {
+std::string sc::mzml::MZML::extract_spec_mode(const pugi::xml_node& spec) {
   pugi::xml_node centroid_node = spec.find_child_by_attribute("cvParam", "accession", "MS:1000127");
   pugi::xml_node profile_node = spec.find_child_by_attribute("cvParam", "accession", "MS:1000128");
   if (centroid_node) {
@@ -158,7 +158,7 @@ std::string mzml::MZML::extract_spec_mode(const pugi::xml_node& spec) {
   }
 };
 
-std::string mzml::MZML::extract_spec_polarity(const pugi::xml_node& spec) {
+std::string sc::mzml::MZML::extract_spec_polarity(const pugi::xml_node& spec) {
   pugi::xml_node pol_pos_node = spec.find_child_by_attribute("cvParam", "accession", "MS:1000130");
   pugi::xml_node pol_neg_node = spec.find_child_by_attribute("cvParam", "accession", "MS:1000129");
   if (pol_pos_node) {
@@ -170,37 +170,37 @@ std::string mzml::MZML::extract_spec_polarity(const pugi::xml_node& spec) {
   }
 };
 
-double mzml::MZML::extract_spec_lowmz(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_spec_lowmz(const pugi::xml_node& spec) {
   pugi::xml_node lowmz_node = spec.find_child_by_attribute("cvParam", "name", "lowest observed m/z");
   return lowmz_node.attribute("value").as_double();
 };
 
-double mzml::MZML::extract_spec_highmz(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_spec_highmz(const pugi::xml_node& spec) {
   pugi::xml_node highmz_node = spec.find_child_by_attribute("cvParam", "name", "highest observed m/z");
   return highmz_node.attribute("value").as_double();
 };
 
-double mzml::MZML::extract_spec_bpmz(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_spec_bpmz(const pugi::xml_node& spec) {
   pugi::xml_node bpmz_node = spec.find_child_by_attribute("cvParam", "name", "base peak m/z");
   return bpmz_node.attribute("value").as_double();
 };
 
-double mzml::MZML::extract_spec_bpint(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_spec_bpint(const pugi::xml_node& spec) {
   pugi::xml_node bpint_node = spec.find_child_by_attribute("cvParam", "name", "base peak intensity");
   return bpint_node.attribute("value").as_double();
 };
 
-double mzml::MZML::extract_spec_tic(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_spec_tic(const pugi::xml_node& spec) {
   pugi::xml_node tic_node = spec.find_child_by_attribute("cvParam", "name", "total ion current");
   return tic_node.attribute("value").as_double();
 };
 
-std::string mzml::MZML::extract_spec_title(const pugi::xml_node& spec) {
+std::string sc::mzml::MZML::extract_spec_title(const pugi::xml_node& spec) {
   pugi::xml_node title_node = spec.find_child_by_attribute("cvParam", "name", "spectrum title");
   return title_node.attribute("value").as_string();
 };
 
-double mzml::MZML::extract_scan_rt(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_scan_rt(const pugi::xml_node& spec) {
   pugi::xml_node node_scan = spec.child("scanList").child("scan");
   pugi::xml_node rt_node = node_scan.find_child_by_attribute("cvParam", "name", "scan start time");
   std::string rt_unit = rt_node.attribute("unitName").as_string();
@@ -209,31 +209,31 @@ double mzml::MZML::extract_scan_rt(const pugi::xml_node& spec) {
   return rt_val;
 };
 
-double mzml::MZML::extract_scan_drift(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_scan_drift(const pugi::xml_node& spec) {
   pugi::xml_node node_scan = spec.child("scanList").child("scan");
   pugi::xml_node drift_node = node_scan.find_child_by_attribute("cvParam", "name", "ion mobility drift time");
   return drift_node.attribute("value").as_double();
 };
 
-std::string mzml::MZML::extract_scan_filter_string(const pugi::xml_node& spec) {
+std::string sc::mzml::MZML::extract_scan_filter_string(const pugi::xml_node& spec) {
   pugi::xml_node node_scan = spec.child("scanList").child("scan");
   pugi::xml_node filter_string_node = node_scan.find_child_by_attribute("cvParam", "name", "filter string");
   return filter_string_node.attribute("value").as_string();
 };
 
-int mzml::MZML::extract_scan_config(const pugi::xml_node& spec) {
+int sc::mzml::MZML::extract_scan_config(const pugi::xml_node& spec) {
   pugi::xml_node node_scan = spec.child("scanList").child("scan");
   pugi::xml_node config_node = node_scan.find_child_by_attribute("cvParam", "name", "preset scan configuration");
   return config_node.attribute("value").as_int();
 };
 
-double mzml::MZML::extract_scan_injection_ion_time(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_scan_injection_ion_time(const pugi::xml_node& spec) {
   pugi::xml_node node_scan = spec.child("scanList").child("scan");
   pugi::xml_node iit_node = node_scan.find_child_by_attribute("cvParam", "name", "ion injection time");
   return iit_node.attribute("value").as_double();
 };
 
-int mzml::MZML::extract_precursor_scan(const pugi::xml_node& spec) {
+int sc::mzml::MZML::extract_precursor_scan(const pugi::xml_node& spec) {
   pugi::xml_node precursor = spec.child("precursorList").child("precursor");
   std::string pre_scan_str = precursor.attribute("spectrumRef").as_string();
   if (pre_scan_str != "") {
@@ -244,49 +244,49 @@ int mzml::MZML::extract_precursor_scan(const pugi::xml_node& spec) {
   }
 };
 
-double mzml::MZML::extract_window_mz(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_window_mz(const pugi::xml_node& spec) {
   pugi::xml_node precursor = spec.child("precursorList").child("precursor");
   pugi::xml_node isolation = precursor.child("isolationWindow");
   pugi::xml_node window_mz_node = isolation.find_child_by_attribute("cvParam", "name", "isolation window target m/z");
   return window_mz_node.attribute("value").as_double();
 };
 
-double mzml::MZML::extract_window_mzlow(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_window_mzlow(const pugi::xml_node& spec) {
   pugi::xml_node precursor = spec.child("precursorList").child("precursor");
   pugi::xml_node isolation = precursor.child("isolationWindow");
   pugi::xml_node window_mzlow_node = isolation.find_child_by_attribute("cvParam", "name", "isolation window lower offset");
   return window_mzlow_node.attribute("value").as_double();
 };
 
-double mzml::MZML::extract_window_mzhigh(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_window_mzhigh(const pugi::xml_node& spec) {
   pugi::xml_node precursor = spec.child("precursorList").child("precursor");
   pugi::xml_node isolation = precursor.child("isolationWindow");
   pugi::xml_node window_mzhigh_node = isolation.find_child_by_attribute("cvParam", "name", "isolation window upper offset");
   return window_mzhigh_node.attribute("value").as_double();
 };
 
-double mzml::MZML::extract_ion_mz(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_ion_mz(const pugi::xml_node& spec) {
   pugi::xml_node precursor = spec.child("precursorList").child("precursor");
   pugi::xml_node slected_ion = precursor.child("selectedIonList").first_child();
   pugi::xml_node ion_mz_node = slected_ion.find_child_by_attribute("cvParam", "name", "selected ion m/z");
   return ion_mz_node.attribute("value").as_double();
 };
 
-double mzml::MZML::extract_ion_intensity(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_ion_intensity(const pugi::xml_node& spec) {
   pugi::xml_node precursor = spec.child("precursorList").child("precursor");
   pugi::xml_node slected_ion = precursor.child("selectedIonList").first_child();
   pugi::xml_node ion_intensity_node = slected_ion.find_child_by_attribute("cvParam", "name", "peak intensity");
   return ion_intensity_node.attribute("value").as_double();
 };
 
-int mzml::MZML::extract_ion_charge(const pugi::xml_node& spec) {
+int sc::mzml::MZML::extract_ion_charge(const pugi::xml_node& spec) {
   pugi::xml_node precursor = spec.child("precursorList").child("precursor");
   pugi::xml_node slected_ion = precursor.child("selectedIonList").first_child();
   pugi::xml_node ion_charge_node = slected_ion.find_child_by_attribute("cvParam", "name", "charge state");
   return ion_charge_node.attribute("value").as_int();
 };
 
-std::string mzml::MZML::extract_activation_type(const pugi::xml_node& spec) {
+std::string sc::mzml::MZML::extract_activation_type(const pugi::xml_node& spec) {
   pugi::xml_node precursor = spec.child("precursorList").child("precursor");
   pugi::xml_node activation = precursor.child("activation");
   if (activation) {
@@ -297,7 +297,7 @@ std::string mzml::MZML::extract_activation_type(const pugi::xml_node& spec) {
   }
 };
 
-double mzml::MZML::extract_activation_ce(const pugi::xml_node& spec) {
+double sc::mzml::MZML::extract_activation_ce(const pugi::xml_node& spec) {
   pugi::xml_node precursor = spec.child("precursorList").child("precursor");
   pugi::xml_node activation = precursor.child("activation");
   if (activation) {
@@ -308,9 +308,9 @@ double mzml::MZML::extract_activation_ce(const pugi::xml_node& spec) {
   }
 };
 
-utils::MS_SPECTRA_HEADERS mzml::MZML::extract_spectra_headers(const std::vector<int>& idxs) {
+sc::MS_SPECTRA_HEADERS sc::mzml::MZML::extract_spectra_headers(const std::vector<int>& idxs) {
 
-  utils::MS_SPECTRA_HEADERS headers;
+  sc::MS_SPECTRA_HEADERS headers;
 
   std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
 
@@ -381,9 +381,9 @@ utils::MS_SPECTRA_HEADERS mzml::MZML::extract_spectra_headers(const std::vector<
   return headers;
 }
 
-mzml::BINARY_METADATA mzml::MZML::extract_binary_metadata(const pugi::xml_node& bin) {
+sc::mzml::MZML_BINARY_METADATA sc::mzml::MZML::extract_binary_metadata(const pugi::xml_node& bin) {
 
-  BINARY_METADATA mtd;
+  MZML_BINARY_METADATA mtd;
 
   pugi::xml_node node_integer_32 = bin.find_child_by_attribute("cvParam", "accession", "MS:1000519");
 
@@ -468,7 +468,7 @@ mzml::BINARY_METADATA mzml::MZML::extract_binary_metadata(const pugi::xml_node& 
   return mtd;
 }
 
-void mzml::MZML::extract_spectra_binary_metadata(const pugi::xml_node& first_node) {
+void sc::mzml::MZML::extract_spectra_binary_metadata(const pugi::xml_node& first_node) {
 
   pugi::xml_node binary_list = first_node.child("binaryDataArrayList");
 
@@ -476,7 +476,7 @@ void mzml::MZML::extract_spectra_binary_metadata(const pugi::xml_node& first_nod
 
   for (const pugi::xml_node& bin: binary_list.children("binaryDataArray")) {
 
-    BINARY_METADATA mtd = extract_binary_metadata(bin);
+    MZML_BINARY_METADATA mtd = extract_binary_metadata(bin);
 
     if (mtd.data_name_short == "") {
       mtd.data_name_short = "val_" + std::to_string(counter);
@@ -492,7 +492,7 @@ void mzml::MZML::extract_spectra_binary_metadata(const pugi::xml_node& first_nod
   number_spectra_binary_arrays = counter;
 }
 
-std::vector<std::vector<double>> mzml::MZML::extract_spectrum(const pugi::xml_node& spectrum_node) {
+std::vector<std::vector<double>> sc::mzml::MZML::extract_spectrum(const pugi::xml_node& spectrum_node) {
 
   std::vector<std::vector<double>> spectrum;
 
@@ -518,13 +518,13 @@ std::vector<std::vector<double>> mzml::MZML::extract_spectrum(const pugi::xml_no
 
     std::string encoded_string = node_binary.child_value();
 
-    std::string decoded_string = utils::decode_base64(encoded_string);
+    std::string decoded_string = sc::decode_base64(encoded_string);
 
     if (spectra_binary_metadata[counter].compressed) {
-      decoded_string = utils::decompress_zlib(decoded_string);
+      decoded_string = sc::decompress_zlib(decoded_string);
     }
 
-    spectrum[counter] = utils::decode_little_endian(decoded_string, spectra_binary_metadata[counter].precision_int / 8);
+    spectrum[counter] = sc::decode_little_endian(decoded_string, spectra_binary_metadata[counter].precision_int / 8);
 
     int bin_array_size = spectrum[counter].size();
 
@@ -549,7 +549,7 @@ std::vector<std::vector<double>> mzml::MZML::extract_spectrum(const pugi::xml_no
   return spectrum;
 };
 
-std::vector<std::vector<std::vector<double>>> mzml::MZML::extract_spectra(const std::vector<int>& idxs) {
+std::vector<std::vector<std::vector<double>>> sc::mzml::MZML::extract_spectra(const std::vector<int>& idxs) {
 
   std::vector<std::vector<std::vector<double>>> sp;
 
@@ -582,7 +582,7 @@ std::vector<std::vector<std::vector<double>>> mzml::MZML::extract_spectra(const 
   return sp;
 }
 
-std::vector<pugi::xml_node> mzml::MZML::link_vector_chrom_nodes() {
+std::vector<pugi::xml_node> sc::mzml::MZML::link_vector_chrom_nodes() {
 
   std::vector<pugi::xml_node> chrom_nodes;
 
@@ -604,9 +604,9 @@ std::vector<pugi::xml_node> mzml::MZML::link_vector_chrom_nodes() {
   return chrom_nodes;
 };
 
-utils::MS_CHROMATOGRAMS_HEADERS mzml::MZML::extract_chrom_headers(const std::vector<int>& idxs) {
+sc::MS_CHROMATOGRAMS_HEADERS sc::mzml::MZML::extract_chrom_headers(const std::vector<int>& idxs) {
 
-  utils::MS_CHROMATOGRAMS_HEADERS headers;
+  sc::MS_CHROMATOGRAMS_HEADERS headers;
 
   std::vector<pugi::xml_node> chrom_nodes = link_vector_chrom_nodes();
 
@@ -630,24 +630,24 @@ utils::MS_CHROMATOGRAMS_HEADERS mzml::MZML::extract_chrom_headers(const std::vec
 
     const pugi::xml_node& chrom = chrom_nodes[index];
 
-    headers.chrom_id[i] = chrom.attribute("index").as_int();
+    headers.id[i] = chrom.attribute("index").as_int();
 
     std::string id = chrom.attribute("id").as_string();
 
-    headers.chrom_id[i] = id;
+    headers.id[i] = id;
 
-    headers.chrom_array_length[i] = chrom.attribute("defaultArrayLength").as_int();
+    headers.array_length[i] = chrom.attribute("defaultArrayLength").as_int();
 
     pugi::xml_node pol_pos_node = chrom.find_child_by_attribute("cvParam", "accession", "MS:1000130");
     pugi::xml_node pol_neg_node = chrom.find_child_by_attribute("cvParam", "accession", "MS:1000129");
 
     if (pol_pos_node) {
-      headers.chrom_polarity[i] = "positive";
+      headers.polarity[i] = "positive";
 
     } else if (pol_neg_node) {
-      headers.chrom_polarity[i] = "negative";
+      headers.polarity[i] = "negative";
     } else {
-      headers.chrom_polarity[i] = "";
+      headers.polarity[i] = "";
     }
 
     pugi::xml_node precursor = chrom.child("precursor");
@@ -688,7 +688,7 @@ utils::MS_CHROMATOGRAMS_HEADERS mzml::MZML::extract_chrom_headers(const std::vec
   return headers;
 }
 
-std::vector<std::vector<double>> mzml::MZML::extract_chromatogram(const pugi::xml_node& chrom_node) {
+std::vector<std::vector<double>> sc::mzml::MZML::extract_chromatogram(const pugi::xml_node& chrom_node) {
 
   std::vector<std::vector<double>> chrom;
 
@@ -706,19 +706,19 @@ std::vector<std::vector<double>> mzml::MZML::extract_chromatogram(const pugi::xm
 
     const pugi::xml_node& bin = *i;
 
-    BINARY_METADATA mtd = extract_binary_metadata(bin);
+    MZML_BINARY_METADATA mtd = extract_binary_metadata(bin);
 
     pugi::xml_node node_binary = bin.child("binary");
 
     std::string encoded_string = node_binary.child_value();
 
-    std::string decoded_string = utils::decode_base64(encoded_string);
+    std::string decoded_string = sc::decode_base64(encoded_string);
 
     if (mtd.compressed) {
-      decoded_string = utils::decompress_zlib(decoded_string);
+      decoded_string = sc::decompress_zlib(decoded_string);
     }
 
-    chrom[counter] = utils::decode_little_endian(decoded_string, mtd.precision_int / 8);
+    chrom[counter] = sc::decode_little_endian(decoded_string, mtd.precision_int / 8);
 
     int bin_array_size = chrom[counter].size();
 
@@ -751,7 +751,7 @@ std::vector<std::vector<double>> mzml::MZML::extract_chromatogram(const pugi::xm
   return chrom;
 }
 
-std::vector<std::vector<std::vector<double>>> mzml::MZML::extract_chromatograms(const std::vector<int>& idxs) {
+std::vector<std::vector<std::vector<double>>> sc::mzml::MZML::extract_chromatograms(const std::vector<int>& idxs) {
 
   std::vector<std::vector<std::vector<double>>> chr;
 
@@ -783,7 +783,9 @@ std::vector<std::vector<std::vector<double>>> mzml::MZML::extract_chromatograms(
   return chr;
 }
 
-void mzml::MZML::write_spectra(const std::vector<std::vector<std::vector<double>>>& spectra, const std::vector<std::string>& names, SpectraMode mode, bool compress, bool save, std::string save_suffix) {
+void sc::mzml::MZML::write_spectra(
+  const std::vector<std::vector<std::vector<double>>>& spectra,
+  const std::vector<std::string>& names, MS_SPECTRA_MODE mode, bool compress, bool save, std::string save_suffix) {
 
   if (spectra.size() == 0) {
     std::cerr << "No spectra to write!" << std::endl;
@@ -835,7 +837,7 @@ void mzml::MZML::write_spectra(const std::vector<std::vector<std::vector<double>
 
     spec.attribute("defaultArrayLength").set_value(spectra[i][0].size());
 
-    if (mode == SpectraMode::CENTROID) {
+    if (mode == MS_SPECTRA_MODE::CENTROID) {
       pugi::xml_node node_mode = spec.find_child_by_attribute("cvParam", "accession", "MS:1000128");
 
       if (node_mode) {
@@ -884,11 +886,11 @@ void mzml::MZML::write_spectra(const std::vector<std::vector<std::vector<double>
 
       const std::vector<double>& x = spectra[i][j];
 
-      std::string x_enc = utils::encode_little_endian(x, 8);
+      std::string x_enc = sc::encode_little_endian(x, 8);
       
-      if (compress) x_enc = utils::compress_zlib(x_enc);
+      if (compress) x_enc = sc::compress_zlib(x_enc);
       
-      x_enc = utils::encode_base64(x_enc);
+      x_enc = sc::encode_base64(x_enc);
 
       pugi::xml_node bin_array = bin_array_list.append_child("binaryDataArray");
 
@@ -968,7 +970,7 @@ void mzml::MZML::write_spectra(const std::vector<std::vector<std::vector<double>
   }
 };
 
-std::vector<int> mzml::MZML::get_spectra_index(std::vector<int> indices) {
+std::vector<int> sc::mzml::MZML::get_spectra_index(std::vector<int> indices) {
   
   std::vector<int> idxs;
 
@@ -996,7 +998,7 @@ std::vector<int> mzml::MZML::get_spectra_index(std::vector<int> indices) {
   return idxs;
 };
 
-std::vector<int> mzml::MZML::get_spectra_scan_number(std::vector<int> indices) {
+std::vector<int> sc::mzml::MZML::get_spectra_scan_number(std::vector<int> indices) {
   
   std::vector<int> scans;
 
@@ -1024,7 +1026,7 @@ std::vector<int> mzml::MZML::get_spectra_scan_number(std::vector<int> indices) {
   return scans;
 };
 
-std::vector<int> mzml::MZML::get_spectra_array_length(std::vector<int> indices) {
+std::vector<int> sc::mzml::MZML::get_spectra_array_length(std::vector<int> indices) {
   
   std::vector<int> lengths;
 
@@ -1052,7 +1054,7 @@ std::vector<int> mzml::MZML::get_spectra_array_length(std::vector<int> indices) 
   return lengths;
 };
 
-std::vector<int> mzml::MZML::get_spectra_level(std::vector<int> indices) {
+std::vector<int> sc::mzml::MZML::get_spectra_level(std::vector<int> indices) {
   
   std::vector<int> levels;
 
@@ -1080,7 +1082,7 @@ std::vector<int> mzml::MZML::get_spectra_level(std::vector<int> indices) {
   return levels;
 };
 
-std::vector<std::string> mzml::MZML::get_spectra_mode(std::vector<int> indices) {
+std::vector<std::string> sc::mzml::MZML::get_spectra_mode(std::vector<int> indices) {
   
   std::vector<std::string> modes;
 
@@ -1108,7 +1110,7 @@ std::vector<std::string> mzml::MZML::get_spectra_mode(std::vector<int> indices) 
   return modes;
 };
 
-std::vector<std::string> mzml::MZML::get_spectra_polarity(std::vector<int> indices) {
+std::vector<std::string> sc::mzml::MZML::get_spectra_polarity(std::vector<int> indices) {
   
   std::vector<std::string> polarities;
 
@@ -1136,7 +1138,7 @@ std::vector<std::string> mzml::MZML::get_spectra_polarity(std::vector<int> indic
   return polarities;
 };
 
-std::vector<double> mzml::MZML::get_spectra_lowmz(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_lowmz(std::vector<int> indices) {
   
   std::vector<double> lowmzs;
 
@@ -1164,7 +1166,7 @@ std::vector<double> mzml::MZML::get_spectra_lowmz(std::vector<int> indices) {
   return lowmzs;
 };
 
-std::vector<double> mzml::MZML::get_spectra_highmz(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_highmz(std::vector<int> indices) {
   
   std::vector<double> highmzs;
 
@@ -1192,7 +1194,7 @@ std::vector<double> mzml::MZML::get_spectra_highmz(std::vector<int> indices) {
   return highmzs;
 };
 
-std::vector<double> mzml::MZML::get_spectra_bpmz(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_bpmz(std::vector<int> indices) {
   
   std::vector<double> bpmzs;
 
@@ -1220,7 +1222,7 @@ std::vector<double> mzml::MZML::get_spectra_bpmz(std::vector<int> indices) {
   return bpmzs;
 };
 
-std::vector<double> mzml::MZML::get_spectra_bpint(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_bpint(std::vector<int> indices) {
   
   std::vector<double> bpints;
 
@@ -1248,7 +1250,7 @@ std::vector<double> mzml::MZML::get_spectra_bpint(std::vector<int> indices) {
   return bpints;
 };
 
-std::vector<double> mzml::MZML::get_spectra_tic(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_tic(std::vector<int> indices) {
   
   std::vector<double> tics;
 
@@ -1276,7 +1278,7 @@ std::vector<double> mzml::MZML::get_spectra_tic(std::vector<int> indices) {
   return tics;
 };
 
-std::vector<double> mzml::MZML::get_spectra_rt(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_rt(std::vector<int> indices) {
   
   std::vector<double> rts;
 
@@ -1304,7 +1306,7 @@ std::vector<double> mzml::MZML::get_spectra_rt(std::vector<int> indices) {
   return rts;
 };
 
-std::vector<double> mzml::MZML::get_spectra_drift(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_drift(std::vector<int> indices) {
   
   std::vector<double> drifts;
 
@@ -1332,7 +1334,7 @@ std::vector<double> mzml::MZML::get_spectra_drift(std::vector<int> indices) {
   return drifts;
 };
 
-std::vector<int> mzml::MZML::get_spectra_precursor_scan(std::vector<int> indices) {
+std::vector<int> sc::mzml::MZML::get_spectra_precursor_scan(std::vector<int> indices) {
   
   std::vector<int> prec_scans;
 
@@ -1360,7 +1362,7 @@ std::vector<int> mzml::MZML::get_spectra_precursor_scan(std::vector<int> indices
   return prec_scans;
 };
 
-std::vector<double> mzml::MZML::get_spectra_precursor_mz(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_precursor_mz(std::vector<int> indices) {
   
   std::vector<double> prec_mzs;
 
@@ -1388,7 +1390,7 @@ std::vector<double> mzml::MZML::get_spectra_precursor_mz(std::vector<int> indice
   return prec_mzs;
 };
 
-std::vector<double> mzml::MZML::get_spectra_precursor_window_mz(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_precursor_window_mz(std::vector<int> indices) {
   
   std::vector<double> prec_w_mzs;
 
@@ -1416,7 +1418,7 @@ std::vector<double> mzml::MZML::get_spectra_precursor_window_mz(std::vector<int>
   return prec_w_mzs;
 };
 
-std::vector<double> mzml::MZML::get_spectra_precursor_window_mzlow(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_precursor_window_mzlow(std::vector<int> indices) {
   
   std::vector<double> prec_w_mzlows;
 
@@ -1444,7 +1446,7 @@ std::vector<double> mzml::MZML::get_spectra_precursor_window_mzlow(std::vector<i
   return prec_w_mzlows;
 };
 
-std::vector<double> mzml::MZML::get_spectra_precursor_window_mzhigh(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_precursor_window_mzhigh(std::vector<int> indices) {
   
   std::vector<double> prec_w_mzhighs;
 
@@ -1472,7 +1474,7 @@ std::vector<double> mzml::MZML::get_spectra_precursor_window_mzhigh(std::vector<
   return prec_w_mzhighs;
 };
 
-std::vector<double> mzml::MZML::get_spectra_collision_energy(std::vector<int> indices) {
+std::vector<double> sc::mzml::MZML::get_spectra_collision_energy(std::vector<int> indices) {
   
   std::vector<double> ces;
 
@@ -1500,9 +1502,9 @@ std::vector<double> mzml::MZML::get_spectra_collision_energy(std::vector<int> in
   return ces;
 };
 
-utils::MS_SPECTRA_HEADERS mzml::MZML::get_spectra_headers(std::vector<int> indices) {
+sc::MS_SPECTRA_HEADERS sc::mzml::MZML::get_spectra_headers(std::vector<int> indices) {
 
-  utils::MS_SPECTRA_HEADERS hd;
+  sc::MS_SPECTRA_HEADERS hd;
 
   if (number_spectra == 0) {
     std::cerr << "There are no spectra in the mzML file!" << std::endl;
@@ -1519,7 +1521,7 @@ utils::MS_SPECTRA_HEADERS mzml::MZML::get_spectra_headers(std::vector<int> indic
   return hd;
 };
 
-std::vector<std::string> mzml::MZML::get_spectra_binary_short_names() {
+std::vector<std::string> sc::mzml::MZML::get_spectra_binary_short_names() {
   std::vector<std::string> names(number_spectra_binary_arrays);
   if (number_spectra_binary_arrays > 0) {
     for (int i = 0; i < number_spectra_binary_arrays; ++i) {
@@ -1530,7 +1532,7 @@ std::vector<std::string> mzml::MZML::get_spectra_binary_short_names() {
   return names;
 };
 
-std::vector<std::vector<std::vector<double>>> mzml::MZML::get_spectra(std::vector<int> indices) {
+std::vector<std::vector<std::vector<double>>> sc::mzml::MZML::get_spectra(std::vector<int> indices) {
 
   std::vector<std::vector<std::vector<double>>> sp;
 
@@ -1549,7 +1551,7 @@ std::vector<std::vector<std::vector<double>>> mzml::MZML::get_spectra(std::vecto
   return sp;
 };
 
-std::vector<std::vector<std::vector<double>>> mzml::MZML::get_chromatograms(std::vector<int> indices) {
+std::vector<std::vector<std::vector<double>>> sc::mzml::MZML::get_chromatograms(std::vector<int> indices) {
 
   std::vector<std::vector<std::vector<double>>> chr;
 
@@ -1568,9 +1570,9 @@ std::vector<std::vector<std::vector<double>>> mzml::MZML::get_chromatograms(std:
   return chr;
 };
 
-utils::MS_CHROMATOGRAMS_HEADERS mzml::MZML::get_chromatograms_headers(std::vector<int> indices) {
+sc::MS_CHROMATOGRAMS_HEADERS sc::mzml::MZML::get_chromatograms_headers(std::vector<int> indices) {
 
-  utils::MS_CHROMATOGRAMS_HEADERS ch;
+  sc::MS_CHROMATOGRAMS_HEADERS ch;
 
   if (number_chromatograms == 0) {
     std::cerr << "There are no chromatograms in the mzML file!" << std::endl;
@@ -1587,19 +1589,19 @@ utils::MS_CHROMATOGRAMS_HEADERS mzml::MZML::get_chromatograms_headers(std::vecto
   return ch;
 };
 
-void mzml::test_extract_spectra_mzml(const std::string& file) {
+void sc::mzml::test_extract_spectra_mzml(const std::string& file) {
   std::cout << std::endl;
   std::cout << std::endl;
   std::cout << "Test Extract Spectra mzML file:" << std::endl;
   std::cout << std::endl;
 
-  mzml::MZML mzml(file);
+  MZML mzml(file);
 
   std::cout << "Root name: " << mzml.name << std::endl;
 
   std::cout << "Number of spectra: " << mzml.number_spectra << std::endl;
 
-  utils::MS_SPECTRA_HEADERS hd;
+  MS_SPECTRA_HEADERS hd;
 
   hd = mzml.get_spectra_headers();
 
@@ -1624,27 +1626,27 @@ void mzml::test_extract_spectra_mzml(const std::string& file) {
   std::cout << std::endl;
 };
 
-void mzml::test_extract_chromatograms_mzml(const std::string& file) {
+void sc::mzml::test_extract_chromatograms_mzml(const std::string& file) {
   std::cout << std::endl;
   std::cout << std::endl;
   std::cout << "Test Chromatograms mzML file:" << std::endl;
   std::cout << std::endl;
 
-  mzml::MZML mzml(file);
+  MZML mzml(file);
 
   std::cout << "Root name: " << mzml.name << std::endl;
 
   std::cout << "Number of chromatograms: " << mzml.number_chromatograms << std::endl;
 
-  utils::MS_CHROMATOGRAMS_HEADERS ch;
+  MS_CHROMATOGRAMS_HEADERS ch;
 
   ch = mzml.get_chromatograms_headers();
 
-  int number_chroms = ch.chrom_index.size();
+  int number_chroms = ch.index.size();
 
   std::cout << "Size of vector in headers chroms struct: " << number_chroms << std::endl;
 
-  std::cout << "Polarity of 5th chrom: " << ch.chrom_polarity[5] << std::endl;
+  std::cout << "Polarity of 5th chrom: " << ch.polarity[5] << std::endl;
 
   std::vector<std::vector<std::vector<double>>> chroms;
 

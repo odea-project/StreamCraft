@@ -1,4 +1,4 @@
-#include "utils.hpp"
+#include "StreamCraft_utils.hpp"
 #include <vector>
 #include <string>
 #include <cstring>
@@ -9,7 +9,7 @@
 /*!
  * Encodes to little endian binary a vector of doubles based on a precision integer.
  */
-std::string utils::encode_little_endian(const std::vector<double>& input, const int& precision) {
+std::string sc::utils::encode_little_endian(const std::vector<double>& input, const int& precision) {
 
   if (precision == 8) {
     std::vector<uint8_t> bytes(sizeof(double) * input.size());
@@ -32,7 +32,7 @@ std::string utils::encode_little_endian(const std::vector<double>& input, const 
 };
 
 
-std::string utils::encode_big_endian(const std::vector<double>& input, const int& precision) {
+std::string sc::utils::encode_big_endian(const std::vector<double>& input, const int& precision) {
 
   if (precision == 8) {
     std::vector<uint8_t> bytes(sizeof(double) * input.size());
@@ -71,7 +71,7 @@ std::string utils::encode_big_endian(const std::vector<double>& input, const int
 /*!
  * Decodes from a little endian binary string to a vector of doubles according a precision integer.
  */
-std::vector<double> utils::decode_little_endian(const std::string& str, const int& precision) {
+std::vector<double> sc::utils::decode_little_endian(const std::string& str, const int& precision) {
 
   std::vector<unsigned char> bytes(str.begin(), str.end());
 
@@ -100,7 +100,7 @@ std::vector<double> utils::decode_little_endian(const std::string& str, const in
 /*!
  * Decodes from a big endian binary string to a vector of doubles according a precision integer.
  */
-std::vector<double> utils::decode_big_endian(const std::string& str, const int& precision) {
+std::vector<double> sc::utils::decode_big_endian(const std::string& str, const int& precision) {
 
   std::vector<unsigned char> bytes(str.begin(), str.end());
 
@@ -141,7 +141,7 @@ std::vector<double> utils::decode_big_endian(const std::string& str, const int& 
 /*!
  * Compresses a string using the zlib library (https://zlib.net/).
  */
-std::string utils::compress_zlib(const std::string& str) {
+std::string sc::utils::compress_zlib(const std::string& str) {
 
   std::vector<char> compressed_data;
 
@@ -179,7 +179,7 @@ std::string utils::compress_zlib(const std::string& str) {
 /*!
  * Decompresses a string using the zlib library (https://zlib.net/).
  */
-std::string utils::decompress_zlib(const std::string& compressed_string) {
+std::string sc::utils::decompress_zlib(const std::string& compressed_string) {
 
   z_stream zs;
 
@@ -219,7 +219,7 @@ std::string utils::decompress_zlib(const std::string& compressed_string) {
 /*!
  * Encodes a string with binary data to a Base64 string.
  */
-std::string utils::encode_base64(const std::string& str) {
+std::string sc::utils::encode_base64(const std::string& str) {
 
   static const char* base64_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -262,7 +262,7 @@ std::string utils::encode_base64(const std::string& str) {
 /*!
  * Decodes a Base64 string into a string with binary data.
  */
-std::string utils::decode_base64(const std::string& encoded_string) {
+std::string sc::utils::decode_base64(const std::string& encoded_string) {
 
   std::string decoded_string;
 
@@ -302,7 +302,7 @@ std::string utils::decode_base64(const std::string& encoded_string) {
 /*!
  * Test function for encoding and decoding little endian binary data.
  */
-void utils::test_encoding_decoding_little_endian(const std::vector<double>& input, const int& precision) {
+void sc::utils::test_encoding_decoding_little_endian(const std::vector<double>& input, const int& precision) {
 
   std::cout << std::endl;
   std::cout << std::endl;
@@ -338,7 +338,7 @@ void utils::test_encoding_decoding_little_endian(const std::vector<double>& inpu
 /*!
  * Test function for encoding and decoding big endian binary data.
  */
-void utils::test_encoding_decoding_big_endian(const std::vector<double>& input, const int& precision) {
+void sc::utils::test_encoding_decoding_big_endian(const std::vector<double>& input, const int& precision) {
 
   std::cout << std::endl;
   std::cout << std::endl;
