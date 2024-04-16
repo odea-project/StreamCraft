@@ -783,7 +783,7 @@ std::vector<std::vector<std::vector<double>>> mzml::MZML::extract_chromatograms(
   return chr;
 }
 
-void mzml::MZML::write_spectra(std::vector<std::vector<std::vector<double>>> spectra, std::vector<std::string> names, std::string mode, bool compress, bool save, std::string save_suf) {
+void mzml::MZML::write_spectra(const std::vector<std::vector<std::vector<double>>>& spectra, const std::vector<std::string>& names, SpectraMode mode, bool compress, bool save, std::string save_suffix) {
 
   if (spectra.size() == 0) {
     std::cerr << "No spectra to write!" << std::endl;
@@ -817,8 +817,6 @@ void mzml::MZML::write_spectra(std::vector<std::vector<std::vector<double>>> spe
   } else {
     std::cerr << "Spectrum list not found in the mzML file!" << std::endl;
     return;
-    // spec_list_node = run_node.append_child("spectrumList");
-    // spec_list_node.append_attribute("count") = "0";
   }
 
   int number_spectra = spectra.size();
@@ -835,11 +833,9 @@ void mzml::MZML::write_spectra(std::vector<std::vector<std::vector<double>>> spe
 
     const std::vector<double>& intensity = spectra[i][1];
 
-    // if (!spec) spec = spec_list_node.append_child("spectrum");
-
     spec.attribute("defaultArrayLength").set_value(spectra[i][0].size());
 
-    if (mode == "centroid") {
+    if (mode == SpectraMode::CENTROID) {
       pugi::xml_node node_mode = spec.find_child_by_attribute("cvParam", "accession", "MS:1000128");
 
       if (node_mode) {
@@ -957,9 +953,9 @@ void mzml::MZML::write_spectra(std::vector<std::vector<std::vector<double>>> spe
 
   if (save) {
 
-    if (save_suf == "") save_suf = "_modified";
+    if (save_suffix == "") save_suffix = "_modified";
 
-    std::string new_file_path = file_dir + "/" + file_name + save_suf + "." + file_extension;
+    std::string new_file_path = file_dir + "/" + file_name + save_suffix + "." + file_extension;
 
     if (new_file_path == file_path) {
       std::cerr << "The new file path is the same as the original file path!" << std::endl;

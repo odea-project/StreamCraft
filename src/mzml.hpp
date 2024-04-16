@@ -14,6 +14,11 @@
 
 namespace mzml {
 
+  enum SpectraMode {
+    CENTROID,
+    PROFILE
+  };
+
   class BINARY_METADATA {
 
     public:
@@ -175,8 +180,7 @@ namespace mzml {
       void print();
       void print_spectra_binary_metadata();
 
-      void write_spectra(std::vector<std::vector<std::vector<double>>> spectra = {}, std::vector<std::string> names = {}, std::string mode = "centroid", bool compress = true, bool save = true, std::string save_suf = "_cent");
-
+      void write_spectra(const std::vector<std::vector<std::vector<double>>>& spectra, const std::vector<std::string>& names, SpectraMode mode, bool compress, bool save, std::string save_suffix);
     };
 
     void test_extract_spectra_mzml(const std::string& file);
