@@ -4,9 +4,6 @@
 #include <vector>
 #include <string>
 
-#define PUGIXML_HEADER_ONLY
-#include "./pugixml-1.14/src/pugixml.hpp"
-
 #include "StreamCraft_utils.hpp"
 #include "StreamCraft_mzml.hpp"
 #include "StreamCraft_mzxml.hpp"

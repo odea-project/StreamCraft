@@ -1,5 +1,5 @@
-#ifndef ANIML_HPP
-#define ANIML_HPP
+#ifndef STREAMCRAFT_ANIML_HPP
+#define STREAMCRAFT_ANIML_HPP
 
 #include <iostream>
 #include <vector>
@@ -13,10 +13,14 @@
 // #include <omp.h>
 
 #define PUGIXML_HEADER_ONLY
-#include "../external/pugixml-1.14/src/pugixml.hpp"
 
-#define UTILS_HEADER_ONLY
-#include "utils.hpp"
+#ifndef PUGIXML_PATH
+#define PUGIXML_PATH "../../pugixml-1.14/src/pugixml.hpp"
+#endif
+
+#include PUGIXML_PATH
+
+#include "StreamCraft_utils.hpp"
 
 namespace animl {
 
@@ -265,7 +269,7 @@ namespace animl {
 
 #endif // ANIML_HPP
 
-#if defined(ANIML_HEADER_ONLY) && !defined(ANIML_SOURCE)
-#	define ANIML_SOURCE "animl.cpp"
-#	include ANIML_SOURCE
+#if defined(STREAMCRAFT_HEADER_ONLY) && !defined(STREAMCRAFT_ANIML_SOURCE)
+#	define STREAMCRAFT_ANIML_SOURCE "StreamCraft:animl.cpp"
+#	include STREAMCRAFT_ANIML_SOURCE
 #endif

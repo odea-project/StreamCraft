@@ -7,7 +7,12 @@
 #include <numeric>
 
 #define PUGIXML_HEADER_ONLY
-#include "./pugixml-1.14/src/pugixml.hpp"
+
+#ifndef PUGIXML_PATH
+#define PUGIXML_PATH "../../pugixml-1.14/src/pugixml.hpp"
+#endif
+
+#include PUGIXML_PATH
 
 #define STREAMCRAFT_HEADER_ONLY
 #include "StreamCraft_utils.hpp"
