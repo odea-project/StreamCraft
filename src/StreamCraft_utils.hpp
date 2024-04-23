@@ -96,6 +96,44 @@ namespace sc {
       };
     };
 
+    struct MS_TARGETS {
+      std::vector<int> index;
+      std::vector<std::string> id;
+      std::vector<int> level;
+      std::vector<double> mzmin;
+      std::vector<double> mzmax;
+      std::vector<double> rtmin;
+      std::vector<double> rtmax;
+      std::vector<double> driftmin;
+      std::vector<double> driftmax;
+
+      void resize_all(int n) {
+        index.resize(n);
+        id.resize(n);
+        level.resize(n);
+        mzmin.resize(n);
+        mzmax.resize(n);
+        rtmin.resize(n);
+        rtmax.resize(n);
+        driftmin.resize(n);
+        driftmax.resize(n);
+      };
+
+      MS_TARGETS operator[](int i) {
+        MS_TARGETS target;
+        target.index.push_back(index[i]);
+        target.id.push_back(id[i]);
+        target.level.push_back(level[i]);
+        target.mzmin.push_back(mzmin[i]);
+        target.mzmax.push_back(mzmax[i]);
+        target.rtmin.push_back(rtmin[i]);
+        target.rtmax.push_back(rtmax[i]);
+        target.driftmin.push_back(driftmin[i]);
+        target.driftmax.push_back(driftmax[i]);
+        return target;
+      };
+    };
+
     std::string encode_little_endian(const std::vector<double>& input, const int& precision);
 
     std::vector<double> decode_little_endian(const std::string& str, const int& precision);

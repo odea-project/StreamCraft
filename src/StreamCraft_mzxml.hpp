@@ -102,7 +102,60 @@ namespace sc {
 
         MS_SPECTRA_HEADERS get_spectra_headers(std::vector<int> indices = {});
 
+        MS_CHROMATOGRAMS_HEADERS get_chromatograms_headers(std::vector<int> indices = {}) {
+          MS_CHROMATOGRAMS_HEADERS chromatograms_headers;
+          std::cout << "mzXML format does not have chromatograms!" << std::endl;
+          return chromatograms_headers;
+        };
+
         std::vector<std::vector<std::vector<double>>> get_spectra(std::vector<int> indices = {});
+
+        std::vector<std::vector<std::vector<double>>> get_chromatograms(std::vector<int> indices = {}) {
+          std::vector<std::vector<std::vector<double>>> chromatograms;
+          std::cout << "mzXML format does not have chromatograms!" << std::endl;
+          return chromatograms;
+        };
+
+        std::vector<int> get_spectra_index(std::vector<int> indices = {});
+        std::vector<int> get_spectra_scan_number(std::vector<int> indices = {});
+        std::vector<int> get_spectra_array_length(std::vector<int> indices = {});
+        std::vector<int> get_spectra_level(std::vector<int> indices = {});
+        std::vector<std::string> get_spectra_mode(std::vector<int> indices = {});
+        std::vector<std::string> get_spectra_polarity(std::vector<int> indices = {});
+        std::vector<double> get_spectra_lowmz(std::vector<int> indices = {});
+        std::vector<double> get_spectra_highmz(std::vector<int> indices = {});
+        std::vector<double> get_spectra_bpmz(std::vector<int> indices = {});
+        std::vector<double> get_spectra_bpint(std::vector<int> indices = {});
+        std::vector<double> get_spectra_tic(std::vector<int> indices = {});
+        std::vector<double> get_spectra_rt(std::vector<int> indices = {});
+        std::vector<double> get_spectra_precursor_mz(std::vector<int> indices = {});
+        std::vector<double> get_spectra_collision_energy(std::vector<int> indices = {});
+
+        std::vector<double> get_spectra_drift(std::vector<int> indices = {}) {
+          std::vector<double> drift;
+          std::cout << "mzXML format does not hold drift values!" << std::endl;
+          return drift;
+        };
+        std::vector<int> get_spectra_precursor_scan(std::vector<int> indices = {}) {
+          std::vector<int> precursor_scan;
+          std::cout << "mzXML format does not hold precursor scan values!" << std::endl;
+          return precursor_scan;
+        };
+        std::vector<double> get_spectra_precursor_window_mz(std::vector<int> indices = {}) {
+          std::vector<double> precursor_window_mz;
+          std::cout << "mzXML format does not hold precursor window mz values!" << std::endl;
+          return precursor_window_mz;
+        };
+        std::vector<double> get_spectra_precursor_window_mzlow(std::vector<int> indices = {}) {
+          std::vector<double> precursor_window_mzlow;
+          std::cout << "mzXML format does not hold precursor window mz low values!" << std::endl;
+          return precursor_window_mzlow;
+        };
+        std::vector<double> get_spectra_precursor_window_mzhigh(std::vector<int> indices = {}) {
+          std::vector<double> precursor_window_mzhigh;
+          std::cout << "mzXML format does not hold precursor window mz high values!" << std::endl;
+          return precursor_window_mzhigh;
+        };
         
         void print();
 

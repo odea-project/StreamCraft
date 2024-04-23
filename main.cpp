@@ -31,19 +31,56 @@ int main() {
   std::string file10 = "./excluded/example_modified.mzML";
 
   sc::welcome();
-  // sc::MassSpecAnalysis ana = file1;
-  // ana.print();
-  
-  // std::cout << "name: " << ana.file_name << std::endl;
-  // std::cout << "path: " << ana.file_dir << std::endl;
-  // std::cout << "ext: " << ana.file_extension << std::endl;
-  // std::cout << "full: " << ana.file_path << std::endl;
-  // std::cout << "n spectra: " << ana.number_spectra << std::endl;
-  // std::cout << "n chromatograms: " << ana.number_chromatograms << std::endl;
-  // utils::MS_SPECTRA_HEADERS hd = ana.ms->get_spectra_headers();
-  // std::cout << "n spectra: " << hd.id.size() << std::endl;
+  sc::MassSpecAnalysis ana = file2;
+  ana.print();
+
+  sc::MS_TARGETS targets;
+  targets.resize_all(3);
+  targets.index = {0, 1, 2};
+  targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
+  targets.level = {1, 1, 1};
+  targets.mzmin = {268.1854,  296.0181, 233.0197};
+  targets.mzmax = {268.1961,  296.0299, 233.0290};
+  targets.rtmin = {905, 1245, 1150};
+  targets.rtmax = {925, 1265, 1170};
+  targets.driftmin = {0, 0, 0};
+  targets.driftmax = {0, 0, 0};
+
+  std::vector<std::vector<std::vector<double>>> res = ana.get_spectra_targets(targets);
+
+  for (size_t i = 0; i < res.size(); i++) {
+    std::cout << "Target: " << targets.id[i] << std::endl;
+    for (size_t j = 0; j < res[i][0].size(); j++) {
+      std::cout << res[i][0][j] << " " << res[i][1][j] << " " << res[i][2][j] << " " << res[i][3][j] << std::endl;
+    }
+  }
+
+  sc::MS_TARGETS targetsdda;
+    targetsdda.resize_all(3);
+    targetsdda.index = {0, 1, 2};
+    targetsdda.id = {"Metoprolol", "Diclofenac", "Diuron"};
+    targetsdda.level = {2, 2, 2};
+    targetsdda.mzmin = {268.1854,  296.0181, 233.0197};
+    targetsdda.mzmax = {268.1961,  296.0299, 233.0290};
+    targetsdda.rtmin = {905, 1245, 1150};
+    targetsdda.rtmax = {925, 1265, 1170};
+    targetsdda.driftmin = {0, 0, 0};
+    targetsdda.driftmax = {0, 0, 0};
+
+  std::vector<std::vector<std::vector<double>>> res2 = ana.get_spectra_dda_targets(targetsdda);
+
+  for (size_t i = 0; i < res.size(); i++) {
+    std::cout << "Target: " << targetsdda.id[i] << std::endl;
+    for (size_t j = 0; j < res[i][0].size(); j++) {
+      std::cout << res2[i][0][j] << " " << res2[i][1][j] << " " << res2[i][2][j] << " " << res2[i][3][j] << " " << res2[i][4][j] << " " << res2[i][5][j] << std::endl;
+    }
+  }
+
+
 
   
+
+
 
   // mzxml::MZXML z(file8);
   // std::vector<int> idx(10);
@@ -76,39 +113,39 @@ int main() {
   // }
 
 
-  sc::MZML z(file9);
+  // sc::MZML z(file9);
 
-  std::vector<int> idx(10);
-  std::iota(idx.begin(), idx.end(), 0);
+  // std::vector<int> idx(10);
+  // std::iota(idx.begin(), idx.end(), 0);
 
-  std::vector<std::vector<std::vector<double>>> spectra;
-  // spectra list
-      // spectrum
-        // m/z, intensity, ...
-  spectra = z.get_spectra();
+  // std::vector<std::vector<std::vector<double>>> spectra;
+  // // spectra list
+  //     // spectrum
+  //       // m/z, intensity, ...
+  // spectra = z.get_spectra();
   
-  std::cout << "Number of extracted spectra: " << spectra.size() << std::endl;
+  // std::cout << "Number of extracted spectra: " << spectra.size() << std::endl;
 
-  // Add two extra binnary arays to each spectrum
-  int number_traces = 0;
-  for (size_t i = 0; i < spectra.size(); i++) {
-    for (size_t j = 0; j < spectra[i].size(); j++) {
-      spectra[i][j].resize(10);
-    }
-    number_traces = number_traces + spectra[i][0].size();
-    spectra[i].push_back(spectra[i][0]);
-    spectra[i].push_back(spectra[i][0]);
-  }
+  // // Add two extra binnary arays to each spectrum
+  // int number_traces = 0;
+  // for (size_t i = 0; i < spectra.size(); i++) {
+  //   for (size_t j = 0; j < spectra[i].size(); j++) {
+  //     spectra[i][j].resize(10);
+  //   }
+  //   number_traces = number_traces + spectra[i][0].size();
+  //   spectra[i].push_back(spectra[i][0]);
+  //   spectra[i].push_back(spectra[i][0]);
+  // }
 
-  std::cout << "Number of traces: " << number_traces << std::endl;
-  std::cout << "Number of traces in 1st spectrum: " << spectra[0][0].size() << std::endl;
-  std::cout << "Number of binary entries: " << spectra[0].size() << std::endl;
+  // std::cout << "Number of traces: " << number_traces << std::endl;
+  // std::cout << "Number of traces in 1st spectrum: " << spectra[0][0].size() << std::endl;
+  // std::cout << "Number of binary entries: " << spectra[0].size() << std::endl;
 
-  std::vector<std::string> bin_names = {"mz", "intensity", "x1", "x2"};
+  // std::vector<std::string> bin_names = {"mz", "intensity", "x1", "x2"};
 
-  z.write_spectra(spectra, bin_names, sc::MS_SPECTRA_MODE::CENTROID, true, true, "_cent");
+  // z.write_spectra(spectra, bin_names, sc::MS_SPECTRA_MODE::CENTROID, true, true, "_cent");
 
-  std::cout << std::endl;
+  // std::cout << std::endl;
 
   // q::Matrix xyData(number_traces, 3);
   

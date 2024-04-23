@@ -355,3 +355,395 @@ std::vector<std::vector<std::vector<double>>> sc::mzxml::MZXML::get_spectra(std:
   
   return sp;
 };
+
+std::vector<int> sc::mzxml::MZXML::get_spectra_index(std::vector<int> indices) {
+  
+  std::vector<int> idxs;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return idxs;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    int index = extract_spec_index(spec);
+    idxs.push_back(index);
+  }
+
+  return idxs;
+};
+
+std::vector<int> sc::mzxml::MZXML::get_spectra_scan_number(std::vector<int> indices) {
+  
+  std::vector<int> scans;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return scans;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    int scan = extract_spec_scan(spec);
+    scans.push_back(scan);
+  }
+
+  return scans;
+};
+
+std::vector<int> sc::mzxml::MZXML::get_spectra_array_length(std::vector<int> indices) {
+  
+  std::vector<int> lengths;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return lengths;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    int length = extract_spec_array_length(spec);
+    lengths.push_back(length);
+  }
+
+  return lengths;
+};
+
+std::vector<int> sc::mzxml::MZXML::get_spectra_level(std::vector<int> indices) {
+  
+  std::vector<int> levels;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return levels;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    int level = extract_spec_level(spec);
+    levels.push_back(level);
+  }
+
+  return levels;
+};
+
+std::vector<std::string> sc::mzxml::MZXML::get_spectra_mode(std::vector<int> indices) {
+  
+  std::vector<std::string> modes;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return modes;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    std::string mode = extract_spec_mode(spec);
+    modes.push_back(mode);
+  }
+
+  return modes;
+};
+
+std::vector<std::string> sc::mzxml::MZXML::get_spectra_polarity(std::vector<int> indices) {
+  
+  std::vector<std::string> polarities;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return polarities;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    std::string polarity = extract_spec_polarity(spec);
+    polarities.push_back(polarity);
+  }
+
+  return polarities;
+};
+
+std::vector<double> sc::mzxml::MZXML::get_spectra_lowmz(std::vector<int> indices) {
+  
+  std::vector<double> lowmzs;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return lowmzs;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    double lowmz = extract_spec_lowmz(spec);
+    lowmzs.push_back(lowmz);
+  }
+
+  return lowmzs;
+};
+
+std::vector<double> sc::mzxml::MZXML::get_spectra_highmz(std::vector<int> indices) {
+  
+  std::vector<double> highmzs;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return highmzs;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    double highmz = extract_spec_highmz(spec);
+    highmzs.push_back(highmz);
+  }
+
+  return highmzs;
+};
+
+std::vector<double> sc::mzxml::MZXML::get_spectra_bpmz(std::vector<int> indices) {
+  
+  std::vector<double> bpmzs;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return bpmzs;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    double bpmz = extract_spec_bpmz(spec);
+    bpmzs.push_back(bpmz);
+  }
+
+  return bpmzs;
+};
+
+std::vector<double> sc::mzxml::MZXML::get_spectra_bpint(std::vector<int> indices) {
+  
+  std::vector<double> bpints;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return bpints;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    double bpint = extract_spec_bpint(spec);
+    bpints.push_back(bpint);
+  }
+
+  return bpints;
+};
+
+std::vector<double> sc::mzxml::MZXML::get_spectra_tic(std::vector<int> indices) {
+  
+  std::vector<double> tics;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return tics;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    double tic = extract_spec_tic(spec);
+    tics.push_back(tic);
+  }
+
+  return tics;
+};
+
+std::vector<double> sc::mzxml::MZXML::get_spectra_rt(std::vector<int> indices) {
+  
+  std::vector<double> rts;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return rts;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    double rt = extract_scan_rt(spec);
+    rts.push_back(rt);
+  }
+
+  return rts;
+};
+
+std::vector<double> sc::mzxml::MZXML::get_spectra_precursor_mz(std::vector<int> indices) {
+  
+  std::vector<double> prec_mzs;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return prec_mzs;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    double prec_mz = extract_ion_mz(spec);
+    prec_mzs.push_back(prec_mz);
+  }
+
+  return prec_mzs;
+};
+
+std::vector<double> sc::mzxml::MZXML::get_spectra_collision_energy(std::vector<int> indices) {
+  
+  std::vector<double> ces;
+
+  if (number_spectra == 0) {
+    std::cerr << "There are no spectra in the mzXML file!" << std::endl;
+    return ces;
+  }
+
+  if (indices.size() == 0) {
+    indices.resize(number_spectra);
+    std::iota(indices.begin(), indices.end(), 0);
+  }
+
+  int n = indices.size();
+
+  std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
+
+  for (int i = 0; i < n; ++i) {
+    int idx = indices[i];
+    pugi::xml_node spec = spectra_nodes[idx];
+    double ce = extract_activation_ce(spec);
+    ces.push_back(ce);
+  }
+
+  return ces;
+};
