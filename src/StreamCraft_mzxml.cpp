@@ -747,3 +747,79 @@ std::vector<double> sc::mzxml::MZXML::get_spectra_collision_energy(std::vector<i
 
   return ces;
 };
+
+std::vector<std::vector<std::string>> sc::mzxml::MZXML::get_software() {
+
+  std::vector<std::vector<std::string>> output(3);
+
+  std::string search_software = "//msInstrument/child::node()[starts-with(name(), 'soft')]";
+  pugi::xpath_node_set xps_software = root.select_nodes(search_software.c_str());
+
+  if (xps_software.size() > 0) {
+    for (pugi::xpath_node_set::const_iterator it = xps_software.begin(); it != xps_software.end(); ++it) {
+      pugi::xpath_node node = *it;
+      output[0].push_back(node.node().attribute("name").as_string());
+      output[1].push_back(node.node().attribute("type").as_string());
+      output[2].push_back(node.node().attribute("version").as_string());
+    }
+  }
+
+  return output;
+};
+
+std::vector<std::vector<std::string>> sc::mzxml::MZXML::get_hardware() {
+
+  std::vector<std::vector<std::string>> output(2);
+
+  std::string search_inst = "//msInstrument/child::node()[starts-with(name(), 'ms')]";
+  pugi::xpath_node_set xps_inst = root.select_nodes(search_inst.c_str());
+
+  if (xps_inst.size() > 0) {
+    for (pugi::xpath_node_set::const_iterator it = xps_inst.begin(); it != xps_inst.end(); ++it) {
+      pugi::xpath_node node = *it;
+      output[0].push_back(node.node().attribute("category").as_string());
+      output[1].push_back(node.node().attribute("value").as_string());
+    }
+  }
+
+  return output;
+};
+
+void sc::mzxml::test_extract_spectra_mzxml(const std::string& file) {
+  
+  std::cout << std::endl;
+  std::cout << std::endl;
+  std::cout << "Test Extract Spectra mzXML file:" << std::endl;
+  std::cout << std::endl;
+
+  MZML mzml(file);
+
+  std::cout << "Root name: " << mzml.name << std::endl;
+
+  std::cout << "Number of spectra: " << mzml.number_spectra << std::endl;
+
+  MS_SPECTRA_HEADERS hd;
+
+  hd = mzml.get_spectra_headers();
+
+  int number = hd.index.size();
+
+  std::cout << "Size of vector in headers struct: " << number << std::endl;
+
+  std::cout << "Retention time of 10th spectrum: " << hd.rt[10] << std::endl;
+
+  std::cout << "Number of binary arrays: " << mzml.number_spectra_binary_arrays << std::endl;
+
+  std::vector<std::vector<std::vector<double>>> spectra;
+
+  std::vector<int> indices = {10, 15};
+
+  spectra = mzml.get_spectra(indices);
+
+  std::cout << "Number of extracted spectra: " << spectra.size() << std::endl;
+
+  std::cout << "Number of traces in the first extracted spectrum: " << spectra[0][0].size() << std::endl;
+
+  std::cout << std::endl;
+  
+};

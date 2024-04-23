@@ -43,7 +43,9 @@ namespace sc {
       virtual std::vector<double> get_spectra_precursor_window_mz(std::vector<int> indices = {}) = 0;
       virtual std::vector<double> get_spectra_precursor_window_mzlow(std::vector<int> indices = {}) = 0;
       virtual std::vector<double> get_spectra_precursor_window_mzhigh(std::vector<int> indices = {}) = 0;
-      virtual std::vector<double> get_spectra_collision_energy(std::vector<int> indices = {}) = 0;  
+      virtual std::vector<double> get_spectra_collision_energy(std::vector<int> indices = {}) = 0;
+      virtual std::vector<std::vector<std::string>> get_software() = 0;
+      virtual std::vector<std::vector<std::string>> get_hardware() = 0;
   };
 
   template <typename T>
@@ -77,6 +79,8 @@ namespace sc {
       std::vector<double> get_spectra_precursor_window_mzlow(std::vector<int> indices = {}) { return ms.get_spectra_precursor_window_mzlow(indices); }
       std::vector<double> get_spectra_precursor_window_mzhigh(std::vector<int> indices = {}) { return ms.get_spectra_precursor_window_mzhigh(indices); }
       std::vector<double> get_spectra_collision_energy(std::vector<int> indices = {}) { return ms.get_spectra_collision_energy(indices); }
+      std::vector<std::vector<std::string>> get_software() { return ms.get_software(); }
+      std::vector<std::vector<std::string>> get_hardware() { return ms.get_hardware(); }
       T& open() { return ms; };
 
     private:
@@ -140,13 +144,10 @@ namespace sc {
       std::vector<double> get_spectra_precursor_window_mzlow(std::vector<int> indices = {}) { return ms->get_spectra_precursor_window_mzlow(indices); }
       std::vector<double> get_spectra_precursor_window_mzhigh(std::vector<int> indices = {}) { return ms->get_spectra_precursor_window_mzhigh(indices); }
       std::vector<double> get_spectra_collision_energy(std::vector<int> indices = {}) { return ms->get_spectra_collision_energy(indices); }
-
+      std::vector<std::vector<std::string>> get_software() { return ms->get_software(); }
+      std::vector<std::vector<std::string>> get_hardware() { return ms->get_hardware(); }
       std::vector<std::vector<std::vector<double>>> get_spectra_targets(const MS_TARGETS& targets);
-
       std::vector<std::vector<std::vector<double>>> get_spectra_dda_targets(const MS_TARGETS& targets);
-
-
-
       void print();
   };
 

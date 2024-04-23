@@ -1589,6 +1589,90 @@ sc::MS_CHROMATOGRAMS_HEADERS sc::mzml::MZML::get_chromatograms_headers(std::vect
   return ch;
 };
 
+std::vector<std::vector<std::string>> sc::mzml::MZML::get_software() {
+
+  std::vector<std::vector<std::string>> output(3);
+
+  std::string search_software = "//softwareList/child::node()";
+
+  pugi::xpath_node_set xps_software = root.select_nodes(search_software.c_str());
+
+  if (xps_software.size() > 0) {
+
+    for (pugi::xpath_node_set::const_iterator it = xps_software.begin(); it != xps_software.end(); ++it) {
+      
+      pugi::xpath_node node = *it;
+
+      for (pugi::xml_node temp: node.node().children()) {
+        std::string name = temp.attribute("name").as_string();
+
+        if (name != "") {
+          output[0].push_back(name);
+          output[1].push_back(node.node().attribute("id").as_string());
+          output[2].push_back(node.node().attribute("version").as_string());
+        }
+      }
+    }
+  }
+
+  return output;
+};
+
+std::vector<std::vector<std::string>> sc::mzml::MZML::get_hardware() {
+
+  std::vector<std::vector<std::string>> output(2);
+
+  std::string search_ref = "//referenceableParamGroup";
+  pugi::xpath_node xp_ref = root.select_node(search_ref.c_str());
+
+  if (xp_ref.node() != NULL) {
+    for (pugi::xml_node temp: xp_ref.node().children()) {
+      if (temp.attribute("name") != NULL) {
+        output[0].push_back(temp.attribute("name").as_string());
+        std::string val = temp.attribute("value").as_string();
+        if (val != "") {
+          output[1].push_back(temp.attribute("value").as_string());
+        } else {
+          output[1].push_back(temp.attribute("name").as_string());
+        }
+      }
+    }
+  }
+
+  std::string search_inst = "//instrumentConfiguration";
+  pugi::xpath_node xp_inst = root.select_node(search_inst.c_str());
+
+  if (xp_inst.node() != NULL) {
+    for (pugi::xml_node temp: xp_inst.node().children()) {
+      if (temp.attribute("name") != NULL) {
+        output[0].push_back(temp.attribute("name").as_string());
+        std::string val = temp.attribute("value").as_string();
+        if (val != "") {
+          output[1].push_back(temp.attribute("value").as_string());
+        } else {
+          output[1].push_back(temp.attribute("name").as_string());
+        }
+      }
+    }
+  }
+
+  std::string search_config = "//componentList/child::node()";
+  pugi::xpath_node_set xps_config = root.select_nodes(search_config.c_str());
+
+  if (xps_config.size() > 0) {
+    for (pugi::xpath_node_set::const_iterator it = xps_config.begin(); it != xps_config.end(); ++it) {
+      pugi::xpath_node node = *it;
+      for (pugi::xml_node temp: node.node().children())
+      {
+        output[0].push_back(node.node().name());
+        output[1].push_back(temp.attribute("name").as_string());
+      }
+    }
+  }
+
+  return output;
+};
+
 void sc::mzml::test_extract_spectra_mzml(const std::string& file) {
   std::cout << std::endl;
   std::cout << std::endl;

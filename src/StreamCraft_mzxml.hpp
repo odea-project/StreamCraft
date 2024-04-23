@@ -156,12 +156,17 @@ namespace sc {
           std::cout << "mzXML format does not hold precursor window mz high values!" << std::endl;
           return precursor_window_mzhigh;
         };
+
+        std::vector<std::vector<std::string>> get_software();
+        std::vector<std::vector<std::string>> get_hardware();
         
         void print();
 
         void print_binary_metadata() { binary_metadata.print(); };
 
     }; // class MZXML
+
+    void test_extract_spectra_mzxml(const std::string& file);
 
   }; // namespace mzxml
 

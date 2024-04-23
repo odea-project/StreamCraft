@@ -31,50 +31,50 @@ int main() {
   std::string file10 = "./excluded/example_modified.mzML";
 
   sc::welcome();
-  sc::MassSpecAnalysis ana = file2;
+  sc::MassSpecAnalysis ana = file8;
   ana.print();
 
-  sc::MS_TARGETS targets;
-  targets.resize_all(3);
-  targets.index = {0, 1, 2};
-  targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
-  targets.level = {1, 1, 1};
-  targets.mzmin = {268.1854,  296.0181, 233.0197};
-  targets.mzmax = {268.1961,  296.0299, 233.0290};
-  targets.rtmin = {905, 1245, 1150};
-  targets.rtmax = {925, 1265, 1170};
-  targets.driftmin = {0, 0, 0};
-  targets.driftmax = {0, 0, 0};
+  // sc::MS_TARGETS targets;
+  // targets.resize_all(3);
+  // targets.index = {0, 1, 2};
+  // targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
+  // targets.level = {1, 1, 1};
+  // targets.mzmin = {268.1854,  296.0181, 233.0197};
+  // targets.mzmax = {268.1961,  296.0299, 233.0290};
+  // targets.rtmin = {905, 1245, 1150};
+  // targets.rtmax = {925, 1265, 1170};
+  // targets.driftmin = {0, 0, 0};
+  // targets.driftmax = {0, 0, 0};
 
-  std::vector<std::vector<std::vector<double>>> res = ana.get_spectra_targets(targets);
+  // std::vector<std::vector<std::vector<double>>> res = ana.get_spectra_targets(targets);
 
-  for (size_t i = 0; i < res.size(); i++) {
-    std::cout << "Target: " << targets.id[i] << std::endl;
-    for (size_t j = 0; j < res[i][0].size(); j++) {
-      std::cout << res[i][0][j] << " " << res[i][1][j] << " " << res[i][2][j] << " " << res[i][3][j] << std::endl;
-    }
-  }
+  // for (size_t i = 0; i < res.size(); i++) {
+  //   std::cout << "Target: " << targets.id[i] << std::endl;
+  //   for (size_t j = 0; j < res[i][0].size(); j++) {
+  //     std::cout << res[i][0][j] << " " << res[i][1][j] << " " << res[i][2][j] << " " << res[i][3][j] << std::endl;
+  //   }
+  // }
 
-  sc::MS_TARGETS targetsdda;
-    targetsdda.resize_all(3);
-    targetsdda.index = {0, 1, 2};
-    targetsdda.id = {"Metoprolol", "Diclofenac", "Diuron"};
-    targetsdda.level = {2, 2, 2};
-    targetsdda.mzmin = {268.1854,  296.0181, 233.0197};
-    targetsdda.mzmax = {268.1961,  296.0299, 233.0290};
-    targetsdda.rtmin = {905, 1245, 1150};
-    targetsdda.rtmax = {925, 1265, 1170};
-    targetsdda.driftmin = {0, 0, 0};
-    targetsdda.driftmax = {0, 0, 0};
+  // sc::MS_TARGETS targetsdda;
+  //   targetsdda.resize_all(3);
+  //   targetsdda.index = {0, 1, 2};
+  //   targetsdda.id = {"Metoprolol", "Diclofenac", "Diuron"};
+  //   targetsdda.level = {2, 2, 2};
+  //   targetsdda.mzmin = {268.1854,  296.0181, 233.0197};
+  //   targetsdda.mzmax = {268.1961,  296.0299, 233.0290};
+  //   targetsdda.rtmin = {905, 1245, 1150};
+  //   targetsdda.rtmax = {925, 1265, 1170};
+  //   targetsdda.driftmin = {0, 0, 0};
+  //   targetsdda.driftmax = {0, 0, 0};
 
-  std::vector<std::vector<std::vector<double>>> res2 = ana.get_spectra_dda_targets(targetsdda);
+  // std::vector<std::vector<std::vector<double>>> res2 = ana.get_spectra_dda_targets(targetsdda);
 
-  for (size_t i = 0; i < res.size(); i++) {
-    std::cout << "Target: " << targetsdda.id[i] << std::endl;
-    for (size_t j = 0; j < res[i][0].size(); j++) {
-      std::cout << res2[i][0][j] << " " << res2[i][1][j] << " " << res2[i][2][j] << " " << res2[i][3][j] << " " << res2[i][4][j] << " " << res2[i][5][j] << std::endl;
-    }
-  }
+  // for (size_t i = 0; i < res.size(); i++) {
+  //   std::cout << "Target: " << targetsdda.id[i] << std::endl;
+  //   for (size_t j = 0; j < res[i][0].size(); j++) {
+  //     std::cout << res2[i][0][j] << " " << res2[i][1][j] << " " << res2[i][2][j] << " " << res2[i][3][j] << " " << res2[i][4][j] << " " << res2[i][5][j] << std::endl;
+  //   }
+  // }
 
 
 

@@ -177,12 +177,13 @@ namespace sc {
         std::vector<double> get_spectra_precursor_window_mzhigh(std::vector<int> indices = {});
         std::vector<double> get_spectra_collision_energy(std::vector<int> indices = {});
 
+        std::vector<std::vector<std::string>> get_software();
+        std::vector<std::vector<std::string>> get_hardware();
+
         void print();
         void print_spectra_binary_metadata();
 
-        void write_spectra(const std::vector<std::vector<std::vector<double>>>& spectra,
-        const std::vector<std::string>& names, MS_SPECTRA_MODE mode, bool compress, bool save, std::string save_suffix);
-        
+        void write_spectra(const std::vector<std::vector<std::vector<double>>>& spectra, const std::vector<std::string>& names, MS_SPECTRA_MODE mode, bool compress, bool save, std::string save_suffix);
     }; // class MZML
 
     void test_extract_spectra_mzml(const std::string& file);
