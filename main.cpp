@@ -31,8 +31,25 @@ int main() {
   std::string file10 = "./excluded/example_modified.mzML";
 
   sc::welcome();
-  sc::MassSpecAnalysis ana = file8;
-  ana.print();
+  sc::MZML ana = file1;
+
+  auto start = std::chrono::high_resolution_clock::now();
+
+  const sc::MS_SPECTRA_HEADERS hd = ana.get_spectra_headers();
+  
+  auto stop = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+  std::cout << "Time taken by function: " << duration.count() << " milliseconds" << std::endl;
+
+  auto start2 = std::chrono::high_resolution_clock::now();
+
+  const std::vector<std::vector<std::vector<double>>> sp = ana.get_spectra();
+  
+  auto stop2 = std::chrono::high_resolution_clock::now();
+  auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(stop2 - start2);
+  std::cout << "Time taken by function: " << duration2.count() << " milliseconds" << std::endl;
+
+  // sc::test_extract_spectra_mzxml(file8);
 
   // sc::MS_TARGETS targets;
   // targets.resize_all(3);

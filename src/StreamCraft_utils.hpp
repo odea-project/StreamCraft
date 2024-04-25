@@ -9,6 +9,27 @@ namespace sc {
 
   inline namespace utils {
 
+    struct MS_SUMMARY {
+      std::string file_name;
+      std::string file_path;
+      std::string file_dir;
+      std::string file_extension;
+      int number_spectra;
+      int number_chromatograms;
+      int number_spectra_binary_arrays;
+      std::string format;
+      std::string time_stamp;
+      std::vector<std::string> polarity;
+      std::vector<std::string> mode;
+      std::vector<int> level;
+      std::string type;
+      double min_mz;
+      double max_mz;
+      double start_rt;
+      double end_rt;
+      bool has_ion_mobility;
+    };
+
     enum MS_SPECTRA_MODE {
       CENTROID,
       PROFILE
