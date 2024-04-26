@@ -34,10 +34,10 @@ int main() {
   sc::MS_ANALYSIS ana = file1;
   // sc::MZML ana = file1;
 
-  std::unique_ptr<sc::VIRTUAL_MS_SPECTRUM> sp = ana.get_spectrum(100);
+  // std::unique_ptr<sc::VIRTUAL_MS_SPECTRUM> sp = ana.get_spectrum(100);
 
-  int idx = sp->extract_scan_rt();
-  std::cout << "Index: " << idx << std::endl;
+  // int idx = sp->extract_scan_rt();
+  // std::cout << "Index: " << idx << std::endl;
 
 
 
@@ -62,26 +62,27 @@ int main() {
 
   // sc::test_extract_spectra_mzxml(file8);
 
-  // sc::MS_TARGETS targets;
-  // targets.resize_all(3);
-  // targets.index = {0, 1, 2};
-  // targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
-  // targets.level = {1, 1, 1};
-  // targets.mzmin = {268.1854,  296.0181, 233.0197};
-  // targets.mzmax = {268.1961,  296.0299, 233.0290};
-  // targets.rtmin = {905, 1245, 1150};
-  // targets.rtmax = {925, 1265, 1170};
-  // targets.driftmin = {0, 0, 0};
-  // targets.driftmax = {0, 0, 0};
+  sc::MS_TARGETS targets;
+  targets.resize_all(3);
+  targets.index = {0, 1, 2};
+  targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
+  targets.level = {1, 1, 1};
+  targets.polarity = {1, 1, 1};
+  targets.mzmin = {268.1854,  296.0181, 233.0197};
+  targets.mzmax = {268.1961,  296.0299, 233.0290};
+  targets.rtmin = {905, 1245, 1150};
+  targets.rtmax = {925, 1265, 1170};
+  targets.driftmin = {0, 0, 0};
+  targets.driftmax = {0, 0, 0};
 
-  // std::vector<std::vector<std::vector<double>>> res = ana.get_spectra_targets(targets);
+  std::vector<std::vector<std::vector<double>>> res = ana.get_spectra_targets(targets);
 
-  // for (size_t i = 0; i < res.size(); i++) {
-  //   std::cout << "Target: " << targets.id[i] << std::endl;
-  //   for (size_t j = 0; j < res[i][0].size(); j++) {
-  //     std::cout << res[i][0][j] << " " << res[i][1][j] << " " << res[i][2][j] << " " << res[i][3][j] << std::endl;
-  //   }
-  // }
+  for (size_t i = 0; i < res.size(); i++) {
+    std::cout << "Target: " << targets.id[i] << std::endl;
+    for (size_t j = 0; j < res[i][0].size(); j++) {
+      std::cout << res[i][0][j] << " " << res[i][1][j] << " " << res[i][2][j] << " " << res[i][3][j] << std::endl;
+    }
+  }
 
   // sc::MS_TARGETS targetsdda;
   //   targetsdda.resize_all(3);

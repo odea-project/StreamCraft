@@ -28,27 +28,27 @@ int sc::mzml::MZML_SPECTRUM::extract_spec_level() const {
   return level_node.attribute("value").as_int();
 };
 
-std::string sc::mzml::MZML_SPECTRUM::extract_spec_mode() const {
+int sc::mzml::MZML_SPECTRUM::extract_spec_mode() const {
   pugi::xml_node centroid_node = spec.find_child_by_attribute("cvParam", "accession", "MS:1000127");
   pugi::xml_node profile_node = spec.find_child_by_attribute("cvParam", "accession", "MS:1000128");
   if (centroid_node) {
-    return "centroid";
+    return 2;
   } else if (profile_node) {
-    return "profile";
+    return 1;
   } else {
-    return "";
+    return 0;
   }
 };
 
-std::string sc::mzml::MZML_SPECTRUM::extract_spec_polarity() const {
+int sc::mzml::MZML_SPECTRUM::extract_spec_polarity() const {
   pugi::xml_node pol_pos_node = spec.find_child_by_attribute("cvParam", "accession", "MS:1000130");
   pugi::xml_node pol_neg_node = spec.find_child_by_attribute("cvParam", "accession", "MS:1000129");
   if (pol_pos_node) {
-    return "positive";
+    return 1;
   } else if (pol_neg_node) {
-    return "negative";
+    return -1;
   } else {
-    return "";
+    return 0;
   }
 };
 
@@ -367,15 +367,15 @@ int sc::mzml::MZML_CHROMATOGRAM::extract_array_length() const {
   return chrom.attribute("defaultArrayLength").as_int();
 };
 
-std::string sc::mzml::MZML_CHROMATOGRAM::extract_polarity() const {
+int sc::mzml::MZML_CHROMATOGRAM::extract_polarity() const {
   const pugi::xml_node pol_pos_node = chrom.find_child_by_attribute("cvParam", "accession", "MS:1000130");
   const pugi::xml_node pol_neg_node = chrom.find_child_by_attribute("cvParam", "accession", "MS:1000129");
   if (pol_pos_node) {
-    return "positive";
+    return 1;
   } else if (pol_neg_node) {
-    return "negative";
+    return -1;
   } else {
-    return "";
+    return 0;
   }
 };
 
@@ -902,11 +902,11 @@ std::vector<int> sc::mzml::MZML::get_spectra_level(std::vector<int> indices) con
   return levels;
 };
 
-std::vector<std::string> sc::mzml::MZML::get_spectra_mode(std::vector<int> indices) const {
+std::vector<int> sc::mzml::MZML::get_spectra_mode(std::vector<int> indices) const {
 
   const int number_spectra = get_number_spectra();
   
-  std::vector<std::string> modes;
+  std::vector<int> modes;
 
   if (number_spectra == 0) {
     std::cerr << "There are no spectra in the mzML file!" << std::endl;
@@ -933,11 +933,11 @@ std::vector<std::string> sc::mzml::MZML::get_spectra_mode(std::vector<int> indic
   return modes;
 };
 
-std::vector<std::string> sc::mzml::MZML::get_spectra_polarity(std::vector<int> indices) const {
+std::vector<int> sc::mzml::MZML::get_spectra_polarity(std::vector<int> indices) const {
 
   const int number_spectra = get_number_spectra();
   
-  std::vector<std::string> polarities;
+  std::vector<int> polarities;
 
   if (number_spectra == 0) {
     std::cerr << "There are no spectra in the mzML file!" << std::endl;
@@ -1367,16 +1367,16 @@ std::vector<double> sc::mzml::MZML::get_spectra_collision_energy(std::vector<int
   return energies;
 };
 
-std::vector<std::string> sc::mzml::MZML::get_polarity() const {
-  const std::vector<std::string>& polarity = get_spectra_polarity();
-  std::set<std::string> unique_polarity(polarity.begin(), polarity.end());
-  return std::vector<std::string>(unique_polarity.begin(), unique_polarity.end());
+std::vector<int> sc::mzml::MZML::get_polarity() const {
+  const std::vector<int>& polarity = get_spectra_polarity();
+  std::set<int> unique_polarity(polarity.begin(), polarity.end());
+  return std::vector<int>(unique_polarity.begin(), unique_polarity.end());
 };
 
-std::vector<std::string> sc::mzml::MZML::get_mode() const {
-  const std::vector<std::string>& mode = get_spectra_mode();
-  std::set<std::string> unique_mode(mode.begin(), mode.end());
-  return std::vector<std::string>(unique_mode.begin(), unique_mode.end());
+std::vector<int> sc::mzml::MZML::get_mode() const {
+  const std::vector<int>& mode = get_spectra_mode();
+  std::set<int> unique_mode(mode.begin(), mode.end());
+  return std::vector<int>(unique_mode.begin(), unique_mode.end());
 };
 
 std::vector<int> sc::mzml::MZML::get_level() const {
