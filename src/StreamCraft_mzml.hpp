@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <numeric>
+#include <memory>
 
 #define PUGIXML_HEADER_ONLY
 
@@ -72,42 +73,42 @@ namespace sc {
 
     class MZML_SPECTRUM {
       public:
-      MZML_SPECTRUM(const pugi::xml_node& node_in) { spec = node_in; };
-      int extract_spec_index() const;
-      std::string extract_spec_id() const;
-      int extract_spec_scan() const;
-      int extract_spec_array_length() const;
-      int extract_spec_level() const;
-      std::string extract_spec_mode() const;
-      std::string extract_spec_polarity() const;
-      double extract_spec_lowmz() const;
-      double extract_spec_highmz() const;
-      double extract_spec_bpmz() const;
-      double extract_spec_bpint() const;
-      double extract_spec_tic() const;
-      std::string extract_spec_title() const;
-      double extract_scan_rt() const;
-      double extract_scan_drift() const;
-      std::string extract_scan_filter_string() const;
-      int extract_scan_config() const;
-      double extract_scan_injection_ion_time() const;
-      int extract_precursor_scan() const;
-      double extract_window_mz() const;
-      double extract_window_mzlow() const;
-      double extract_window_mzhigh() const;
-      double extract_ion_mz() const;
-      double extract_ion_intensity() const;
-      int extract_ion_charge() const;
-      std::string extract_activation_type() const;
-      double extract_activation_ce() const;
-      bool has_precursor() const { return spec.child("precursorList").child("precursor"); }
-      bool has_selected_ion() const { return spec.child("precursorList").child("precursor").child("selectedIonList").child("selectedIon"); }
-      bool has_activation() const { return spec.child("precursorList").child("precursor").child("activation"); }
-      std::vector<MZML_BINARY_METADATA> extract_binary_metadata() const;
-      std::vector<std::vector<double>> extract_binary_data(const std::vector<MZML_BINARY_METADATA>&  mtd) const;
+        MZML_SPECTRUM(const pugi::xml_node& node_in) { spec = node_in; };
+        int extract_spec_index() const;
+        std::string extract_spec_id() const;
+        int extract_spec_scan() const;
+        int extract_spec_array_length() const;
+        int extract_spec_level() const;
+        std::string extract_spec_mode() const;
+        std::string extract_spec_polarity() const;
+        double extract_spec_lowmz() const;
+        double extract_spec_highmz() const;
+        double extract_spec_bpmz() const;
+        double extract_spec_bpint() const;
+        double extract_spec_tic() const;
+        std::string extract_spec_title() const;
+        double extract_scan_rt() const;
+        double extract_scan_drift() const;
+        std::string extract_scan_filter_string() const;
+        int extract_scan_config() const;
+        double extract_scan_injection_ion_time() const;
+        int extract_precursor_scan() const;
+        double extract_window_mz() const;
+        double extract_window_mzlow() const;
+        double extract_window_mzhigh() const;
+        double extract_ion_mz() const;
+        double extract_ion_intensity() const;
+        int extract_ion_charge() const;
+        std::string extract_activation_type() const;
+        double extract_activation_ce() const;
+        bool has_precursor() const { return spec.child("precursorList").child("precursor"); }
+        bool has_selected_ion() const { return spec.child("precursorList").child("precursor").child("selectedIonList").child("selectedIon"); }
+        bool has_activation() const { return spec.child("precursorList").child("precursor").child("activation"); }
+        std::vector<MZML_BINARY_METADATA> extract_binary_metadata() const;
+        std::vector<std::vector<double>> extract_binary_data(const std::vector<MZML_BINARY_METADATA>&  mtd) const;
       
       private:
-      pugi::xml_node spec;
+        pugi::xml_node spec;
     };
 
     class MZML_CHROMATOGRAM {
@@ -145,6 +146,8 @@ namespace sc {
         pugi::xml_node root;
         std::string format;
         std::string name;
+        std::vector<pugi::xml_node> spectra_nodes;
+        std::vector<pugi::xml_node> chrom_nodes;
 
         MZML(const std::string& file);
         void print() const;
@@ -191,7 +194,8 @@ namespace sc {
         std::vector<std::vector<std::vector<double>>> get_chromatograms(std::vector<int> indices = {}) const;
         std::vector<std::vector<std::string>> get_software() const;
         std::vector<std::vector<std::string>> get_hardware() const;
-        std::vector<MZML_SPECTRUM> get_spectra_links() const;
+        MZML_SPECTRUM get_spectrum(const int& idx) const {return MZML_SPECTRUM(spectra_nodes[idx]);};
+        std::unique_ptr<VIRTUAL_MS_SPECTRUM> get_generic_spectrum(const int& idx) const {return std::make_unique<MS_SPECTRUM<MZML_SPECTRUM>>(MZML_SPECTRUM(spectra_nodes[idx]));};
         void write_spectra(const std::vector<std::vector<std::vector<double>>>& spectra, const std::vector<std::string>& names, MS_SPECTRA_MODE mode, bool compress, bool save, std::string save_suffix);
     }; // class MZML
 

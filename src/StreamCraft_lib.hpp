@@ -57,6 +57,7 @@ namespace sc {
       virtual std::vector<std::vector<std::vector<double>>> get_chromatograms(std::vector<int> indices = {}) = 0;
       virtual std::vector<std::vector<std::string>> get_software() = 0;
       virtual std::vector<std::vector<std::string>> get_hardware() = 0;
+      virtual std::unique_ptr<VIRTUAL_MS_SPECTRUM> get_spectrum(int index) = 0;
   };
 
   template <typename T>
@@ -103,8 +104,7 @@ namespace sc {
       std::vector<std::vector<std::vector<double>>> get_chromatograms(std::vector<int> indices = {}) override { return ms.get_chromatograms(indices); }
       std::vector<std::vector<std::string>> get_software() { return ms.get_software(); }
       std::vector<std::vector<std::string>> get_hardware() { return ms.get_hardware(); }
-
-      T& open() { return ms; };
+      std::unique_ptr<VIRTUAL_MS_SPECTRUM> get_spectrum(int index) override { return ms.get_generic_spectrum(index); }
 
     private:
       T ms;
@@ -178,6 +178,8 @@ namespace sc {
       std::vector<std::vector<std::vector<double>>> get_chromatograms(std::vector<int> indices = {}) { return ms->get_chromatograms(indices); }
       std::vector<std::vector<std::string>> get_software() { return ms->get_software(); }
       std::vector<std::vector<std::string>> get_hardware() { return ms->get_hardware(); }
+      
+      std::unique_ptr<VIRTUAL_MS_SPECTRUM> get_spectrum(int index) { return ms->get_spectrum(index); }
 
       std::vector<std::vector<std::vector<double>>> get_spectra_targets(const MS_TARGETS& targets);
       std::vector<std::vector<std::vector<double>>> get_spectra_dda_targets(const MS_TARGETS& targets);

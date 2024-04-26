@@ -77,6 +77,7 @@ namespace sc {
         pugi::xml_node root;
         std::string format;
         std::string name;
+        std::vector<pugi::xml_node> spectra_nodes;
 
         MZXML(const std::string& file);
         void print() const;
@@ -149,7 +150,8 @@ namespace sc {
           std::cout << "mzXML format does not have chromatograms!" << std::endl;
           return chromatograms;
         };
-        std::vector<MZXML_SPECTRUM> get_spectra_links() const;
+        MZXML_SPECTRUM get_spectrum(const int& idx) const { return MZXML_SPECTRUM(spectra_nodes[idx]); };
+        std::unique_ptr<VIRTUAL_MS_SPECTRUM> get_generic_spectrum(const int& idx) const {return std::make_unique<MS_SPECTRUM<MZXML_SPECTRUM>>(MZXML_SPECTRUM(spectra_nodes[idx]));};
         std::vector<std::vector<std::string>> get_software() const;
         std::vector<std::vector<std::string>> get_hardware() const;
     }; // class MZXML

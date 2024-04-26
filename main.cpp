@@ -31,23 +31,34 @@ int main() {
   std::string file10 = "./excluded/example_modified.mzML";
 
   sc::welcome();
-  sc::MZML ana = file1;
+  sc::MS_ANALYSIS ana = file1;
+  // sc::MZML ana = file1;
 
-  auto start = std::chrono::high_resolution_clock::now();
+  std::unique_ptr<sc::VIRTUAL_MS_SPECTRUM> sp = ana.get_spectrum(100);
 
-  const sc::MS_SPECTRA_HEADERS hd = ana.get_spectra_headers();
+  int idx = sp->extract_scan_rt();
+  std::cout << "Index: " << idx << std::endl;
+
+
+
+  // auto start = std::chrono::high_resolution_clock::now();
+
+  // const sc::MS_SPECTRA_HEADERS hd = ana.get_spectra_headers();
   
-  auto stop = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-  std::cout << "Time taken by function: " << duration.count() << " milliseconds" << std::endl;
+  // auto stop = std::chrono::high_resolution_clock::now();
+  // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+  // std::cout << "Time taken by function: " << duration.count() << " milliseconds" << std::endl;
 
-  auto start2 = std::chrono::high_resolution_clock::now();
+  // auto start2 = std::chrono::high_resolution_clock::now();
 
-  const std::vector<std::vector<std::vector<double>>> sp = ana.get_spectra();
+  // const std::vector<std::vector<std::vector<double>>> sp = ana.get_spectra();
   
-  auto stop2 = std::chrono::high_resolution_clock::now();
-  auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(stop2 - start2);
-  std::cout << "Time taken by function: " << duration2.count() << " milliseconds" << std::endl;
+  // auto stop2 = std::chrono::high_resolution_clock::now();
+  // auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(stop2 - start2);
+  // std::cout << "Time taken by function: " << duration2.count() << " milliseconds" << std::endl;
+
+  // sc::MZXML_SPECTRUM sp = ana.get_spectrum(0);
+  // std::cout << "Scan: " << sp.extract_scan_rt() << std::endl;
 
   // sc::test_extract_spectra_mzxml(file8);
 

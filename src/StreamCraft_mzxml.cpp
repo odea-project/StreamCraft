@@ -212,6 +212,8 @@ sc::mzxml::MZXML::MZXML(const std::string& file) {
   }
 
   name = root.name();
+
+  if (get_number_spectra() > 0) spectra_nodes = link_vector_spectra_nodes();
 };
 
 void sc::mzxml::MZXML::print() const {
@@ -288,8 +290,6 @@ std::vector<int> sc::mzxml::MZXML::get_spectra_index(std::vector<int> indices) c
 
   idxs.resize(n);
 
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
-
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     const int& idx = f_indices[i];
@@ -320,8 +320,6 @@ std::vector<int> sc::mzxml::MZXML::get_spectra_scan_number(std::vector<int> indi
   const std::vector<int> f_indices = indices;
 
   scans.resize(n);
-
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
 
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
@@ -354,8 +352,6 @@ std::vector<int> sc::mzxml::MZXML::get_spectra_array_length(std::vector<int> ind
 
   lengths.resize(n);
 
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
-
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     const int& idx = f_indices[i];
@@ -386,8 +382,6 @@ std::vector<int> sc::mzxml::MZXML::get_spectra_level(std::vector<int> indices) c
   const std::vector<int> f_indices = indices;
 
   levels.resize(n);
-
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
 
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
@@ -420,8 +414,6 @@ std::vector<std::string> sc::mzxml::MZXML::get_spectra_mode(std::vector<int> ind
 
   modes.resize(n);
 
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
-
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     const int& idx = f_indices[i];
@@ -452,8 +444,6 @@ std::vector<std::string> sc::mzxml::MZXML::get_spectra_polarity(std::vector<int>
   const std::vector<int> f_indices = indices;
 
   polarities.resize(n);
-
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
 
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
@@ -486,8 +476,6 @@ std::vector<double> sc::mzxml::MZXML::get_spectra_lowmz(std::vector<int> indices
 
   lowmzs.resize(n);
 
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
-
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     const int& idx = f_indices[i];
@@ -518,8 +506,6 @@ std::vector<double> sc::mzxml::MZXML::get_spectra_highmz(std::vector<int> indice
   const std::vector<int> f_indices = indices;
 
   highmzs.resize(n);
-
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
 
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
@@ -552,8 +538,6 @@ std::vector<double> sc::mzxml::MZXML::get_spectra_bpmz(std::vector<int> indices)
 
   bpmzs.resize(n);
 
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
-
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     const int& idx = f_indices[i];
@@ -584,8 +568,6 @@ std::vector<double> sc::mzxml::MZXML::get_spectra_bpint(std::vector<int> indices
   const std::vector<int> f_indices = indices;
 
   bpints.resize(n);
-
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
 
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
@@ -618,8 +600,6 @@ std::vector<double> sc::mzxml::MZXML::get_spectra_tic(std::vector<int> indices) 
 
   tics.resize(n);
 
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
-
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     const int& idx = f_indices[i];
@@ -650,8 +630,6 @@ std::vector<double> sc::mzxml::MZXML::get_spectra_rt(std::vector<int> indices) c
   const std::vector<int> f_indices = indices;
 
   rts.resize(n);
-
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
 
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
@@ -684,8 +662,6 @@ std::vector<double> sc::mzxml::MZXML::get_spectra_precursor_mz(std::vector<int> 
 
   mzs.resize(n);
 
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
-
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
     const int& idx = f_indices[i];
@@ -716,8 +692,6 @@ std::vector<double> sc::mzxml::MZXML::get_spectra_collision_energy(std::vector<i
   const std::vector<int> f_indices = indices;
 
   energies.resize(n);
-
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
 
   // #pragma omp parallel for
   for (int i = 0; i < n; ++i) {
@@ -815,8 +789,6 @@ sc::MS_SPECTRA_HEADERS sc::mzxml::MZXML::get_spectra_headers(std::vector<int> in
     return headers;
   }
 
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
-
   if (spectra_nodes.size() == 0) {
     std::cerr << "No spectra found!" << std::endl;
     return headers;
@@ -866,8 +838,6 @@ std::vector<std::vector<std::vector<double>>> sc::mzxml::MZXML::get_spectra(std:
     indices.resize(number_spectra);
     std::iota(indices.begin(), indices.end(), 0);
   }
-
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
 
   const std::vector<int> idxs = indices;
 
@@ -932,24 +902,6 @@ std::vector<std::vector<std::string>> sc::mzxml::MZXML::get_hardware() const {
   }
 
   return output;
-};
-
-std::vector<sc::MZXML_SPECTRUM> sc::mzxml::MZXML::get_spectra_links() const {
-
-  const std::vector<pugi::xml_node> spectra_nodes = link_vector_spectra_nodes();
-
-  std::vector<MZXML_SPECTRUM> spectra(spectra_nodes.size());
-
-  if (spectra_nodes.size() == 0) {
-    std::cerr << "No spectra found!" << std::endl;
-    return spectra;
-  }
-
-  for (size_t i = 0; i < spectra_nodes.size(); i++) {
-    spectra[i] = MZXML_SPECTRUM(spectra_nodes[i]);
-  }
-
-  return spectra;
 };
 
 void sc::mzxml::test_extract_spectra_mzxml(const std::string& file) {
