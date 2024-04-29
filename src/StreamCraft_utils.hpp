@@ -170,6 +170,7 @@ namespace sc {
       std::vector<std::string> id;
       std::vector<int> level;
       std::vector<int> polarity;
+      std::vector<bool> precursor;
       std::vector<double> mzmin;
       std::vector<double> mzmax;
       std::vector<double> rtmin;
@@ -182,6 +183,7 @@ namespace sc {
         id.resize(n);
         level.resize(n);
         polarity.resize(n);
+        precursor.resize(n);
         mzmin.resize(n);
         mzmax.resize(n);
         rtmin.resize(n);
@@ -196,6 +198,7 @@ namespace sc {
         target.id.push_back(id[i]);
         target.level.push_back(level[i]);
         target.polarity.push_back(polarity[i]);
+        target.precursor.push_back(precursor[i]);
         target.mzmin.push_back(mzmin[i]);
         target.mzmax.push_back(mzmax[i]);
         target.rtmin.push_back(rtmin[i]);
