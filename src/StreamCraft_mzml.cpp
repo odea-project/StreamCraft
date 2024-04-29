@@ -238,17 +238,19 @@ std::vector<sc::MZML_BINARY_METADATA> sc::mzml::MZML_SPECTRUM::extract_binary_me
       throw("Encoding precision with accession MS:1000521, MS:1000522 or MS:1000523 not found!");
     }
 
-    const pugi::xml_node node_comp = bin.find_child_by_attribute("cvParam", "accession", "MS:1000574");
+    const pugi::xml_node node_comp_zlib = bin.find_child_by_attribute("cvParam", "accession", "MS:1000574");
+    const pugi::xml_node node_comp_no = bin.find_child_by_attribute("cvParam", "accession", "MS:1000576");
 
-    if (node_comp) {
-      mtd.compression = node_comp.attribute("name").as_string();
+    if (node_comp_zlib) {
+      mtd.compression = node_comp_zlib.attribute("name").as_string();
+      mtd.compressed = true;
 
-      if (mtd.compression == "zlib" || mtd.compression == "zlib compression") {
-        mtd.compressed = true;
+    } else if (node_comp_no) {
+      mtd.compression = node_comp_no.attribute("name").as_string();
+      mtd.compressed = false;
 
-      } else {
-        mtd.compressed = false;
-      }
+    } else {
+      throw("Compression with accession MS:1000574 or MS:1000576 not found!");
     }
 
     bool has_bin_data_type = false;
@@ -326,27 +328,19 @@ std::vector<std::vector<double>> sc::mzml::MZML_SPECTRUM::extract_binary_data(co
 
     std::string decoded_string = sc::decode_base64(encoded_string);
 
-    if (mtd[counter].compressed) {
-      decoded_string = sc::decompress_zlib(decoded_string);
-    }
+    if (mtd[counter].compressed) decoded_string = sc::decompress_zlib(decoded_string);
 
     spectrum[counter] = sc::decode_little_endian(decoded_string, mtd[counter].precision_int / 8);
 
     int bin_array_size = spectrum[counter].size();
 
-    if (bin_array_size != number_traces) {
-      throw("Number of traces in binary array does not match the value of the spectrum header!");
-    }
+    if (bin_array_size != number_traces) throw("Number of traces in binary array does not match the value of the spectrum header!");
 
     if (mtd[counter].data_name_short == "time") {
       pugi::xml_node node_unit = bin.find_child_by_attribute("cvParam", "unitCvRef", "UO");
       std::string unit = node_unit.attribute("unitName").as_string();
 
-      if (unit == "minute") {
-        for (double &j : spectrum[counter]) {
-          j *= 60;
-        }
-      }
+      if (unit == "minute") for (double &j : spectrum[counter]) { j *= 60; }
     }
 
     counter++;
