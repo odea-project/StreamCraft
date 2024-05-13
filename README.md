@@ -2,8 +2,10 @@
 
 # StreamCraft
 
-Library for reading mzML, mzXML and AnIML based analytical data.
+C++ library for reading mass spectrometry data in mzML and mzXML formats. StreamCraft is still under active development, so stay tuned for further news.
 
-<!-- <div style="display: flex; justify-content: center;"> <img src="./sc_logo.png" alt="StreamPort Logo" width="300"></div> -->
+<p align="center" width="100%">
+<img width="60%" src="sc_logo.png" alt="Logo" />
+</p>
 <br>
 <br>
