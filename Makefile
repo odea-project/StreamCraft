@@ -1,50 +1,34 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -g -Wall -Isrc
 
-ZLIBDIR = C:/Users/apoli/Documents/github/StreamCraft/external/zlib-1.3.1
-CXXFLAGS += -I$(ZLIBDIR)
-CXXFLAGS += -I$(ZLIBDIR)/build
-LDFLAGS = -L$(ZLIBDIR)/build
-LDLIBS = -lzlibstatic
+CXXFLAGS = -std=c++17
 
-#ZLIBDIR = C:/Users/apoli/Documents/github/StreamCraft/external/zlib-1.3.1
-#ZLIBBUILDDIR = $(ZLIBDIR)/build
-#CXXFLAGS += -I$(ZLIBDIR)
-#LDFLAGS = -L$(ZLIBBUILDDIR)
-#LDLIBS = -lzlibstatic
+CXXFLAGS += -g
 
-#CXXFLAGS += -DGCC
-#CXXFLAGS += -D_FILE_OFFSET_BITS=64
+CXXFLAGS += -Wall
 
-#MSTOOLKITDIR = external/mstoolkit
-#MSTOOLKITDIRINCLUDE = $(MSTOOLKITDIR)/include
-#CXXFLAGS += -I$(MSTOOLKITDIRINCLUDE)
+CXXFLAGS += -fopenmp #enables the OpenMP directive
 
-#MSTOOLKITLIB = $(MSTOOLKITDIR)/libmstoolkit.a
-#LDLIBS += $(MSTOOLKITLIB)
+CXXFLAGS += -Isrc
 
-#SOURCES = external/qAlgorithms/src/qalgorithms_matrix.cpp
-#SOURCES += external/qAlgorithms/src/qalgorithms_utils.cpp
-#SOURCES += external/qAlgorithms/src/qalgorithms.cpp
-#CXXFLAGS += -Iexternal/qAlgorithms/src
-#CXXFLAGS += -Iexternal/qAlgorithms/include
+CXXFLAGS += -I$(CURDIR)/external/zlib-1.3.1
 
-#SOURCES = $(wildcard src/*.cpp) main.cpp
-SOURCES = main.cpp
-OBJECTS = $(SOURCES:.cpp=.o)
+CXXFLAGS += -I$(CURDIR)/external/zlib-1.3.1/build
 
-CXXFLAGS += -fopenmp
+LDFLAGS = -L$(CURDIR)/external/zlib-1.3.1/build
 
-EXECUTABLE = main.exe
+LDLIBS = -lzlibstatic #links the zlib static library
+
+SOURCES = main.cpp #sets the source files
+
+OBJECTS = $(SOURCES:.cpp=.o) #sets the object files
+
+EXECUTABLE = main.exe #sets the executable file
 
 all: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $(EXECUTABLE) $(LDLIBS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-#clean:
-#	rm -f $(OBJECTS) $(EXECUTABLE)
 
 clean:
 	del /Q src\*.o
@@ -56,3 +40,21 @@ run: clean all
 
 runonly:
 	./$(EXECUTABLE)
+
+
+#clean:
+#	rm -f $(OBJECTS) $(EXECUTABLE)
+#CXXFLAGS += -DGCC
+#CXXFLAGS += -D_FILE_OFFSET_BITS=64
+#MSTOOLKITDIR = external/mstoolkit
+#MSTOOLKITDIRINCLUDE = $(MSTOOLKITDIR)/include
+#CXXFLAGS += -I$(MSTOOLKITDIRINCLUDE)
+#MSTOOLKITLIB = $(MSTOOLKITDIR)/libmstoolkit.a
+#LDLIBS += $(MSTOOLKITLIB)
+#SOURCES = external/qAlgorithms/src/qalgorithms_matrix.cpp
+#SOURCES += external/qAlgorithms/src/qalgorithms_utils.cpp
+#SOURCES += external/qAlgorithms/src/qalgorithms.cpp
+#CXXFLAGS += -Iexternal/qAlgorithms/src
+#CXXFLAGS += -Iexternal/qAlgorithms/include
+#SOURCES = $(wildcard src/*.cpp) main.cpp
+#$(LDFLAGS)

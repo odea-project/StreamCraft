@@ -19,24 +19,65 @@
 
 int main() {
 
-  std::string file1 = "C:/Users/apoli/Documents/example_ms_files/tof_25000_mix1-r001.mzML";
-  std::string file2 = "./excluded/example.mzML";
-  std::string file3 = "./excluded/example.animl";
-  std::string file4 = "./excluded/basic.xml";
-  std::string file5 = "./excluded/mrm_pos.mzML";
-  std::string file6 = "./excluded/mrm_neg.mzML";
-  std::string file7 = "./excluded/example_strict.animl";
-  std::string file8 = "./excluded/example.mzXML";
-  std::string file9 = "./excluded/example_profile.mzML";
-  std::string file10 = "./excluded/example_modified.mzML";
+
+  
+  
+  // In the repository
+  std::string file1 = "./excluded/example.mzML";
+  std::string file2 = "./excluded/example.animl";
+  std::string file3 = "./excluded/basic.xml";
+  std::string file4 = "./excluded/mrm_pos.mzML";
+  std::string file5 = "./excluded/mrm_neg.mzML";
+  std::string file6 = "./excluded/example_strict.animl";
+  std::string file7 = "./excluded/example.mzXML";
+  std::string file8 = "./excluded/example_profile.mzML";
+  std::string file9 = "./excluded/example_modified.mzML";
+
+  // In the local laptop
+  std::string file10 = "C:/Users/apoli/Documents/example_ms_files/tof_25000_mix1-r001.mzML";
   std::string file11 = "C:/Users/apoli/Documents/iSoft/BSA_products/BSA_7AqYf_1.mzML";
 
+  // With IM data (large)
+  std::string file12 = "D:/NTS/Project_240124_PFAS_Zweigle/mzml/05_PFAS_MIX_100_FS-r001.mzML";
+
   sc::welcome();
-  sc::MZML ana(file11);
+  
+  // auto start = std::chrono::high_resolution_clock::now();
 
-  std::vector<int> idx = {256, 257};
+  // sc::MZML ana(file12);
 
-  std::vector<std::vector<std::vector<double>>> sp = ana.get_spectra(idx);
+  // auto stop = std::chrono::high_resolution_clock::now();
+  // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+  // std::cout << "Opening file: " << duration.count() / 1000 << " seconds" << std::endl;
+
+  // start = std::chrono::high_resolution_clock::now();
+
+  // sc::MS_SPECTRA_HEADERS hd = ana.get_spectra_headers();
+
+  // stop = std::chrono::high_resolution_clock::now();
+  // duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+  // std::cout << "Extract headers: " << duration.count() / 1000 << " seconds" << std::endl;
+
+  // start = std::chrono::high_resolution_clock::now();
+
+  // std::vector<std::vector<std::vector<double>>> sp = ana.get_spectra();
+
+  // stop = std::chrono::high_resolution_clock::now();
+  // duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+  // std::cout << "Extract spectra: " << duration.count() / 1000 << " seconds" << std::endl;
+
+  // start = std::chrono::high_resolution_clock::now();
+
+  // sp.clear();
+  // sp.shrink_to_fit();
+
+  // stop = std::chrono::high_resolution_clock::now();
+  // duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+  // std::cout << "Destroy spectra: " << duration.count() / 1000 << " seconds" << std::endl;
+
+  // std::vector<int> idx = {10};
+
+  // std::vector<std::vector<std::vector<double>>> sp = ana.get_spectra(idx);
 
   // sc::MZML ana = file1;
 
@@ -81,6 +122,8 @@ int main() {
   // targets.driftmin = {0, 0, 0};
   // targets.driftmax = {0, 0, 0};
 
+  // sc::MS_ANALYSIS ana(file7);
+
   // std::vector<std::vector<std::vector<double>>> res = ana.get_spectra_targets(targets);
 
   // for (size_t i = 0; i < res.size(); i++) {
@@ -117,12 +160,12 @@ int main() {
 
 
 
-  // mzxml::MZXML z(file8);
+  // sc::MZXML z(file7);
   // std::vector<int> idx(10);
   // std::iota(idx.begin(), idx.end(), 0);
   // // z.print();
   // // z.print_binary_metadata();
-  // utils::MS_SPECTRA_HEADERS hd = z.get_spectra_headers(idx);
+  // sc::MS_SPECTRA_HEADERS hd = z.get_spectra_headers(idx);
   // // show all rt values in console
   // for (size_t i = 0; i < hd.index.size(); i++) {
   //   std::cout << hd.rt[i] << std::endl;

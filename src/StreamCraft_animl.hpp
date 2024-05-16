@@ -270,6 +270,6 @@ namespace animl {
 #endif // ANIML_HPP
 
 #if defined(STREAMCRAFT_HEADER_ONLY) && !defined(STREAMCRAFT_ANIML_SOURCE)
-#	define STREAMCRAFT_ANIML_SOURCE "StreamCraft:animl.cpp"
+#	define STREAMCRAFT_ANIML_SOURCE "StreamCraft_animl.cpp"
 #	include STREAMCRAFT_ANIML_SOURCE
 #endif

@@ -72,7 +72,7 @@ std::vector<std::vector<std::vector<double>>> sc::MS_ANALYSIS::extract_spectra_t
     for (int j = 0; j < number_rts; j++) {
 
       if (levels[j] == targets.level[i] || targets.level[i] == 0) {
-        if ((rts[j] >= targets.rtmin[i] && rts[j] <= targets.rtmax[i]) || targets.rtmax[i] == 0) {  
+        if ((rts[j] >= targets.rtmin[i] && rts[j] <= targets.rtmax[i]) || targets.rtmax[i] == 0) {
           idx.insert(j);
         }
       }
