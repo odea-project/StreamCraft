@@ -6,7 +6,7 @@ CXXFLAGS += -g
 
 CXXFLAGS += -Wall
 
-CXXFLAGS += -fopenmp #enables the OpenMP directive
+CXXFLAGS += -fopenmp
 
 CXXFLAGS += -Isrc
 
@@ -16,13 +16,13 @@ CXXFLAGS += -I$(CURDIR)/external/zlib-1.3.1/build
 
 LDFLAGS = -L$(CURDIR)/external/zlib-1.3.1/build
 
-LDLIBS = -lzlibstatic #links the zlib static library
+LDLIBS = -lzlibstatic
 
-SOURCES = main.cpp #sets the source files
+SOURCES = main.cpp
 
-OBJECTS = $(SOURCES:.cpp=.o) #sets the object files
+OBJECTS = $(SOURCES:.cpp=.o)
 
-EXECUTABLE = main.exe #sets the executable file
+EXECUTABLE = main.exe
 
 all: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $(EXECUTABLE) $(LDLIBS)

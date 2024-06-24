@@ -19,9 +19,6 @@
 
 int main() {
 
-
-  
-  
   // In the repository
   std::string file1 = "./excluded/example.mzML";
   std::string file2 = "./excluded/example.animl";
@@ -39,13 +36,24 @@ int main() {
 
   // With IM data (large)
   std::string file12 = "D:/NTS/Project_240124_PFAS_Zweigle/mzml/05_PFAS_MIX_100_FS-r001.mzML";
-
-  sc::welcome();
   
+  // sc::MS_ANALYSIS ana(file1);
+  // sc::MS_SPECTRUM sp = ana.get_spectrum(10);
+  // std::cout << "Scan: " << sp.index << std::endl;
+  // std::cout << "RT: " << sp.rt << std::endl;
+  // std::cout << "Polarity: " << sp.polarity << std::endl;
+  // std::cout << "Level: " << sp.level << std::endl;
+  // std::cout << "Mode: " << sp.mode << std::endl;
+  // std::cout << "MZ: " << sp.binary_data[0].size() << std::endl;
+  // std::cout << "Intensity: " << sp.binary_data[1].size() << std::endl;
+  // std::cout << "Drift: " << sp.drift << std::endl;
+  // std::cout << "Window mz: " << sp.window_mz << std::endl;
+  // std::cout << "Window high: " << sp.window_mzhigh << std::endl;
+  // std::cout << "Collision energy: " << sp.activation_ce << std::endl;
+
   // auto start = std::chrono::high_resolution_clock::now();
 
   // sc::MZML ana(file12);
-
   // auto stop = std::chrono::high_resolution_clock::now();
   // auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
   // std::cout << "Opening file: " << duration.count() / 1000 << " seconds" << std::endl;
@@ -109,29 +117,27 @@ int main() {
 
   // sc::test_extract_spectra_mzxml(file8);
 
-  // sc::MS_TARGETS targets;
-  // targets.resize_all(3);
-  // targets.index = {0, 1, 2};
-  // targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
-  // targets.level = {1, 1, 1};
-  // targets.polarity = {1, 1, 1};
-  // targets.mzmin = {268.1854,  296.0181, 233.0197};
-  // targets.mzmax = {268.1961,  296.0299, 233.0290};
-  // targets.rtmin = {905, 1245, 1150};
-  // targets.rtmax = {925, 1265, 1170};
-  // targets.driftmin = {0, 0, 0};
-  // targets.driftmax = {0, 0, 0};
+  sc::MS_TARGETS targets;
+  targets.resize_all(3);
+  targets.index = {0, 1, 2};
+  targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
+  targets.level = {1, 1, 1};
+  targets.polarity = {1, 1, 1};
+  targets.precursor = {false, false, false};
+  targets.mzmin = {268.1854,  296.0181, 233.0197};
+  targets.mzmax = {268.1961,  296.0299, 233.0290};
+  targets.rtmin = {905, 1245, 1150};
+  targets.rtmax = {925, 1265, 1170};
+  targets.driftmin = {0, 0, 0};
+  targets.driftmax = {0, 0, 0};
 
-  // sc::MS_ANALYSIS ana(file7);
+  sc::MS_ANALYSIS ana(file7);
 
-  // std::vector<std::vector<std::vector<double>>> res = ana.get_spectra_targets(targets);
+  sc::MS_SPECTRA_TARGETS res = ana.get_spectra_targets(targets);
 
-  // for (size_t i = 0; i < res.size(); i++) {
-  //   std::cout << "Target: " << targets.id[i] << std::endl;
-  //   for (size_t j = 0; j < res[i][0].size(); j++) {
-  //     std::cout << res[i][0][j] << " " << res[i][1][j] << " " << res[i][2][j] << " " << res[i][3][j] << std::endl;
-  //   }
-  // }
+  for (size_t i = 0; i < res.id.size(); i++) {
+    std::cout << res.id[i] << " " << " " << res.level[i] << " "  << res.polarity[i] << " " << res.rt[i] << " " << res.drift[i] << " " << res.mz[i] << " " << res.intensity[i] << std::endl;
+  }
 
   // sc::MS_TARGETS targetsdda;
   //   targetsdda.resize_all(3);
@@ -155,8 +161,11 @@ int main() {
   // }
 
 
+  
 
   
+
+
 
 
 
