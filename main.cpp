@@ -1,8 +1,7 @@
 
 #define STREAMCRAFT_HEADER_ONLY
 #include "StreamCraft_lib.hpp"
-
-// #include <omp.h>
+#include "../tests/StreamCraft_tests.hpp"
 
 // Workaround if M_2_SQRTPI is not recognized
 #ifndef M_2_SQRTPI
@@ -37,6 +36,12 @@ int main() {
   // With IM data (large)
   std::string file12 = "D:/NTS/Project_240124_PFAS_Zweigle/mzml/05_PFAS_MIX_100_FS-r001.mzML";
   
+  test_extract_ms_analysis(file1, 10);
+
+
+
+
+
   // sc::MS_ANALYSIS ana(file1);
   // sc::MS_SPECTRUM sp = ana.get_spectrum(10);
   // std::cout << "Scan: " << sp.index << std::endl;
@@ -94,8 +99,6 @@ int main() {
   // int idx = sp->extract_scan_rt();
   // std::cout << "Index: " << idx << std::endl;
 
-
-
   // auto start = std::chrono::high_resolution_clock::now();
 
   // const sc::MS_SPECTRA_HEADERS hd = ana.get_spectra_headers();
@@ -117,27 +120,36 @@ int main() {
 
   // sc::test_extract_spectra_mzxml(file8);
 
-  sc::MS_TARGETS targets;
-  targets.resize_all(3);
-  targets.index = {0, 1, 2};
-  targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
-  targets.level = {1, 1, 1};
-  targets.polarity = {1, 1, 1};
-  targets.precursor = {false, false, false};
-  targets.mzmin = {268.1854,  296.0181, 233.0197};
-  targets.mzmax = {268.1961,  296.0299, 233.0290};
-  targets.rtmin = {905, 1245, 1150};
-  targets.rtmax = {925, 1265, 1170};
-  targets.driftmin = {0, 0, 0};
-  targets.driftmax = {0, 0, 0};
+  // sc::MS_TARGETS targets;
+  // targets.resize_all(3);
+  // targets.index = {0, 1, 2};
+  // targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
+  // targets.level = {2, 2, 2};
+  // targets.polarity = {1, 1, 1};
+  // targets.precursor = {true, true, true}; // for DIA set precursor to false, keeping level to 2
+  // targets.mzmin = {268.1854,  296.0181, 233.0197};
+  // targets.mzmax = {268.1961,  296.0299, 233.0290};
+  // targets.rtmin = {905, 1245, 1150};
+  // targets.rtmax = {925, 1265, 1170};
+  // targets.driftmin = {0, 0, 0};
+  // targets.driftmax = {0, 0, 0};
 
-  sc::MS_ANALYSIS ana(file7);
+  // sc::MS_ANALYSIS ana(file7);
 
-  sc::MS_SPECTRA_TARGETS res = ana.get_spectra_targets(targets);
+  // sc::MS_TARGETS_SPECTRA res = ana.get_spectra_targets(targets);
 
-  for (size_t i = 0; i < res.id.size(); i++) {
-    std::cout << res.id[i] << " " << " " << res.level[i] << " "  << res.polarity[i] << " " << res.rt[i] << " " << res.drift[i] << " " << res.mz[i] << " " << res.intensity[i] << std::endl;
-  }
+  // for (size_t i = 0; i < res.id.size(); i++) {
+  //   std::cout << res.id[i] << " "
+  //   << " " << res.level[i] << " "
+  //   << res.polarity[i] << " "
+  //   << res.pre_mz[i] << " "
+  //   << res.pre_mzlow[i] << " "
+  //   << res.pre_mzhigh[i] << " " 
+  //   << res.rt[i] << " " 
+  //   << res.drift[i] << " " 
+  //   << res.mz[i] << " " 
+  //   << res.intensity[i] << std::endl;
+  // }
 
   // sc::MS_TARGETS targetsdda;
   //   targetsdda.resize_all(3);

@@ -3,6 +3,7 @@
 #include <set>
 
 sc::MS_ANALYSIS::MS_ANALYSIS(const std::string& file) {
+  
   file_path = file;
   
   file_dir = file.substr(0, file.find_last_of("/\\") + 1);
@@ -34,7 +35,7 @@ sc::MS_ANALYSIS::MS_ANALYSIS(const std::string& file) {
   }
 };
 
-sc::MS_SPECTRA_TARGETS sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS& targets) {
+sc::MS_TARGETS_SPECTRA sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS& targets) {
 
   const double minIntLv1 = 0;
   const double minIntLv2 = 0;
@@ -43,7 +44,7 @@ sc::MS_SPECTRA_TARGETS sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
 
   const int number_targets = targets.index.size();
 
-  MS_SPECTRA_TARGETS res;
+  MS_TARGETS_SPECTRA res;
 
   if (number_targets == 0) return res;
 
@@ -90,8 +91,8 @@ sc::MS_SPECTRA_TARGETS sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
   std::vector<int> polarity_out;
   std::vector<int> level_out;
   std::vector<double> pre_mz_out;
-  // std::vector<double> pre_mzlow_out;
-  // std::vector<double> pre_mzhigh_out;
+  std::vector<double> pre_mzlow_out;
+  std::vector<double> pre_mzhigh_out;
   std::vector<double> pre_ce_out;
   std::vector<double> rt_out;
   std::vector<double> drift_out;
@@ -104,8 +105,8 @@ sc::MS_SPECTRA_TARGETS sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
     std::vector<int> polarity_priv;
     std::vector<int> level_priv;
     std::vector<double> pre_mz_priv;
-    // std::vector<double> pre_mzlow_priv;
-    // std::vector<double> pre_mzhigh_priv;
+    std::vector<double> pre_mzlow_priv;
+    std::vector<double> pre_mzhigh_priv;
     std::vector<double> pre_ce_priv;
     std::vector<double> rt_priv;
     std::vector<double> drift_priv;
@@ -126,8 +127,8 @@ sc::MS_SPECTRA_TARGETS sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
       const int& i_polarity = hd.polarity[i_idx[0]];
       const int& i_level = hd.level[i_idx[0]];
       const double& i_pre_mz = hd.precursor_mz[i_idx[0]];
-      // const double& i_pre_mzlow = pre_mzlow[i_idx[0]];
-      // const double& i_pre_mzhigh = pre_mzhigh[i_idx[0]];
+      const double& i_pre_mzlow = hd.window_mzlow[i_idx[0]];
+      const double& i_pre_mzhigh = hd.window_mzhigh[i_idx[0]];
       const double& i_rt = hd.rt[i_idx[0]];
       const double& i_drift = hd.drift[i_idx[0]];
       
@@ -150,8 +151,8 @@ sc::MS_SPECTRA_TARGETS sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
                       polarity_priv.push_back(i_polarity);
                       level_priv.push_back(i_level);
                       pre_mz_priv.push_back(i_pre_mz);
-                      // pre_mzlow_priv.push_back(i_pre_mzlow);
-                      // pre_mzhigh_priv.push_back(i_pre_mzhigh);
+                      pre_mzlow_priv.push_back(i_pre_mzlow);
+                      pre_mzhigh_priv.push_back(i_pre_mzhigh);
                       pre_ce_priv.push_back(hd.activation_ce[i_idx[0]]);
                       rt_priv.push_back(i_rt);
                       drift_priv.push_back(i_drift);
@@ -171,8 +172,8 @@ sc::MS_SPECTRA_TARGETS sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
                       polarity_priv.push_back(i_polarity);
                       level_priv.push_back(i_level);
                       pre_mz_priv.push_back(i_pre_mz);
-                      // pre_mzlow_priv.push_back(i_pre_mzlow);
-                      // pre_mzhigh_priv.push_back(i_pre_mzhigh);
+                      pre_mzlow_priv.push_back(i_pre_mzlow);
+                      pre_mzhigh_priv.push_back(i_pre_mzhigh);
                       pre_ce_priv.push_back(hd.activation_ce[i_idx[0]]);
                       rt_priv.push_back(i_rt);
                       drift_priv.push_back(i_drift);
@@ -194,8 +195,8 @@ sc::MS_SPECTRA_TARGETS sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
       polarity_out.insert(polarity_out.end(), polarity_priv.begin(), polarity_priv.end());
       level_out.insert(level_out.end(), level_priv.begin(), level_priv.end());
       pre_mz_out.insert(pre_mz_out.end(), pre_mz_priv.begin(), pre_mz_priv.end());
-      // pre_mzlow_out.insert(pre_mzlow_out.end(), pre_mzlow_priv.begin(), pre_mzlow_priv.end());
-      // pre_mzhigh_out.insert(pre_mzhigh_out.end(), pre_mzhigh_priv.begin(), pre_mzhigh_priv.end());
+      pre_mzlow_out.insert(pre_mzlow_out.end(), pre_mzlow_priv.begin(), pre_mzlow_priv.end());
+      pre_mzhigh_out.insert(pre_mzhigh_out.end(), pre_mzhigh_priv.begin(), pre_mzhigh_priv.end());
       pre_ce_out.insert(pre_ce_out.end(), pre_ce_priv.begin(), pre_ce_priv.end());
       rt_out.insert(rt_out.end(), rt_priv.begin(), rt_priv.end());
       drift_out.insert(drift_out.end(), drift_priv.begin(), drift_priv.end());
@@ -221,15 +222,13 @@ sc::MS_SPECTRA_TARGETS sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
 
   res.resize_all(id_out.size());
 
-  // add the vectors _out sorted to the res stuct
-
   for (int i = 0; i < number_spectra_targets_out; i++) {
     res.id[i] = id_out[idx_sort[i]];
     res.polarity[i] = polarity_out[idx_sort[i]];
     res.level[i] = level_out[idx_sort[i]];
     res.pre_mz[i] = pre_mz_out[idx_sort[i]];
-    // res.pre_mzlow[i] = pre_mzlow_out[idx_sort[i]];
-    // res.pre_mzhigh[i] = pre_mzhigh_out[idx_sort[i]];
+    res.pre_mzlow[i] = pre_mzlow_out[idx_sort[i]];
+    res.pre_mzhigh[i] = pre_mzhigh_out[idx_sort[i]];
     res.pre_ce[i] = pre_ce_out[idx_sort[i]];
     res.rt[i] = rt_out[idx_sort[i]];
     res.drift[i] = drift_out[idx_sort[i]];

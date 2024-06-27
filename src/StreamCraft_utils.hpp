@@ -9,57 +9,80 @@ namespace sc {
 
   inline namespace utils {
 
+    enum MS_SPECTRA_MODE {
+      CENTROID,
+      PROFILE
+    };
+
     struct MS_SPECTRUM {
-      int index = 0;
-      int scan = 0;
-      int array_length = 0;
-      int level = 0;
-      int mode = 0;
-      int polarity = 0;
-      double lowmz = 0;
-      double highmz = 0;
-      double bpmz = 0;
-      double bpint = 0;
-      double tic = 0;
-      double rt = 0;
-      double drift = 0;
-      double window_mz = 0;
-      double window_mzlow = 0;
-      double window_mzhigh = 0;
-      double precursor_mz = 0;
-      double precursor_intensity = 0;
-      int precursor_charge = 0;
-      double activation_ce = 0;
-      int binary_arrays_count = 0;
+      int index;
+      int scan;
+      int array_length;
+      int level;
+      int mode;
+      int polarity;
+      double lowmz;
+      double highmz;
+      double bpmz;
+      double bpint;
+      double tic;
+      double rt;
+      double drift;
+      double window_mz;
+      double window_mzlow;
+      double window_mzhigh;
+      double precursor_mz;
+      double precursor_intensity;
+      int precursor_charge;
+      double activation_ce;
+      int binary_arrays_count;
       std::vector<std::string> binary_names;
       std::vector<std::vector<double>> binary_data;
     };
 
-    struct MS_SPECTRA_TARGETS {
-      std::vector<std::string> id;
-      std::vector<int> polarity;
+    struct MS_SPECTRA_HEADERS {
+      std::vector<int> index;
+      std::vector<int> scan;
+      std::vector<int> array_length;
       std::vector<int> level;
-      std::vector<double> pre_mz;
-      // std::vector<double> pre_mzlow;
-      // std::vector<double> pre_mzhigh;
-      std::vector<double> pre_ce;
+      std::vector<int> mode;
+      std::vector<int> polarity;
+      std::vector<double> lowmz;
+      std::vector<double> highmz;
+      std::vector<double> bpmz;
+      std::vector<double> bpint;
+      std::vector<double> tic;
       std::vector<double> rt;
       std::vector<double> drift;
-      std::vector<double> mz;
-      std::vector<double> intensity;
+      std::vector<double> window_mz;
+      std::vector<double> window_mzlow;
+      std::vector<double> window_mzhigh;
+      std::vector<double> precursor_mz;
+      std::vector<double> precursor_intensity;
+      std::vector<int> precursor_charge;
+      std::vector<double> activation_ce;
 
       void resize_all(int n) {
-        id.resize(n);
-        polarity.resize(n);
+        index.resize(n);
+        scan.resize(n);
+        array_length.resize(n);
         level.resize(n);
-        pre_mz.resize(n);
-        // pre_mzlow.resize(n);
-        // pre_mzhigh.resize(n);
-        pre_ce.resize(n);
+        mode.resize(n);
+        polarity.resize(n);
+        lowmz.resize(n);
+        highmz.resize(n);
+        bpmz.resize(n);
+        bpint.resize(n);
+        tic.resize(n);
         rt.resize(n);
         drift.resize(n);
-        mz.resize(n);
-        intensity.resize(n);
+        window_mz.resize(n);
+        window_mzlow.resize(n);
+        window_mzhigh.resize(n);
+        precursor_mz.resize(n);
+        precursor_intensity.resize(n);
+        precursor_charge.resize(n);
+        activation_ce.resize(n);
       }
     };
 
@@ -84,78 +107,12 @@ namespace sc {
       bool has_ion_mobility;
     };
 
-    enum MS_SPECTRA_MODE {
-      CENTROID,
-      PROFILE
-    };
-
-    struct MS_SPECTRA_HEADERS {
-      std::vector<int> index;
-      std::vector<std::string> id;
-      std::vector<int> scan;
-      std::vector<int> array_length;
-      std::vector<int> level;
-      std::vector<int> mode;
-      std::vector<int> polarity;
-      std::vector<double> lowmz;
-      std::vector<double> highmz;
-      std::vector<double> bpmz;
-      std::vector<double> bpint;
-      std::vector<double> tic;
-      std::vector<std::string> title;
-      std::vector<double> rt;
-      std::vector<double> drift;
-      std::vector<std::string> filter_string;
-      std::vector<int> config;
-      std::vector<double> injection_ion_time;
-      std::vector<int> precursor_scan;
-      std::vector<double> window_mz;
-      std::vector<double> window_mzlow;
-      std::vector<double> window_mzhigh;
-      std::vector<double> precursor_mz;
-      std::vector<double> precursor_intensity;
-      std::vector<int> precursor_charge;
-      std::vector<std::string> activation_type;
-      std::vector<double> activation_ce;
-
-      void resize_all(int n) {
-        index.resize(n);
-        id.resize(n);
-        scan.resize(n);
-        array_length.resize(n);
-        level.resize(n);
-        mode.resize(n);
-        polarity.resize(n);
-        lowmz.resize(n);
-        highmz.resize(n);
-        bpmz.resize(n);
-        bpint.resize(n);
-        tic.resize(n);
-        title.resize(n);
-        rt.resize(n);
-        drift.resize(n);
-        filter_string.resize(n);
-        config.resize(n);
-        injection_ion_time.resize(n);
-        precursor_scan.resize(n);
-        window_mz.resize(n);
-        window_mzlow.resize(n);
-        window_mzhigh.resize(n);
-        precursor_mz.resize(n);
-        precursor_intensity.resize(n);
-        precursor_charge.resize(n);
-        activation_type.resize(n);  
-        activation_ce.resize(n);
-      }
-    };
-
     struct MS_CHROMATOGRAMS_HEADERS {
       std::vector<int> index;
       std::vector<std::string> id;
       std::vector<int> array_length;
       std::vector<int> polarity;
       std::vector<double> precursor_mz;
-      std::vector<std::string> activation_type;
       std::vector<double> activation_ce;
       std::vector<double> product_mz;
 
@@ -165,7 +122,6 @@ namespace sc {
         array_length.resize(n);
         polarity.resize(n);
         precursor_mz.resize(n);
-        activation_type.resize(n);
         activation_ce.resize(n);
         product_mz.resize(n);
       };
@@ -213,6 +169,34 @@ namespace sc {
         target.driftmax.push_back(driftmax[i]);
         return target;
       };
+    };
+
+    struct MS_TARGETS_SPECTRA {
+      std::vector<std::string> id;
+      std::vector<int> polarity;
+      std::vector<int> level;
+      std::vector<double> pre_mz;
+      std::vector<double> pre_mzlow;
+      std::vector<double> pre_mzhigh;
+      std::vector<double> pre_ce;
+      std::vector<double> rt;
+      std::vector<double> drift;
+      std::vector<double> mz;
+      std::vector<double> intensity;
+
+      void resize_all(int n) {
+        id.resize(n);
+        polarity.resize(n);
+        level.resize(n);
+        pre_mz.resize(n);
+        pre_mzlow.resize(n);
+        pre_mzhigh.resize(n);
+        pre_ce.resize(n);
+        rt.resize(n);
+        drift.resize(n);
+        mz.resize(n);
+        intensity.resize(n);
+      }
     };
 
     class VIRTUAL_MS_FILE {

@@ -4,7 +4,9 @@
 #include <vector>
 #include <string>
 
+#ifndef PUGIXML_PATH
 #define PUGIXML_PATH "../../pugixml-1.14/src/pugixml.hpp"
+#endif
 
 #include "StreamCraft_utils.hpp"
 #include "StreamCraft_mzml.hpp"
@@ -78,7 +80,7 @@ namespace sc {
       std::vector<std::vector<std::string>> get_software() { return ms->get_software(); }
       std::vector<std::vector<std::string>> get_hardware() { return ms->get_hardware(); }
       MS_SPECTRUM get_spectrum(int index) { return ms->get_spectrum(index); }
-      sc::MS_SPECTRA_TARGETS get_spectra_targets(const MS_TARGETS& targets);
+      MS_TARGETS_SPECTRA get_spectra_targets(const MS_TARGETS& targets);
   };
 
 }; // namespace sc

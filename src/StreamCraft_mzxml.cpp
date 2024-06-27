@@ -741,7 +741,17 @@ sc::MS_SPECTRA_HEADERS sc::mzxml::MZXML::get_spectra_headers(std::vector<int> in
     if (sp.has_precursor()) {
       headers.precursor_mz[i] = sp.extract_ion_mz();
       headers.activation_ce[i] = sp.extract_activation_ce();
+    } else {
+      headers.precursor_mz[i] = 0;
+      headers.activation_ce[i] = 0;
     }
+
+    headers.drift[i] = 0;
+    headers.window_mz[i] = 0;
+    headers.window_mzlow[i] = 0;
+    headers.window_mzhigh[i] = 0;
+    headers.precursor_intensity[i] = 0;
+    headers.precursor_charge[i] = 0;
   } // end of i loop
 
   return headers;
@@ -841,9 +851,23 @@ sc::MS_SPECTRUM sc::mzxml::MZXML::get_spectrum(const int& idx) const {
   if (spec.has_precursor()) {
     spectrum.precursor_mz = spec.extract_ion_mz();
     spectrum.activation_ce = spec.extract_activation_ce();
+  } else {
+    spectrum.precursor_mz = 0;
+    spectrum.activation_ce = 0;
   }
 
+  spectrum.drift = 0;
+  spectrum.window_mz = 0;
+  spectrum.window_mzlow = 0;
+  spectrum.window_mzhigh = 0;
+  spectrum.precursor_intensity = 0;
+  spectrum.precursor_charge = 0;
+
   const sc::MZXML_BINARY_METADATA binary_metadata = spec.extract_binary_metadata();
+
+  spectrum.binary_arrays_count = 2;
+
+  spectrum.binary_names = {"mz", "intensity"};
 
   spectrum.binary_data = spec.extract_binary_data(binary_metadata);
 

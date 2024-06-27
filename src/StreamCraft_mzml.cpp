@@ -55,12 +55,24 @@ int sc::mzml::MZML_SPECTRUM::extract_spec_polarity() const {
 
 double sc::mzml::MZML_SPECTRUM::extract_spec_lowmz() const {
   pugi::xml_node lowmz_node = spec.find_child_by_attribute("cvParam", "name", "lowest observed m/z");
-  return lowmz_node.attribute("value").as_double();
+  if (!lowmz_node) {
+    pugi::xml_node node_scan_window = spec.child("scanList").child("scan").child("scanWindowList").child("scanWindow");
+    node_scan_window = node_scan_window.find_child_by_attribute("cvParam", "name", "scan window lower limit");
+    return node_scan_window.attribute("value").as_double();
+  } else {
+    return lowmz_node.attribute("value").as_double();
+  }
 };
 
 double sc::mzml::MZML_SPECTRUM::extract_spec_highmz() const {
   pugi::xml_node highmz_node = spec.find_child_by_attribute("cvParam", "name", "highest observed m/z");
-  return highmz_node.attribute("value").as_double();
+  if (!highmz_node) {
+    pugi::xml_node node_scan_window = spec.child("scanList").child("scan").child("scanWindowList").child("scanWindow");
+    node_scan_window = node_scan_window.find_child_by_attribute("cvParam", "name", "scan window upper limit");
+    return node_scan_window.attribute("value").as_double();
+  } else {
+    return highmz_node.attribute("value").as_double();
+  }
 };
 
 double sc::mzml::MZML_SPECTRUM::extract_spec_bpmz() const {
@@ -1342,7 +1354,6 @@ sc::MS_SPECTRA_HEADERS sc::mzml::MZML::get_spectra_headers(std::vector<int> indi
 
   headers.resize_all(n);
 
-  // #pragma omp parallel for
   for (int i = 0; i < n; i++) {
 
     const int& index = idxs[i];
@@ -1360,15 +1371,10 @@ sc::MS_SPECTRA_HEADERS sc::mzml::MZML::get_spectra_headers(std::vector<int> indi
     headers.bpmz[i] = sp.extract_spec_bpmz();
     headers.bpint[i] = sp.extract_spec_bpint();
     headers.tic[i] = sp.extract_spec_tic();
-    headers.title[i] = sp.extract_spec_title();
     headers.rt[i] = sp.extract_scan_rt();
     headers.drift[i] = sp.extract_scan_drift();
-    headers.filter_string[i] = sp.extract_scan_filter_string();
-    headers.config[i] = sp.extract_scan_config();
-    headers.injection_ion_time[i] = sp.extract_scan_injection_ion_time();
 
     if (sp.has_precursor()) {
-      headers.precursor_scan[i] = sp.extract_precursor_scan();
       headers.window_mz[i] = sp.extract_window_mz();
       headers.window_mzlow[i] = sp.extract_window_mzlow();
       headers.window_mzhigh[i] = sp.extract_window_mzhigh();
@@ -1377,12 +1383,26 @@ sc::MS_SPECTRA_HEADERS sc::mzml::MZML::get_spectra_headers(std::vector<int> indi
         headers.precursor_mz[i] = sp.extract_ion_mz();
         headers.precursor_intensity[i] = sp.extract_ion_intensity();
         headers.precursor_charge[i] = sp.extract_ion_charge();
+      } else {
+        headers.precursor_mz[i] = 0;
+        headers.precursor_intensity[i] = 0;
+        headers.precursor_charge[i] = 0;
       }
 
       if (sp.has_activation()) {
-        headers.activation_type[i] = sp.extract_activation_type();
         headers.activation_ce[i] = sp.extract_activation_ce();
+      } else {
+        headers.activation_ce[i] = 0;
       }
+
+    } else {
+      headers.window_mz[i] = 0;
+      headers.window_mzlow[i] = 0;
+      headers.window_mzhigh[i] = 0;
+      headers.precursor_mz[i] = 0;
+      headers.precursor_intensity[i] = 0;
+      headers.precursor_charge[i] = 0;
+      headers.activation_ce[i] = 0;
     }
   } // end of i loop
 
@@ -1427,13 +1447,21 @@ sc::MS_CHROMATOGRAMS_HEADERS sc::mzml::MZML::get_chromatograms_headers(std::vect
       headers.precursor_mz[i] = ch.extract_precursor_mz();
       
       if (ch.has_activation()) {
-        headers.activation_type[i] = ch.extract_activation_type();
         headers.activation_ce[i] = ch.extract_activation_ce();
+      } else {
+        headers.activation_ce[i] = 0;
       }
       
       if (ch.has_product()) {
         headers.product_mz[i] = ch.extract_product_mz();
+      } else {
+        headers.product_mz[i] = 0;
       }
+
+    } else {
+      headers.precursor_mz[i] = 0;
+      headers.activation_ce[i] = 0;
+      headers.product_mz[i] = 0;
     }
   } // end of i loop
 
@@ -1623,14 +1651,33 @@ sc::MS_SPECTRUM sc::mzml::MZML::get_spectrum(const int& idx) const {
       spectrum.precursor_mz = spec.extract_ion_mz();
       spectrum.precursor_intensity = spec.extract_ion_intensity();
       spectrum.precursor_charge = spec.extract_ion_charge();
+    } else {
+      spectrum.precursor_mz = 0;
+      spectrum.precursor_intensity = 0;
+      spectrum.precursor_charge = 0;
     }
 
     if (spec.has_activation()) {
       spectrum.activation_ce = spec.extract_activation_ce();
+    } else {
+      spectrum.activation_ce = 0;
     }
+
+  } else {
+    spectrum.window_mz = 0;
+    spectrum.window_mzlow = 0;
+    spectrum.window_mzhigh = 0;
+    spectrum.precursor_mz = 0;
+    spectrum.precursor_intensity = 0;
+    spectrum.precursor_charge = 0;
+    spectrum.activation_ce = 0;
   }
 
   const std::vector<MZML_BINARY_METADATA> mtd = spec.extract_binary_metadata();
+
+  spectrum.binary_arrays_count = mtd.size();
+
+  for (MZML_BINARY_METADATA i : mtd) spectrum.binary_names.push_back(i.data_name_short);
 
   spectrum.binary_data = spec.extract_binary_data(mtd);
 
