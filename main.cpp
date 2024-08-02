@@ -35,12 +35,70 @@ int main() {
 
   // With IM data (large)
   std::string file12 = "D:/NTS/Project_240124_PFAS_Zweigle/mzml/05_PFAS_MIX_100_FS-r001.mzML";
+
+  // With IM data (rick)
+  std::string file13 = "./excluded/example_timsTOF_rick.mzML";
+  std::string file14 = "C:/Users/apoli/Documents/example_ms_files/example_data.mzML/BRAVE_SC_QC_M_103_POS_20V_06Sep19_Fiji_ZIC-19-06-01.mzML";
   
-  test_extract_ms_analysis(file1, 10);
+  // waters files DIA
+  std::string file16 = "C:/Users/apoli/Documents/example_ms_files/tisler/201026_targetScreening_effluent_POS_QC3.mzML";
+
+  // test_extract_ms_analysis(file13, 10);
+
+  // std::unique_ptr<sc::MS_READER> ms_reader = sc::create_ms_reader(file1);
+
+  sc::MZML ana(file14);
+  int number_of_spectra = ana.get_number_spectra();
+  std::cout << "Number of spectra: " << number_of_spectra << std::endl;
+  
+  int idx = 2;
+
+  std::vector<int> indices = {idx};
+  sc::MS_SPECTRA_HEADERS hd = ana.get_spectra_headers(indices);
+  std::cout << "Index: " << hd.index[0] << std::endl;
+  std::cout << "Scan: " << hd.scan[0] << std::endl;
+  std::cout << "RT: " << hd.rt[0] << std::endl;
+  std::cout << "Polarity: " << hd.polarity[0] << std::endl;
+  std::cout << "Level: " << hd.level[0] << std::endl;
+  std::cout << "Mode: " << hd.mode[0] << std::endl;
+  std::cout << "Low mz: " << hd.lowmz[0] << std::endl;
+  std::cout << "High mz: " << hd.highmz[0] << std::endl;
+  std::cout << "Bp mz: " << hd.bpmz[0] << std::endl;
+  std::cout << "Bp int: " << hd.bpint[0] << std::endl;
+  std::cout << "Tic: " << hd.tic[0] << std::endl;
+  std::cout << "Configuration: " << hd.configuration[0] << std::endl;
+  std::cout << "Mobility: " << hd.mobility[0] << std::endl;
+  std::cout << "Window mz: " << hd.window_mz[0] << std::endl;
+  std::cout << "Window mz low: " << hd.window_mzlow[0] << std::endl;
+  std::cout << "Window mz high: " << hd.window_mzhigh[0] << std::endl;
+  std::cout << "Precursor mz: " << hd.precursor_mz[0] << std::endl;
+  std::cout << "Precursor intensity: " << hd.precursor_intensity[0] << std::endl;
+  std::cout << "Precursor charge: " << hd.precursor_charge[0] << std::endl;
+  std::cout << "Activation CE: " << hd.activation_ce[0] << std::endl;
+  int bin_arrays = ana.get_number_spectra_binary_arrays();
+  std::cout << "Number of binary arrays: " << bin_arrays << std::endl;
+
+  std::vector<sc::mzml::MZML_BINARY_METADATA> bin_mtd = ana.get_spectra_binary_metadata();
+  sc::MS_SPECTRUM spectra = ana.get_spectrum(idx);
+  std::cout << std::endl;
+  std::cout << "Index: " << spectra.index << std::endl;
+  std::cout << "Binary data: " << std::endl;
+  for (size_t i = 0; i < bin_mtd.size(); i++) {
+    std::cout << bin_mtd[i].data_name << " / ";
+  }
+  std::cout << std::endl;
+  for (int i = 0; i < 11; i++) {
+    for (size_t j = 0; j < spectra.binary_data.size(); j++) {
+      std::cout << spectra.binary_data[j][i] << " / ";
+    }
+    std::cout << std::endl;
+  }
 
 
 
+  
 
+  
 
   // sc::MS_ANALYSIS ana(file1);
   // sc::MS_SPECTRUM sp = ana.get_spectrum(10);

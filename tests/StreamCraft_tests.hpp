@@ -172,7 +172,7 @@ void test_extract_ms_analysis(const std::string& file, const int& index) {
   std::cout << "Bp int: " << spec.bpint << std::endl;
   std::cout << "Tic: " << spec.tic << std::endl;
   std::cout << "RT: " << spec.rt << std::endl;
-  std::cout << "Drift: " << spec.drift << std::endl;
+  std::cout << "Drift: " << spec.mobility << std::endl;
   std::cout << "Window mz: " << spec.window_mz << std::endl;
   std::cout << "Window mz low: " << spec.window_mzlow << std::endl;
   std::cout << "Window mz high: " << spec.window_mzhigh << std::endl;

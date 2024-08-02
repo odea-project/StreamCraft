@@ -26,8 +26,9 @@ namespace sc {
       double bpmz;
       double bpint;
       double tic;
+      int configuration;
       double rt;
-      double drift;
+      double mobility;
       double window_mz;
       double window_mzlow;
       double window_mzhigh;
@@ -52,8 +53,9 @@ namespace sc {
       std::vector<double> bpmz;
       std::vector<double> bpint;
       std::vector<double> tic;
+      std::vector<int> configuration;
       std::vector<double> rt;
-      std::vector<double> drift;
+      std::vector<double> mobility;
       std::vector<double> window_mz;
       std::vector<double> window_mzlow;
       std::vector<double> window_mzhigh;
@@ -74,8 +76,9 @@ namespace sc {
         bpmz.resize(n);
         bpint.resize(n);
         tic.resize(n);
+        configuration.resize(n);
         rt.resize(n);
-        drift.resize(n);
+        mobility.resize(n);
         window_mz.resize(n);
         window_mzlow.resize(n);
         window_mzhigh.resize(n);
@@ -99,6 +102,7 @@ namespace sc {
       std::vector<int> polarity;
       std::vector<int> mode;
       std::vector<int> level;
+      std::vector<int> configuration;
       std::string type;
       double min_mz;
       double max_mz;
@@ -137,8 +141,8 @@ namespace sc {
       std::vector<double> mzmax;
       std::vector<double> rtmin;
       std::vector<double> rtmax;
-      std::vector<double> driftmin;
-      std::vector<double> driftmax;
+      std::vector<double> mobilitymin;
+      std::vector<double> mobilitymax;
 
       void resize_all(int n) {
         index.resize(n);
@@ -150,8 +154,8 @@ namespace sc {
         mzmax.resize(n);
         rtmin.resize(n);
         rtmax.resize(n);
-        driftmin.resize(n);
-        driftmax.resize(n);
+        mobilitymin.resize(n);
+        mobilitymax.resize(n);
       };
 
       MS_TARGETS operator[](int i) {
@@ -165,8 +169,8 @@ namespace sc {
         target.mzmax.push_back(mzmax[i]);
         target.rtmin.push_back(rtmin[i]);
         target.rtmax.push_back(rtmax[i]);
-        target.driftmin.push_back(driftmin[i]);
-        target.driftmax.push_back(driftmax[i]);
+        target.mobilitymin.push_back(mobilitymin[i]);
+        target.mobilitymax.push_back(mobilitymax[i]);
         return target;
       };
     };
@@ -180,7 +184,7 @@ namespace sc {
       std::vector<double> pre_mzhigh;
       std::vector<double> pre_ce;
       std::vector<double> rt;
-      std::vector<double> drift;
+      std::vector<double> mobility;
       std::vector<double> mz;
       std::vector<double> intensity;
 
@@ -193,15 +197,17 @@ namespace sc {
         pre_mzhigh.resize(n);
         pre_ce.resize(n);
         rt.resize(n);
-        drift.resize(n);
+        mobility.resize(n);
         mz.resize(n);
         intensity.resize(n);
       }
     };
 
-    class VIRTUAL_MS_FILE {
+    class MS_READER {
       public:
-        virtual ~VIRTUAL_MS_FILE() = default;
+        MS_READER(const std::string& file) : file_(file) {}
+        virtual ~MS_READER() = default;
+
         virtual int get_number_spectra() = 0;
         virtual int get_number_chromatograms() = 0;
         virtual int get_number_spectra_binary_arrays() = 0;
@@ -211,6 +217,7 @@ namespace sc {
         virtual std::vector<int> get_polarity() = 0;
         virtual std::vector<int> get_mode() = 0;
         virtual std::vector<int> get_level() = 0;
+        virtual std::vector<int> get_configuration() = 0;
         virtual double get_min_mz() = 0;
         virtual double get_max_mz() = 0;
         virtual double get_start_rt() = 0;
@@ -221,6 +228,7 @@ namespace sc {
         virtual std::vector<int> get_spectra_scan_number(std::vector<int> indices = {}) = 0;
         virtual std::vector<int> get_spectra_array_length(std::vector<int> indices = {}) = 0;
         virtual std::vector<int> get_spectra_level(std::vector<int> indices = {}) = 0;
+        virtual std::vector<int> get_spectra_configuration(std::vector<int> indices = {}) = 0;
         virtual std::vector<int> get_spectra_mode(std::vector<int> indices = {}) = 0;
         virtual std::vector<int> get_spectra_polarity(std::vector<int> indices = {}) = 0;
         virtual std::vector<double> get_spectra_lowmz(std::vector<int> indices = {}) = 0;
@@ -229,7 +237,7 @@ namespace sc {
         virtual std::vector<double> get_spectra_bpint(std::vector<int> indices = {}) = 0;
         virtual std::vector<double> get_spectra_tic(std::vector<int> indices = {}) = 0;
         virtual std::vector<double> get_spectra_rt(std::vector<int> indices = {}) = 0;
-        virtual std::vector<double> get_spectra_drift(std::vector<int> indices = {}) = 0;
+        virtual std::vector<double> get_spectra_mobility(std::vector<int> indices = {}) = 0;
         virtual std::vector<int> get_spectra_precursor_scan(std::vector<int> indices = {}) = 0;
         virtual std::vector<double> get_spectra_precursor_mz(std::vector<int> indices = {}) = 0;
         virtual std::vector<double> get_spectra_precursor_window_mz(std::vector<int> indices = {}) = 0;
@@ -242,57 +250,10 @@ namespace sc {
         virtual std::vector<std::vector<std::vector<double>>> get_chromatograms(std::vector<int> indices = {}) = 0;
         virtual std::vector<std::vector<std::string>> get_software() = 0;
         virtual std::vector<std::vector<std::string>> get_hardware() = 0;
-        virtual MS_SPECTRUM get_spectrum(int index) = 0;
-    };
+        virtual MS_SPECTRUM get_spectrum(const int& idx) = 0;
 
-    template <typename T>
-    class MS_FILE : public VIRTUAL_MS_FILE {
-      public:
-        MS_FILE(const std::string& file) : ms(file) {}
-        int get_number_spectra() override { return ms.get_number_spectra(); }
-        int get_number_chromatograms() override { return ms.get_number_chromatograms(); }
-        int get_number_spectra_binary_arrays() { return ms.get_number_spectra_binary_arrays(); }
-        std::string get_format() { return ms.get_format(); }
-        std::string get_type() { return ms.get_type(); }
-        std::string get_time_stamp() { return ms.get_time_stamp(); }
-        std::vector<int> get_polarity() { return ms.get_polarity(); }
-        std::vector<int> get_mode() { return ms.get_mode(); }
-        std::vector<int> get_level() { return ms.get_level(); }
-        double get_min_mz() { return ms.get_min_mz(); }
-        double get_max_mz() { return ms.get_max_mz(); }
-        double get_start_rt() { return ms.get_start_rt(); }
-        double get_end_rt() { return ms.get_end_rt(); }
-        bool has_ion_mobility() { return ms.has_ion_mobility(); }
-        MS_SUMMARY get_summary() { return ms.get_summary(); }
-        std::vector<int> get_spectra_index(std::vector<int> indices = {}) { return ms.get_spectra_index(indices); }
-        std::vector<int> get_spectra_scan_number(std::vector<int> indices = {}) { return ms.get_spectra_scan_number(indices); }
-        std::vector<int> get_spectra_array_length(std::vector<int> indices = {}) { return ms.get_spectra_array_length(indices); }
-        std::vector<int> get_spectra_level(std::vector<int> indices = {}) { return ms.get_spectra_level(indices); }
-        std::vector<int> get_spectra_mode(std::vector<int> indices = {}) { return ms.get_spectra_mode(indices); }
-        std::vector<int> get_spectra_polarity(std::vector<int> indices = {}) { return ms.get_spectra_polarity(indices); }
-        std::vector<double> get_spectra_lowmz(std::vector<int> indices = {}) { return ms.get_spectra_lowmz(indices); }
-        std::vector<double> get_spectra_highmz(std::vector<int> indices = {}) { return ms.get_spectra_highmz(indices); }
-        std::vector<double> get_spectra_bpmz(std::vector<int> indices = {}) { return ms.get_spectra_bpmz(indices); }
-        std::vector<double> get_spectra_bpint(std::vector<int> indices = {}) { return ms.get_spectra_bpint(indices); }
-        std::vector<double> get_spectra_tic(std::vector<int> indices = {}) { return ms.get_spectra_tic(indices); }
-        std::vector<double> get_spectra_rt(std::vector<int> indices = {}) { return ms.get_spectra_rt(indices); }
-        std::vector<double> get_spectra_drift(std::vector<int> indices = {}) { return ms.get_spectra_drift(indices); }
-        std::vector<int> get_spectra_precursor_scan(std::vector<int> indices = {}) { return ms.get_spectra_precursor_scan(indices); }
-        std::vector<double> get_spectra_precursor_mz(std::vector<int> indices = {}) { return ms.get_spectra_precursor_mz(indices); }
-        std::vector<double> get_spectra_precursor_window_mz(std::vector<int> indices = {}) { return ms.get_spectra_precursor_window_mz(indices); }
-        std::vector<double> get_spectra_precursor_window_mzlow(std::vector<int> indices = {}) { return ms.get_spectra_precursor_window_mzlow(indices); }
-        std::vector<double> get_spectra_precursor_window_mzhigh(std::vector<int> indices = {}) { return ms.get_spectra_precursor_window_mzhigh(indices); }
-        std::vector<double> get_spectra_collision_energy(std::vector<int> indices = {}) { return ms.get_spectra_collision_energy(indices); }
-        MS_SPECTRA_HEADERS get_spectra_headers(std::vector<int> indices = {}) override { return ms.get_spectra_headers(indices); }
-        MS_CHROMATOGRAMS_HEADERS get_chromatograms_headers(std::vector<int> indices = {}) override { return ms.get_chromatograms_headers(indices); }
-        std::vector<std::vector<std::vector<double>>> get_spectra(std::vector<int> indices = {}) override { return ms.get_spectra(indices); }
-        std::vector<std::vector<std::vector<double>>> get_chromatograms(std::vector<int> indices = {}) override { return ms.get_chromatograms(indices); }
-        std::vector<std::vector<std::string>> get_software() { return ms.get_software(); }
-        std::vector<std::vector<std::string>> get_hardware() { return ms.get_hardware(); }
-        MS_SPECTRUM get_spectrum(int index) override { return ms.get_spectrum(index); }
-
-      private:
-        T ms;
+      protected:
+        std::string file_;
     };
 
     std::string encode_little_endian(const std::vector<double>& input, const int& precision);
