@@ -68,6 +68,7 @@
 		"charconv": "cpp",
 		"format": "cpp",
 		"span": "cpp",
-		"codecvt": "cpp"
+		"codecvt": "cpp",
+		"text_encoding": "cpp"
 	}
 }

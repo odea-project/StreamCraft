@@ -24,8 +24,17 @@ OBJECTS = $(SOURCES:.cpp=.o)
 
 EXECUTABLE = main.exe
 
+SOURCES_TESTS = test.cpp
+
+OBJECTS_TESTS = $(SOURCES_TESTS:.cpp=.o)
+
+EXECUTABLE_TESTS = test.exe
+
 all: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS) -o $(EXECUTABLE) $(LDLIBS)
+
+test: $(OBJECTS_TESTS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(OBJECTS_TESTS) -o $(EXECUTABLE_TESTS) $(LDLIBS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -35,8 +44,16 @@ clean:
 	del /Q *.o
 	del /Q main.exe
 
+cleantest:
+	del /Q src\*.o
+	del /Q *.o
+	del /Q test.exe
+
 run: clean all
 	./$(EXECUTABLE)
+
+runtest: clean test
+	./$(EXECUTABLE_TESTS)
 
 runonly:
 	./$(EXECUTABLE)

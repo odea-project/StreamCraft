@@ -1,7 +1,7 @@
 
 #define STREAMCRAFT_HEADER_ONLY
 #include "StreamCraft_lib.hpp"
-#include "../tests/StreamCraft_tests.hpp"
+// #include "../tests/StreamCraft_tests.hpp"
 
 // Workaround if M_2_SQRTPI is not recognized
 #ifndef M_2_SQRTPI
@@ -194,7 +194,9 @@ int main() {
 
   sc::MS_ANALYSIS ana(file7);
 
-  sc::MS_TARGETS_SPECTRA res = ana.get_spectra_targets(targets);
+  sc::MS_SPECTRA_HEADERS headers;
+
+  sc::MS_TARGETS_SPECTRA res = ana.get_spectra_targets(targets, headers);
 
   for (size_t i = 0; i < res.id.size(); i++) {
     std::cout << res.id[i] << " "

@@ -1,15 +1,15 @@
 #define STREAMCRAFT_HEADER_ONLY
 #include "StreamCraft_lib.hpp"
 
-void test_encoding_decoding_little_endian(const std::vector<double>& input, const int& precision) {
+void test_encoding_decoding_little_endian(const std::vector<float>& input, const int& precision) {
   std::cout << std::endl;
   std::cout << std::endl;
   std::cout << "Encoding and Decoding Little Endian (" << precision * 8 << "-bit) Test" << std::endl;
   std::cout << std::endl;
   std::cout << "Input vector: ";
-  for (double i : input) std::cout << i << " ";
+  for (float i : input) std::cout << i << " ";
   std::cout << std::endl;
-  std::string result = sc::encode_little_endian(input, precision);
+  std::string result = sc::encode_little_endian_from_float(input, precision);
   std::cout << "Encoded: " << result << std::endl;
   result = sc::compress_zlib(result);
   std::cout << "Compressed: " << "Not printed!" << std::endl;
@@ -20,9 +20,9 @@ void test_encoding_decoding_little_endian(const std::vector<double>& input, cons
   std::cout << "Decoded_base64: " << "Not printed!" << std::endl;
   result = sc::decompress_zlib(result);
   std::cout << "Decompressed: " << result << std::endl;
-  std::vector<double> result_back = sc::decode_little_endian(result, precision);
+  std::vector<float> result_back = sc::decode_little_endian_to_float(result, precision);
   std::cout << "Decoded: ";
-  for (double i : result_back) std::cout << i << " ";
+  for (float i : result_back) std::cout << i << " ";
   std::cout << std::endl;
   bool check = input == result_back;
   std::cout << std::endl;
@@ -30,15 +30,15 @@ void test_encoding_decoding_little_endian(const std::vector<double>& input, cons
   std::cout << std::endl;
 };
 
-void test_encoding_decoding_big_endian(const std::vector<double>& input, const int& precision) {
+void test_encoding_decoding_big_endian(const std::vector<float>& input, const int& precision) {
   std::cout << std::endl;
   std::cout << std::endl;
   std::cout << "Encoding and Decoding Big Endian (" << precision * 8 << "-bit) Test" << std::endl;
   std::cout << std::endl;
   std::cout << "Input vector: ";
-  for (double i : input) std::cout << i << " ";
+  for (float i : input) std::cout << i << " ";
   std::cout << std::endl;
-  std::string result = sc::encode_big_endian(input, precision);
+  std::string result = sc::encode_big_endian_from_float(input, precision);
   std::cout << "Encoded: " << result << std::endl;
   result = sc::compress_zlib(result);
   std::cout << "Compressed: " << "Not printed!" << std::endl;
@@ -49,9 +49,9 @@ void test_encoding_decoding_big_endian(const std::vector<double>& input, const i
   std::cout << "Decoded_base64: " << "Not printed!" << std::endl;
   result = sc::decompress_zlib(result);
   std::cout << "Decompressed: " << result << std::endl;
-  std::vector<double> result_back = sc::decode_big_endian(result, precision);
+  std::vector<float> result_back = sc::decode_big_endian_to_float(result, precision);
   std::cout << "Decoded: ";
-  for (double i : result_back) std::cout << i << " ";
+  for (float i : result_back) std::cout << i << " ";
   std::cout << std::endl;
   bool check = input == result_back;
   std::cout << std::endl;
@@ -73,7 +73,7 @@ void test_extract_spectra_mzml(const std::string& file) {
   std::cout << "Size of vector in headers struct: " << number << std::endl;
   std::cout << "Retention time of 10th spectrum: " << hd.rt[10] << std::endl;
   std::cout << "Number of binary arrays: " << mzml.get_number_spectra_binary_arrays() << std::endl;
-  std::vector<std::vector<std::vector<double>>> spectra;
+  std::vector<std::vector<std::vector<float>>> spectra;
   std::vector<int> indices = {10, 15};
   spectra = mzml.get_spectra(indices);
   std::cout << "Number of extracted spectra: " << spectra.size() << std::endl;
@@ -94,7 +94,7 @@ void test_extract_chromatograms_mzml(const std::string& file) {
   int number_chroms = ch.index.size();
   std::cout << "Size of vector in headers chroms struct: " << number_chroms << std::endl;
   std::cout << "Polarity of 5th chrom: " << ch.polarity[5] << std::endl;
-  std::vector<std::vector<std::vector<double>>> chroms;
+  std::vector<std::vector<std::vector<float>>> chroms;
   std::vector<int> indices = {1, 5, 6};
   chroms = mzml.get_chromatograms(indices);
   std::cout << "Number of extracted chroms: " << chroms.size() << std::endl;
@@ -118,7 +118,7 @@ void test_extract_spectra_mzxml(const std::string& file) {
   std::cout << "Size of vector in headers struct: " << number << std::endl;
   std::cout << "Retention time of 10th spectrum: " << hd.rt[10] << std::endl;
   std::cout << "Number of binary arrays: " << mzxml.get_number_spectra_binary_arrays() << std::endl;
-  std::vector<std::vector<std::vector<double>>> spectra;
+  std::vector<std::vector<std::vector<float>>> spectra;
   std::vector<int> indices = {10, 15};
   spectra = mzxml.get_spectra(indices);
   std::cout << "Number of extracted spectra: " << spectra.size() << std::endl;
