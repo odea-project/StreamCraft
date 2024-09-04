@@ -47,52 +47,52 @@ int main() {
 
   // std::unique_ptr<sc::MS_READER> ms_reader = sc::create_ms_reader(file1);
 
-  sc::MZML ana(file14);
-  int number_of_spectra = ana.get_number_spectra();
-  std::cout << "Number of spectra: " << number_of_spectra << std::endl;
+  // sc::MZML ana(file14);
+  // int number_of_spectra = ana.get_number_spectra();
+  // std::cout << "Number of spectra: " << number_of_spectra << std::endl;
   
-  int idx = 2;
+  // int idx = 2;
 
-  std::vector<int> indices = {idx};
-  sc::MS_SPECTRA_HEADERS hd = ana.get_spectra_headers(indices);
-  std::cout << "Index: " << hd.index[0] << std::endl;
-  std::cout << "Scan: " << hd.scan[0] << std::endl;
-  std::cout << "RT: " << hd.rt[0] << std::endl;
-  std::cout << "Polarity: " << hd.polarity[0] << std::endl;
-  std::cout << "Level: " << hd.level[0] << std::endl;
-  std::cout << "Mode: " << hd.mode[0] << std::endl;
-  std::cout << "Low mz: " << hd.lowmz[0] << std::endl;
-  std::cout << "High mz: " << hd.highmz[0] << std::endl;
-  std::cout << "Bp mz: " << hd.bpmz[0] << std::endl;
-  std::cout << "Bp int: " << hd.bpint[0] << std::endl;
-  std::cout << "Tic: " << hd.tic[0] << std::endl;
-  std::cout << "Configuration: " << hd.configuration[0] << std::endl;
-  std::cout << "Mobility: " << hd.mobility[0] << std::endl;
-  std::cout << "Window mz: " << hd.window_mz[0] << std::endl;
-  std::cout << "Window mz low: " << hd.window_mzlow[0] << std::endl;
-  std::cout << "Window mz high: " << hd.window_mzhigh[0] << std::endl;
-  std::cout << "Precursor mz: " << hd.precursor_mz[0] << std::endl;
-  std::cout << "Precursor intensity: " << hd.precursor_intensity[0] << std::endl;
-  std::cout << "Precursor charge: " << hd.precursor_charge[0] << std::endl;
-  std::cout << "Activation CE: " << hd.activation_ce[0] << std::endl;
-  int bin_arrays = ana.get_number_spectra_binary_arrays();
-  std::cout << "Number of binary arrays: " << bin_arrays << std::endl;
+  // std::vector<int> indices = {idx};
+  // sc::MS_SPECTRA_HEADERS hd = ana.get_spectra_headers(indices);
+  // std::cout << "Index: " << hd.index[0] << std::endl;
+  // std::cout << "Scan: " << hd.scan[0] << std::endl;
+  // std::cout << "RT: " << hd.rt[0] << std::endl;
+  // std::cout << "Polarity: " << hd.polarity[0] << std::endl;
+  // std::cout << "Level: " << hd.level[0] << std::endl;
+  // std::cout << "Mode: " << hd.mode[0] << std::endl;
+  // std::cout << "Low mz: " << hd.lowmz[0] << std::endl;
+  // std::cout << "High mz: " << hd.highmz[0] << std::endl;
+  // std::cout << "Bp mz: " << hd.bpmz[0] << std::endl;
+  // std::cout << "Bp int: " << hd.bpint[0] << std::endl;
+  // std::cout << "Tic: " << hd.tic[0] << std::endl;
+  // std::cout << "Configuration: " << hd.configuration[0] << std::endl;
+  // std::cout << "Mobility: " << hd.mobility[0] << std::endl;
+  // std::cout << "Window mz: " << hd.window_mz[0] << std::endl;
+  // std::cout << "Window mz low: " << hd.window_mzlow[0] << std::endl;
+  // std::cout << "Window mz high: " << hd.window_mzhigh[0] << std::endl;
+  // std::cout << "Precursor mz: " << hd.precursor_mz[0] << std::endl;
+  // std::cout << "Precursor intensity: " << hd.precursor_intensity[0] << std::endl;
+  // std::cout << "Precursor charge: " << hd.precursor_charge[0] << std::endl;
+  // std::cout << "Activation CE: " << hd.activation_ce[0] << std::endl;
+  // int bin_arrays = ana.get_number_spectra_binary_arrays();
+  // std::cout << "Number of binary arrays: " << bin_arrays << std::endl;
 
-  std::vector<sc::mzml::MZML_BINARY_METADATA> bin_mtd = ana.get_spectra_binary_metadata();
-  sc::MS_SPECTRUM spectra = ana.get_spectrum(idx);
-  std::cout << std::endl;
-  std::cout << "Index: " << spectra.index << std::endl;
-  std::cout << "Binary data: " << std::endl;
-  for (size_t i = 0; i < bin_mtd.size(); i++) {
-    std::cout << bin_mtd[i].data_name << " / ";
-  }
-  std::cout << std::endl;
-  for (int i = 0; i < 11; i++) {
-    for (size_t j = 0; j < spectra.binary_data.size(); j++) {
-      std::cout << spectra.binary_data[j][i] << " / ";
-    }
-    std::cout << std::endl;
-  }
+  // std::vector<sc::mzml::MZML_BINARY_METADATA> bin_mtd = ana.get_spectra_binary_metadata();
+  // sc::MS_SPECTRUM spectra = ana.get_spectrum(idx);
+  // std::cout << std::endl;
+  // std::cout << "Index: " << spectra.index << std::endl;
+  // std::cout << "Binary data: " << std::endl;
+  // for (size_t i = 0; i < bin_mtd.size(); i++) {
+  //   std::cout << bin_mtd[i].data_name << " / ";
+  // }
+  // std::cout << std::endl;
+  // for (int i = 0; i < 11; i++) {
+  //   for (size_t j = 0; j < spectra.binary_data.size(); j++) {
+  //     std::cout << spectra.binary_data[j][i] << " / ";
+  //   }
+  //   std::cout << std::endl;
+  // }
 
 
 
@@ -178,36 +178,36 @@ int main() {
 
   // sc::test_extract_spectra_mzxml(file8);
 
-  // sc::MS_TARGETS targets;
-  // targets.resize_all(3);
-  // targets.index = {0, 1, 2};
-  // targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
-  // targets.level = {2, 2, 2};
-  // targets.polarity = {1, 1, 1};
-  // targets.precursor = {true, true, true}; // for DIA set precursor to false, keeping level to 2
-  // targets.mzmin = {268.1854,  296.0181, 233.0197};
-  // targets.mzmax = {268.1961,  296.0299, 233.0290};
-  // targets.rtmin = {905, 1245, 1150};
-  // targets.rtmax = {925, 1265, 1170};
-  // targets.driftmin = {0, 0, 0};
-  // targets.driftmax = {0, 0, 0};
+  sc::MS_TARGETS targets;
+  targets.resize_all(3);
+  targets.index = {0, 1, 2};
+  targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
+  targets.level = {2, 2, 2};
+  targets.polarity = {1, 1, 1};
+  targets.precursor = {true, true, true}; // for DIA set precursor to false, keeping level to 2
+  targets.mzmin = {268.1854,  296.0181, 233.0197};
+  targets.mzmax = {268.1961,  296.0299, 233.0290};
+  targets.rtmin = {905, 1245, 1150};
+  targets.rtmax = {925, 1265, 1170};
+  targets.mobilitymin = {0, 0, 0};
+  targets.mobilitymax = {0, 0, 0};
 
-  // sc::MS_ANALYSIS ana(file7);
+  sc::MS_ANALYSIS ana(file7);
 
-  // sc::MS_TARGETS_SPECTRA res = ana.get_spectra_targets(targets);
+  sc::MS_TARGETS_SPECTRA res = ana.get_spectra_targets(targets);
 
-  // for (size_t i = 0; i < res.id.size(); i++) {
-  //   std::cout << res.id[i] << " "
-  //   << " " << res.level[i] << " "
-  //   << res.polarity[i] << " "
-  //   << res.pre_mz[i] << " "
-  //   << res.pre_mzlow[i] << " "
-  //   << res.pre_mzhigh[i] << " " 
-  //   << res.rt[i] << " " 
-  //   << res.drift[i] << " " 
-  //   << res.mz[i] << " " 
-  //   << res.intensity[i] << std::endl;
-  // }
+  for (size_t i = 0; i < res.id.size(); i++) {
+    std::cout << res.id[i] << " "
+    << " " << res.level[i] << " "
+    << res.polarity[i] << " "
+    << res.pre_mz[i] << " "
+    << res.pre_mzlow[i] << " "
+    << res.pre_mzhigh[i] << " " 
+    << res.rt[i] << " " 
+    << res.mobility[i] << " " 
+    << res.mz[i] << " " 
+    << res.intensity[i] << std::endl;
+  }
 
   // sc::MS_TARGETS targetsdda;
   //   targetsdda.resize_all(3);

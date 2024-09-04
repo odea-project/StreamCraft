@@ -35,10 +35,7 @@ sc::MS_ANALYSIS::MS_ANALYSIS(const std::string& file) {
   }
 };
 
-sc::MS_TARGETS_SPECTRA sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS& targets) {
-
-  const double minIntLv1 = 0;
-  const double minIntLv2 = 0;
+sc::MS_TARGETS_SPECTRA sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS& targets, const double& minIntLv1 = 0, const double& minIntLv2 = 0) {
 
   const int number_spectra = get_number_spectra();
 

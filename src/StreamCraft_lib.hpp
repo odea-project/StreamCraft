@@ -114,7 +114,7 @@ namespace sc {
       std::vector<std::vector<std::string>> get_software() { return ms->get_software(); }
       std::vector<std::vector<std::string>> get_hardware() { return ms->get_hardware(); }
       MS_SPECTRUM get_spectrum(const int& index) { return ms->get_spectrum(index); }
-      MS_TARGETS_SPECTRA get_spectra_targets(const MS_TARGETS& targets);
+      MS_TARGETS_SPECTRA get_spectra_targets(const MS_TARGETS& targets, const double& minIntLv1, const double& minIntLv2);
   };
 
 }; // namespace sc
