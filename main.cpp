@@ -193,22 +193,27 @@ int main() {
   targets.mobilitymax = {0, 0, 0};
 
   sc::MS_ANALYSIS ana(file7);
-
-  sc::MS_SPECTRA_HEADERS headers;
-
+  sc::MS_SPECTRA_HEADERS headers = ana.get_spectra_headers();
   sc::MS_TARGETS_SPECTRA res = ana.get_spectra_targets(targets, headers);
 
-  for (size_t i = 0; i < res.id.size(); i++) {
-    std::cout << res.id[i] << " "
-    << " " << res.level[i] << " "
-    << res.polarity[i] << " "
-    << res.pre_mz[i] << " "
-    << res.pre_mzlow[i] << " "
-    << res.pre_mzhigh[i] << " " 
-    << res.rt[i] << " " 
-    << res.mobility[i] << " " 
-    << res.mz[i] << " " 
-    << res.intensity[i] << std::endl;
+  // for (size_t i = 0; i < res.id.size(); i++) {
+  //   std::cout << res.id[i] << " "
+  //   << " " << res.level[i] << " "
+  //   << res.polarity[i] << " "
+  //   << res.pre_mz[i] << " "
+  //   << res.pre_mzlow[i] << " "
+  //   << res.pre_mzhigh[i] << " "
+  //   << res.rt[i] << " "
+  //   << res.mobility[i] << " "
+  //   << res.mz[i] << " "
+  //   << res.intensity[i] << std::endl;
+  // }
+
+  std::cout << "Number of unique ids: " << res.number_ids() << std::endl;
+
+  for (int i = 0; i < res.number_ids(); i++) {
+    sc::MS_TARGETS_SPECTRA res2 = res[targets.id[i]];
+    std::cout << "Target: " << targets.id[i] << " with size " << res2.id.size() << std::endl;
   }
 
   // sc::MS_TARGETS targetsdda;

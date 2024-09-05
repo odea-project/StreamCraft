@@ -51,30 +51,38 @@ sc::MS_TARGETS_SPECTRA sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
 
   if (number_spectra_binary_arrays == 0) return res;
 
-  const MS_SPECTRA_HEADERS* hd;
+  if (headers.size() == 0) return res;
 
-  if (headers.size() != 0) {
-    hd = &headers;
-  } else {
-    const MS_SPECTRA_HEADERS loaded_headers = get_spectra_headers();
-    hd = &loaded_headers;
-  }
+  const int headers_size = headers.size();
+
+  if (headers_size != number_spectra) return res;
 
   std::set<int> idx;
 
   for (int i = 0; i < number_targets; i++) {
+
+    #pragma omp parallel for shared(idx)
     for (int j = 0; j < number_spectra; j++) {
 
-      if ((*hd).level[j] == targets.level[i] || targets.level[i] == 0) {
-        if (((*hd).rt[j] >= targets.rtmin[i] && (*hd).rt[j] <= targets.rtmax[i]) || targets.rtmax[i] == 0) {
-          if ((*hd).polarity[j] == targets.polarity[i]) {
-            if (((*hd).mobility[j] >= targets.mobilitymin[i] && (*hd).mobility[j] <= targets.mobilitymax[i]) || targets.mobilitymax[i] == 0) {
+      // excludes higher configuration function scans
+      if (headers.configuration[j] >= 3) continue;
+
+      if (headers.level[j] == targets.level[i] || targets.level[i] == 0) {
+        if ((headers.rt[j] >= targets.rtmin[i] && headers.rt[j] <= targets.rtmax[i]) || targets.rtmax[i] == 0) {
+          if (headers.polarity[j] == targets.polarity[i]) {
+            if ((headers.mobility[j] >= targets.mobilitymin[i] && headers.mobility[j] <= targets.mobilitymax[i]) || targets.mobilitymax[i] == 0) {
               if (targets.precursor[i]) {
-                if (((*hd).precursor_mz[j] >= targets.mzmin[i] && (*hd).precursor_mz[j] <= targets.mzmax[i]) || targets.mzmax[i] == 0) {
-                  idx.insert(j);
+                if ((headers.precursor_mz[j] >= targets.mzmin[i] && headers.precursor_mz[j] <= targets.mzmax[i]) || targets.mzmax[i] == 0) {
+                  #pragma omp critical
+                  {
+                    idx.insert(j);
+                  }
                 }
               } else {
-                idx.insert(j);
+                #pragma omp critical
+                {
+                  idx.insert(j);
+                }
               }
             }
           }
@@ -128,13 +136,13 @@ sc::MS_TARGETS_SPECTRA sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
       
       if (n_traces == 0) continue;
       
-      const int& i_polarity = (*hd).polarity[i_idx[0]];
-      const int& i_level = (*hd).level[i_idx[0]];
-      const float& i_pre_mz = (*hd).precursor_mz[i_idx[0]];
-      const float& i_pre_mzlow = (*hd).window_mzlow[i_idx[0]];
-      const float& i_pre_mzhigh = (*hd).window_mzhigh[i_idx[0]];
-      const float& i_rt = (*hd).rt[i_idx[0]];
-      const float& i_mobility = (*hd).mobility[i_idx[0]];
+      const int& i_polarity = headers.polarity[i_idx[0]];
+      const int& i_level = headers.level[i_idx[0]];
+      const float& i_pre_mz = headers.precursor_mz[i_idx[0]];
+      const float& i_pre_mzlow = headers.window_mzlow[i_idx[0]];
+      const float& i_pre_mzhigh = headers.window_mzhigh[i_idx[0]];
+      const float& i_rt = headers.rt[i_idx[0]];
+      const float& i_mobility = headers.mobility[i_idx[0]];
       
       for (int j = 0; j < number_targets; j++) {
         
@@ -157,7 +165,7 @@ sc::MS_TARGETS_SPECTRA sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
                       pre_mz_priv.push_back(i_pre_mz);
                       pre_mzlow_priv.push_back(i_pre_mzlow);
                       pre_mzhigh_priv.push_back(i_pre_mzhigh);
-                      pre_ce_priv.push_back((*hd).activation_ce[i_idx[0]]);
+                      pre_ce_priv.push_back(headers.activation_ce[i_idx[0]]);
                       rt_priv.push_back(i_rt);
                       mobility_priv.push_back(i_mobility);
                       mz_priv.push_back(spectra[0][0][k]);
@@ -178,7 +186,7 @@ sc::MS_TARGETS_SPECTRA sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
                       pre_mz_priv.push_back(i_pre_mz);
                       pre_mzlow_priv.push_back(i_pre_mzlow);
                       pre_mzhigh_priv.push_back(i_pre_mzhigh);
-                      pre_ce_priv.push_back((*hd).activation_ce[i_idx[0]]);
+                      pre_ce_priv.push_back(headers.activation_ce[i_idx[0]]);
                       rt_priv.push_back(i_rt);
                       mobility_priv.push_back(i_mobility);
                       mz_priv.push_back(spectra[0][0][k]);
@@ -226,6 +234,7 @@ sc::MS_TARGETS_SPECTRA sc::MS_ANALYSIS::get_spectra_targets(const sc::MS_TARGETS
 
   res.resize_all(id_out.size());
 
+  #pragma omp for
   for (int i = 0; i < number_spectra_targets_out; i++) {
     res.id[i] = id_out[idx_sort[i]];
     res.polarity[i] = polarity_out[idx_sort[i]];
