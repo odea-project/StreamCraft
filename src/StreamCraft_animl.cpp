@@ -141,7 +141,7 @@ void animl::SERIES::extract(const pugi::xml_node& node) {
     std::string decoded_string = sc::decode_base64(encoded_string);
     std::tuple<std::string, int> param = extract_encoding_parameters(seriesType);
     // always outputs double vector
-    EncodedValueSet = sc::decode_little_endian(decoded_string, std::get<1>(param) / 8);
+    EncodedValueSet = sc::utils::decode_little_endian_to_double(decoded_string, std::get<1>(param) / 8);
   }
 };
 

@@ -1,7 +1,9 @@
 
-#define STREAMCRAFT_HEADER_ONLY
 #include "StreamCraft_lib.hpp"
-#include "../tests/StreamCraft_tests.hpp"
+#include "StreamCraft_utils.hpp"
+#include "StreamCraft_mzml.hpp"
+#include "StreamCraft_mzxml.hpp"
+// #include "../tests/StreamCraft_tests.hpp"
 
 // Workaround if M_2_SQRTPI is not recognized
 #ifndef M_2_SQRTPI
@@ -38,24 +40,21 @@ int main() {
 
   // With IM data (rick)
   std::string file13 = "./excluded/example_timsTOF_rick.mzML";
-  std::string file14 = "C:/Users/apoli/Documents/example_ms_files/example_data.mzML/BRAVE_SC_QC_M_103_POS_20V_06Sep19_Fiji_ZIC-19-06-01.mzML";
+  std::string file14 = "C:/Users/apoli/Documents/example_files/example_data.mzML/BRAVE_SC_QC_M_103_POS_20V_06Sep19_Fiji_ZIC-19-06-01.mzML";
   
   // waters files DIA
   std::string file16 = "C:/Users/apoli/Documents/example_ms_files/tisler/201026_targetScreening_effluent_POS_QC3.mzML";
 
-  // test_extract_ms_analysis(file13, 10);
 
-  // std::unique_ptr<sc::MS_READER> ms_reader = sc::create_ms_reader(file1);
+  sc::MS_ANALYSIS ana(file7);
 
-  // sc::MZML ana(file14);
-  // int number_of_spectra = ana.get_number_spectra();
-  // std::cout << "Number of spectra: " << number_of_spectra << std::endl;
+  int number_of_spectra = ana.get_number_spectra();
+  std::cout << "Number of spectra: " << number_of_spectra << std::endl;
   
   // int idx = 2;
-
   // std::vector<int> indices = {idx};
-  // sc::MS_SPECTRA_HEADERS hd = ana.get_spectra_headers(indices);
-  // std::cout << "Index: " << hd.index[0] << std::endl;
+  sc::MS_SPECTRA_HEADERS hd = ana.get_spectra_headers();
+  std::cout << "Index: " << hd.index[0] << std::endl;
   // std::cout << "Scan: " << hd.scan[0] << std::endl;
   // std::cout << "RT: " << hd.rt[0] << std::endl;
   // std::cout << "Polarity: " << hd.polarity[0] << std::endl;
@@ -178,36 +177,43 @@ int main() {
 
   // sc::test_extract_spectra_mzxml(file8);
 
-  sc::MS_TARGETS targets;
-  targets.resize_all(3);
-  targets.index = {0, 1, 2};
-  targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
-  targets.level = {2, 2, 2};
-  targets.polarity = {1, 1, 1};
-  targets.precursor = {true, true, true}; // for DIA set precursor to false, keeping level to 2
-  targets.mzmin = {268.1854,  296.0181, 233.0197};
-  targets.mzmax = {268.1961,  296.0299, 233.0290};
-  targets.rtmin = {905, 1245, 1150};
-  targets.rtmax = {925, 1265, 1170};
-  targets.mobilitymin = {0, 0, 0};
-  targets.mobilitymax = {0, 0, 0};
+  // sc::MS_TARGETS targets;
+  // targets.resize_all(3);
+  // targets.index = {0, 1, 2};
+  // targets.id = {"Metoprolol", "Diclofenac", "Diuron"};
+  // targets.level = {2, 2, 2};
+  // targets.polarity = {1, 1, 1};
+  // targets.precursor = {true, true, true}; // for DIA set precursor to false, keeping level to 2
+  // targets.mzmin = {268.1854,  296.0181, 233.0197};
+  // targets.mzmax = {268.1961,  296.0299, 233.0290};
+  // targets.rtmin = {905, 1245, 1150};
+  // targets.rtmax = {925, 1265, 1170};
+  // targets.mobilitymin = {0, 0, 0};
+  // targets.mobilitymax = {0, 0, 0};
 
-  sc::MS_ANALYSIS ana(file7);
+  // sc::MS_ANALYSIS ana(file7);
+  // sc::MS_SPECTRA_HEADERS headers = ana.get_spectra_headers();
+  // sc::MS_TARGETS_SPECTRA res = ana.get_spectra_targets(targets, headers);
 
-  sc::MS_TARGETS_SPECTRA res = ana.get_spectra_targets(targets);
+  // for (size_t i = 0; i < res.id.size(); i++) {
+  //   std::cout << res.id[i] << " "
+  //   << " " << res.level[i] << " "
+  //   << res.polarity[i] << " "
+  //   << res.pre_mz[i] << " "
+  //   << res.pre_mzlow[i] << " "
+  //   << res.pre_mzhigh[i] << " "
+  //   << res.rt[i] << " "
+  //   << res.mobility[i] << " "
+  //   << res.mz[i] << " "
+  //   << res.intensity[i] << std::endl;
+  // }
 
-  for (size_t i = 0; i < res.id.size(); i++) {
-    std::cout << res.id[i] << " "
-    << " " << res.level[i] << " "
-    << res.polarity[i] << " "
-    << res.pre_mz[i] << " "
-    << res.pre_mzlow[i] << " "
-    << res.pre_mzhigh[i] << " " 
-    << res.rt[i] << " " 
-    << res.mobility[i] << " " 
-    << res.mz[i] << " " 
-    << res.intensity[i] << std::endl;
-  }
+  // std::cout << "Number of unique ids: " << res.number_ids() << std::endl;
+
+  // for (int i = 0; i < res.number_ids(); i++) {
+  //   sc::MS_TARGETS_SPECTRA res2 = res[targets.id[i]];
+  //   std::cout << "Target: " << targets.id[i] << " with size " << res2.id.size() << std::endl;
+  // }
 
   // sc::MS_TARGETS targetsdda;
   //   targetsdda.resize_all(3);
