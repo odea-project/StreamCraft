@@ -18,7 +18,9 @@ LDFLAGS = -L$(CURDIR)/external/zlib-1.3.1/build
 
 LDLIBS = -lzlibstatic
 
-SOURCES = main.cpp
+SOURCES = $(wildcard src/*.cpp)
+
+SOURCES += main.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

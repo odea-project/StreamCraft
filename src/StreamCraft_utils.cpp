@@ -1,10 +1,4 @@
 #include "StreamCraft_utils.hpp"
-#include <vector>
-#include <string>
-#include <cstring>
-#include <cstdint>
-#include <stdexcept>
-#include <zlib.h>
 
 std::string sc::utils::encode_little_endian_from_float(const std::vector<float>& input, const int& precision) {
 

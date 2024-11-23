@@ -12,14 +12,7 @@
 // #include <algorithm>
 // #include <omp.h>
 
-#define PUGIXML_HEADER_ONLY
-
-#ifndef PUGIXML_PATH
-#define PUGIXML_PATH "../../pugixml-1.14/src/pugixml.hpp"
-#endif
-
-#include PUGIXML_PATH
-
+#include "pugixml.hpp"
 #include "StreamCraft_utils.hpp"
 
 namespace animl {
@@ -268,8 +261,3 @@ namespace animl {
   }; // animl
 
 #endif // ANIML_HPP
-
-#if defined(STREAMCRAFT_HEADER_ONLY) && !defined(STREAMCRAFT_ANIML_SOURCE)
-#	define STREAMCRAFT_ANIML_SOURCE "StreamCraft_animl.cpp"
-#	include STREAMCRAFT_ANIML_SOURCE
-#endif

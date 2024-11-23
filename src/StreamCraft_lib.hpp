@@ -3,48 +3,17 @@
 
 #include <vector>
 #include <string>
-
-#ifndef PUGIXML_PATH
-#define PUGIXML_PATH "../../pugixml-1.14/src/pugixml.hpp"
-#endif
-
+#include <algorithm>
+#include <iterator>
+#include <memory>
+#include "pugixml.hpp"
 #include "StreamCraft_utils.hpp"
 #include "StreamCraft_mzml.hpp"
 #include "StreamCraft_mzxml.hpp"
 
 namespace sc {
 
-  std::unique_ptr<MS_READER> create_ms_reader(const std::string& file) {
-
-    std::string file_dir = file.substr(0, file.find_last_of("/\\") + 1);
-
-    if (file_dir.back() == '/') file_dir.pop_back();
-
-    std::string file_name = file.substr(file.find_last_of("/\\") + 1);
-    
-    std::string file_extension = file_name.substr(file_name.find_last_of(".") + 1);
-    
-    file_name = file_name.substr(0, file_name.find_last_of("."));
-
-    const std::vector<std::string> possible_formats = { "mzML", "mzXML", "animl" };
-
-    int format_case = std::distance(possible_formats.begin(), std::find(possible_formats.begin(), possible_formats.end(), file_extension));
-
-    switch (format_case) {
-
-      case 0: {
-        return std::make_unique<MZML>(file);
-      }
-
-      case 1: {
-        return std::make_unique<MZXML>(file);
-        break;
-      }
-      
-      default:
-        throw std::invalid_argument("Unsupported file format");
-    }
-  };
+  std::unique_ptr<MS_READER> create_ms_reader(const std::string& file);
 
   class MS_ANALYSIS {
 
@@ -120,8 +89,3 @@ namespace sc {
 }; // namespace sc
 
 #endif // SCLIB_HPP
-
-#if defined(STREAMCRAFT_HEADER_ONLY) && !defined(STREAMCRAFT_LIB_SOURCE)
-#	define STREAMCRAFT_LIB_SOURCE "StreamCraft_lib.cpp"
-#	include STREAMCRAFT_LIB_SOURCE
-#endif

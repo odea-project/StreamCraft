@@ -1,8 +1,11 @@
 #include "StreamCraft_mzxml.hpp"
+#include <vector>
+#include <string>
+#include <numeric>
 #include <omp.h>
-#include <cstring>
 #include <algorithm>
-#include <set>
+#include "pugixml.hpp"
+#include "StreamCraft_utils.hpp"
 
 int sc::mzxml::MZXML_SPECTRUM::extract_spec_index() const {
   return spec.attribute("num").as_int();

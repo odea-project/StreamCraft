@@ -5,16 +5,12 @@
 #include <vector>
 #include <string>
 #include <numeric>
-
-#define PUGIXML_HEADER_ONLY
-
-#ifndef PUGIXML_PATH
-#define PUGIXML_PATH "../../pugixml-1.14/src/pugixml.hpp"
-#endif
-
-#include PUGIXML_PATH
-
-#define STREAMCRAFT_HEADER_ONLY
+#include <omp.h>
+#include <cstring>
+#include <algorithm>
+#include <set>
+#include <cmath>
+#include "pugixml.hpp"
 #include "StreamCraft_utils.hpp"
 
 namespace sc {
@@ -151,8 +147,3 @@ namespace sc {
 }; // namespace sc
 
 #endif // STREAMCRAFT_MZXML_HPP
-
-#if defined(STREAMCRAFT_HEADER_ONLY) && !defined(STREAMCRAFT_MZXML_SOURCE)
-#	define STREAMCRAFT_MZXML_SOURCE "StreamCraft_mzxml.cpp"
-#	include STREAMCRAFT_MZXML_SOURCE
-#endif
