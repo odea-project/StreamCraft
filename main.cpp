@@ -1,9 +1,5 @@
 
-#include "StreamCraft_lib.hpp"
-#include "StreamCraft_utils.hpp"
-#include "StreamCraft_mzml.hpp"
-#include "StreamCraft_mzxml.hpp"
-// #include "../tests/StreamCraft_tests.hpp"
+#include "StreamCraft_lib.h"
 
 // Workaround if M_2_SQRTPI is not recognized
 #ifndef M_2_SQRTPI
@@ -46,7 +42,7 @@ int main() {
   std::string file16 = "C:/Users/apoli/Documents/example_ms_files/tisler/201026_targetScreening_effluent_POS_QC3.mzML";
 
 
-  sc::MS_ANALYSIS ana(file7);
+  sc::MS_FILE ana(file7);
 
   int number_of_spectra = ana.get_number_spectra();
   std::cout << "Number of spectra: " << number_of_spectra << std::endl;

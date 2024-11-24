@@ -1,19 +1,11 @@
-#ifndef STREAMCRAFT_ANIML_HPP
-#define STREAMCRAFT_ANIML_HPP
+#ifndef STREAMCRAFT_ANIML_H
+#define STREAMCRAFT_ANIML_H
 
 #include <iostream>
 #include <vector>
 #include <numeric>
-
-// #include <string>
-// #include <regex>
-// #include <tuple> 
-// #include <cstring>
-// #include <algorithm>
-// #include <omp.h>
-
 #include "pugixml.hpp"
-#include "StreamCraft_utils.hpp"
+#include "StreamCraft_lib.h"
 
 namespace animl {
 
