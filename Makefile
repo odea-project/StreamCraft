@@ -1,3 +1,6 @@
+# This Makefile is written for MSYS2/MINGW64 or Linux.
+# If you are using other OS, you may need to modify the Makefile.
+
 CXX = g++
 
 CXXFLAGS = -std=c++17
@@ -42,14 +45,14 @@ test: $(OBJECTS_TESTS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	del /Q src\*.o
-	del /Q *.o
-	del /Q main.exe
+	rm -f src/*.o
+	rm -f *.o
+	rm -f main.exe
 
 cleantest:
-	del /Q src\*.o
-	del /Q *.o
-	del /Q test.exe
+	rm -f src/*.o
+	rm -f *.o
+	rm -f test.exe
 
 run: clean all
 	./$(EXECUTABLE)
@@ -59,21 +62,3 @@ runtest: clean test
 
 runonly:
 	./$(EXECUTABLE)
-
-
-#clean:
-#	rm -f $(OBJECTS) $(EXECUTABLE)
-#CXXFLAGS += -DGCC
-#CXXFLAGS += -D_FILE_OFFSET_BITS=64
-#MSTOOLKITDIR = external/mstoolkit
-#MSTOOLKITDIRINCLUDE = $(MSTOOLKITDIR)/include
-#CXXFLAGS += -I$(MSTOOLKITDIRINCLUDE)
-#MSTOOLKITLIB = $(MSTOOLKITDIR)/libmstoolkit.a
-#LDLIBS += $(MSTOOLKITLIB)
-#SOURCES = external/qAlgorithms/src/qalgorithms_matrix.cpp
-#SOURCES += external/qAlgorithms/src/qalgorithms_utils.cpp
-#SOURCES += external/qAlgorithms/src/qalgorithms.cpp
-#CXXFLAGS += -Iexternal/qAlgorithms/src
-#CXXFLAGS += -Iexternal/qAlgorithms/include
-#SOURCES = $(wildcard src/*.cpp) main.cpp
-#$(LDFLAGS)
